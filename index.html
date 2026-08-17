@@ -1299,6 +1299,8 @@ window.addEventListener(
     function(){
 
         activateMicrophone();
+        jarvisStartListening();
+
 
     },
     {
@@ -1307,6 +1309,334 @@ window.addEventListener(
     }
 );
 
+/* =========================================================
+   JARVIS — COMMANDE VOCALE
+   ========================================================= */
+
+/* =========================================================
+   JARVIS — MOT CLÉ VOCAL
+   ========================================================= */
+
+let jarvisRecognition = null;
+let jarvisListening = false;
+let jarvisCommandMode = false;
+
+const JARVIS_WAKE_WORD = "jarvis";
+const JARVIS_SHORTCUT_NAME = "Jarvis HomeKit";
+
+
+function jarvisNormalize(text){
+
+    return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+}
+
+
+function jarvisSpeak(text){
+
+    if(!("speechSynthesis" in window)){
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance =
+        new SpeechSynthesisUtterance(text);
+
+    utterance.lang = "fr-FR";
+    utterance.rate = 0.92;
+    utterance.pitch = 0.88;
+    utterance.volume = 1;
+
+    window.speechSynthesis.speak(
+        utterance
+    );
+
+}
+
+
+function jarvisRunShortcut(command){
+
+    const url =
+        "shortcuts://run-shortcut" +
+        "?name=" +
+        encodeURIComponent(
+            JARVIS_SHORTCUT_NAME
+        ) +
+        "&input=text&text=" +
+        encodeURIComponent(
+            command
+        );
+
+    window.location.href = url;
+
+}
+
+
+function jarvisProcessSpeech(text){
+
+    const phrase =
+        jarvisNormalize(text);
+
+    if(!phrase){
+        return;
+    }
+
+
+    /* -------------------------------
+       VEILLE : recherche de JARVIS
+       ------------------------------- */
+
+    if(!jarvisCommandMode){
+
+        const index =
+            phrase.indexOf(
+                JARVIS_WAKE_WORD
+            );
+
+        if(index === -1){
+            return;
+        }
+
+
+        const command =
+            phrase
+                .substring(
+                    index +
+                    JARVIS_WAKE_WORD.length
+                )
+                .trim();
+
+
+        jarvisCommandMode = true;
+
+
+        if(command){
+
+            jarvisSpeak(
+                "Bien sûr, Monsieur."
+            );
+
+            setTimeout(
+                function(){
+
+                    jarvisCommandMode =
+                        false;
+
+                    jarvisRunShortcut(
+                        command
+                    );
+
+                },
+                500
+            );
+
+        }else{
+
+            jarvisSpeak(
+                "Oui, Monsieur."
+            );
+
+        }
+
+        return;
+    }
+
+
+    /* -------------------------------
+       MODE COMMANDE
+       ------------------------------- */
+
+    jarvisCommandMode = false;
+
+
+    jarvisSpeak(
+        "Bien sûr, Monsieur."
+    );
+
+
+    setTimeout(
+        function(){
+
+            jarvisRunShortcut(
+                phrase
+            );
+
+        },
+        500
+    );
+
+}
+
+
+function jarvisStartListening(){
+
+    const Recognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+
+    if(!Recognition){
+
+        console.log(
+            "JARVIS : SpeechRecognition indisponible."
+        );
+
+        return;
+    }
+
+
+    if(jarvisListening){
+        return;
+    }
+
+
+    jarvisRecognition =
+        new Recognition();
+
+
+    jarvisRecognition.lang =
+        "fr-FR";
+
+    jarvisRecognition.continuous =
+        true;
+
+    jarvisRecognition.interimResults =
+        false;
+
+    jarvisRecognition.maxAlternatives =
+        1;
+
+
+    jarvisRecognition.onstart =
+        function(){
+
+            jarvisListening = true;
+
+            jarvisSpeak(
+            "Veille vocale activée, Monsieur.");
+
+            console.log(
+                "JARVIS : écoute en veille."
+            );
+
+        };
+
+
+    jarvisRecognition.onresult =
+        function(event){
+
+            for(
+                let i =
+                    event.resultIndex;
+
+                i <
+                    event.results.length;
+
+                i++
+            ){
+
+                if(
+                    event.results[i]
+                    .isFinal
+                ){
+
+                    const transcript =
+                        event.results[i][0]
+                        .transcript;
+
+                    jarvisProcessSpeech(
+                        transcript
+                    );
+
+                }
+
+            }
+
+        };
+
+
+    jarvisRecognition.onerror =
+        function(event){
+
+            jarvisListening = false;
+
+            console.log(
+                "JARVIS VOICE ERROR:",
+                event.error
+            );
+
+        };
+
+
+    jarvisRecognition.onend =
+        function(){
+
+            jarvisListening = false;
+
+
+            if(
+                document.visibilityState ===
+                "visible"
+            ){
+
+                setTimeout(
+                    function(){
+
+                        jarvisStartListening();
+
+                    },
+                    700
+                );
+
+            }
+
+        };
+
+
+    try{
+
+        jarvisRecognition.start();
+
+    }catch(error){
+
+        jarvisListening = false;
+
+        console.log(
+            "JARVIS START ERROR:",
+            error
+        );
+
+    }
+
+}
+
+
+/*
+   Démarrage automatique de la veille
+   vocale lorsque la page est chargée.
+*/
+
+window.addEventListener(
+    "load",
+    function(){
+
+        setTimeout(
+            function(){
+
+                jarvisStartListening();
+
+            },
+            1000
+        );
+
+    }
+);
 
 /* =========================================================
    COURONNES
