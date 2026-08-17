@@ -3,262 +3,225 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-<title>JARVIS — Gyrotourbillon Precision Core</title>
+<title>JARVIS — Gyrotourbillon 3 Axes</title>
 
 <style>
 *{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#01070a;
-    color:#d9faff;
-    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",
-                 "Helvetica Neue",Arial,sans-serif;
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#01070a;
+  color:#c9f7ff;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+body{
+  background:
+    radial-gradient(circle at 50% 38%,
+      rgba(0,110,140,.12),
+      transparent 28%),
+    linear-gradient(#02090d,#010608);
 }
 
 #app{
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-    background:
-        radial-gradient(circle at 50% 42%,
-            rgba(0,155,190,.09),
-            transparent 30%),
-        #01070a;
+  position:fixed;
+  inset:0;
+  overflow:hidden;
 }
 
 canvas{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    display:block;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
 }
 
 /* ---------------- HEADER ---------------- */
 
-.header{
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    height:82px;
-    z-index:10;
+header{
+  position:absolute;
+  z-index:10;
+  top:0;
+  left:0;
+  right:0;
+  height:94px;
+  padding:
+    calc(env(safe-area-inset-top) + 22px)
+    28px 0;
 
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
 
-    padding:0 7vw;
-
-    background:linear-gradient(
-        to bottom,
-        rgba(1,7,10,.92),
-        rgba(1,7,10,.45),
-        transparent
-    );
+  pointer-events:none;
 }
 
-.logo{
-    font-size:21px;
-    letter-spacing:.48em;
-    font-weight:300;
-    color:#e4fbff;
+.brand{
+  font-size:19px;
+  letter-spacing:.48em;
+  font-weight:300;
+  white-space:nowrap;
 }
 
 .status{
-    display:flex;
-    gap:24px;
-    font-size:10px;
-    letter-spacing:.32em;
-    color:#7698a3;
+  display:flex;
+  gap:24px;
+  align-items:center;
+
+  font-size:10px;
+  letter-spacing:.32em;
+  color:#62828b;
 }
 
 .status span{
-    display:flex;
-    align-items:center;
-    gap:8px;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
-.dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:#16d9ff;
-    box-shadow:
-        0 0 8px #16d9ff,
-        0 0 20px rgba(22,217,255,.7);
+.status i{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#08d8ff;
+  box-shadow:
+    0 0 8px #08d8ff,
+    0 0 18px rgba(0,216,255,.45);
 }
-
-/* ---------------- LABEL ---------------- */
 
 .subtitle{
-    position:absolute;
-    top:112px;
-    left:0;
-    right:0;
-    z-index:5;
-    text-align:center;
+  position:absolute;
+  top:104px;
+  left:0;
+  right:0;
+  text-align:center;
 
-    font-size:10px;
-    letter-spacing:.42em;
-    color:#4f7480;
+  font-size:9px;
+  letter-spacing:.45em;
+  color:#426a74;
 }
 
 /* ---------------- PANELS ---------------- */
 
 .panels{
-    position:absolute;
-    z-index:8;
-    left:4.5vw;
-    right:4.5vw;
-    bottom:7vh;
+  position:absolute;
+  z-index:8;
+  left:28px;
+  right:28px;
+  bottom:28px;
 
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px 18px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
 .panel{
-    height:112px;
+  min-height:92px;
+  padding:16px 18px;
 
-    border:1px solid rgba(0,196,231,.46);
+  border:1px solid rgba(0,190,230,.42);
 
-    background:
-        linear-gradient(
-            135deg,
-            rgba(4,35,43,.52),
-            rgba(1,10,14,.62)
-        );
+  background:
+    linear-gradient(
+      135deg,
+      rgba(4,30,38,.72),
+      rgba(2,12,17,.55)
+    );
 
-    box-shadow:
-        inset 0 0 25px rgba(0,150,180,.045),
-        0 0 18px rgba(0,100,130,.035);
-
-    padding:18px 18px 14px;
+  box-shadow:
+    inset 0 0 20px rgba(0,180,220,.035),
+    0 0 14px rgba(0,140,180,.035);
 }
 
-.panel-title{
-    font-size:10px;
-    letter-spacing:.36em;
-    color:#63b8ca;
-    margin-bottom:10px;
+.panel .label{
+  font-size:9px;
+  letter-spacing:.4em;
+  color:#54b8c9;
 }
 
-.panel-value{
-    font-size:31px;
-    font-weight:300;
-    color:#d8faff;
-    line-height:1;
+.panel .value{
+  margin-top:8px;
+  font-size:31px;
+  font-weight:300;
+  letter-spacing:.03em;
+  color:#d7fbff;
 }
 
-.panel-info{
-    margin-top:11px;
-    font-size:9px;
-    letter-spacing:.19em;
-    color:#557984;
+.panel .detail{
+  margin-top:5px;
+  font-size:9px;
+  letter-spacing:.18em;
+  color:#53727a;
 }
 
-/* ---------------- SMALL CORE INDICATOR ---------------- */
+/* ---------------- VIGNETTE ---------------- */
 
-.core-status{
-    position:absolute;
-    z-index:9;
-    left:50%;
-    bottom:2.8vh;
-    transform:translateX(-50%);
+.vignette{
+  position:absolute;
+  z-index:7;
+  inset:0;
+  pointer-events:none;
 
-    width:58px;
-    height:58px;
-    border-radius:50%;
-
-    border:1px solid rgba(24,210,244,.7);
-
-    box-shadow:
-        0 0 20px rgba(0,205,255,.18),
-        inset 0 0 18px rgba(0,205,255,.08);
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      transparent 22%,
+      rgba(0,0,0,.12) 55%,
+      rgba(0,0,0,.58) 100%
+    );
 }
 
-.core-status::before{
-    content:"";
-    width:11px;
-    height:11px;
-    border-radius:50%;
-    background:#d9fbff;
-    box-shadow:
-        0 0 5px #fff,
-        0 0 18px #00d9ff;
-}
-
-/* ---------------- MOBILE ---------------- */
-
+/* mobile */
 @media(max-width:600px){
+  header{
+    padding-left:32px;
+    padding-right:24px;
+  }
 
-    .header{
-        height:70px;
-        padding:0 5vw;
-    }
+  .brand{
+    font-size:18px;
+  }
 
-    .logo{
-        font-size:18px;
-        letter-spacing:.42em;
-    }
+  .status{
+    gap:14px;
+  }
 
-    .status{
-        gap:11px;
-        font-size:8px;
-        letter-spacing:.20em;
-    }
+  .status span{
+    gap:6px;
+  }
 
-    .subtitle{
-        top:91px;
-        font-size:8px;
-        letter-spacing:.27em;
-    }
+  .status span:nth-child(3){
+    display:none;
+  }
 
-    .panels{
-        bottom:6vh;
-        gap:10px 12px;
-        left:4vw;
-        right:4vw;
-    }
+  .subtitle{
+    top:104px;
+    font-size:8px;
+  }
 
-    .panel{
-        height:92px;
-        padding:13px 14px;
-    }
+  .panels{
+    left:28px;
+    right:28px;
+    bottom:26px;
+  }
 
-    .panel-title{
-        font-size:8px;
-        margin-bottom:8px;
-    }
+  .panel{
+    min-height:88px;
+    padding:14px 16px;
+  }
 
-    .panel-value{
-        font-size:27px;
-    }
-
-    .panel-info{
-        margin-top:8px;
-        font-size:7px;
-    }
-
-    .core-status{
-        width:50px;
-        height:50px;
-        bottom:1.8vh;
-    }
+  .panel .value{
+    font-size:28px;
+  }
 }
 </style>
 </head>
@@ -267,1133 +230,1006 @@ canvas{
 
 <div id="app">
 
-    <div class="header">
-        <div class="logo">JARVIS</div>
+<canvas id="scene"></canvas>
 
-        <div class="status">
-            <span><i class="dot"></i>ONLINE</span>
-            <span><i class="dot"></i>SECURE</span>
-            <span><i class="dot"></i>VOICE</span>
-        </div>
-    </div>
+<header>
+  <div class="brand">JARVIS</div>
 
-    <div class="subtitle">
-        GYROTOURBILLON&nbsp;&nbsp;·&nbsp;&nbsp;PRECISION CORE&nbsp;&nbsp;·&nbsp;&nbsp;3 AXIS
-    </div>
+  <div class="status">
+    <span><i></i>ONLINE</span>
+    <span><i></i>SECURE</span>
+    <span><i></i>VOICE</span>
+  </div>
 
-    <div class="panels">
+  <div class="subtitle">
+    GYROTOURBILLON&nbsp;&nbsp;·&nbsp;&nbsp;PRECISION CORE&nbsp;&nbsp;·&nbsp;&nbsp;3 AXIS
+  </div>
+</header>
 
-        <div class="panel">
-            <div class="panel-title">MAISON</div>
-            <div class="panel-value">03</div>
-            <div class="panel-info">DISPOSITIFS ACTIFS</div>
-        </div>
+<div class="panels">
 
-        <div class="panel">
-            <div class="panel-title">MÉTÉO</div>
-            <div class="panel-value">18°</div>
-            <div class="panel-info">CONDITIONS STABLES</div>
-        </div>
+  <div class="panel">
+    <div class="label">MAISON</div>
+    <div class="value">03</div>
+    <div class="detail">DISPOSITIFS ACTIFS</div>
+  </div>
 
-        <div class="panel">
-            <div class="panel-title">SYSTÈME</div>
-            <div class="panel-value">82%</div>
-            <div class="panel-info">PERFORMANCE</div>
-        </div>
+  <div class="panel">
+    <div class="label">MÉTÉO</div>
+    <div class="value">18°</div>
+    <div class="detail">CONDITIONS STABLES</div>
+  </div>
 
-        <div class="panel">
-            <div class="panel-title">ACTIVITÉ</div>
-            <div class="panel-value">12</div>
-            <div class="panel-info">ÉVÉNEMENTS RÉCENTS</div>
-        </div>
+  <div class="panel">
+    <div class="label">SYSTÈME</div>
+    <div class="value">82%</div>
+    <div class="detail">PERFORMANCE</div>
+  </div>
 
-    </div>
-
-    <div class="core-status"></div>
+  <div class="panel">
+    <div class="label">ACTIVITÉ</div>
+    <div class="value">12</div>
+    <div class="detail">ÉVÉNEMENTS RÉCENTS</div>
+  </div>
 
 </div>
 
-<script type="importmap">
-{
-    "imports":{
-        "three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-        "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
-    }
-}
-</script>
+<div class="vignette"></div>
 
-<script type="module">
+</div>
 
-import * as THREE from "three";
 
-/* =========================================================
-   JARVIS — REALISTIC GYROTOURBILLON
-   ========================================================= */
+<!-- Three.js -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-const scene = new THREE.Scene();
+<script>
 
-scene.background = new THREE.Color(0x01070a);
+(() => {
 
-/* ---------------- CAMERA ---------------- */
+"use strict";
 
-const camera = new THREE.PerspectiveCamera(
-    38,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    100
-);
+/* ============================================================
+   JARVIS — PRECISION GYROTOURBILLON
+   ------------------------------------------------------------
+   Les grandes couronnes = holographiques.
+   Le centre = mécanique métallique.
+   Trois cages = trois axes indépendants.
+   ============================================================ */
 
-camera.position.set(0,0,15);
-
-/* ---------------- RENDERER ---------------- */
+const canvas = document.getElementById("scene");
 
 const renderer = new THREE.WebGLRenderer({
-    antialias:true,
-    alpha:true,
-    powerPreference:"high-performance"
+  canvas,
+  antialias:true,
+  alpha:true,
+  powerPreference:"high-performance"
 });
 
 renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio,2)
+  Math.min(window.devicePixelRatio || 1, 2)
 );
 
 renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
+  window.innerWidth,
+  window.innerHeight,
+  false
 );
 
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.18;
-
-document.getElementById("app").appendChild(renderer.domElement);
+renderer.toneMappingExposure = 1.12;
 
 
-/* =========================================================
-   LIGHTING
-   ========================================================= */
+/* ============================================================
+   SCÈNE
+   ============================================================ */
 
-const ambient = new THREE.AmbientLight(
-    0x688b96,
-    1.5
+const scene = new THREE.Scene();
+
+scene.fog = new THREE.FogExp2(
+  0x010609,
+  0.018
 );
 
-scene.add(ambient);
+
+/* ============================================================
+   CAMÉRA
+   ============================================================ */
+
+const camera = new THREE.PerspectiveCamera(
+  34,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100
+);
+
+camera.position.set(
+  0,
+  0.12,
+  9.4
+);
+
+camera.lookAt(0,0,0);
 
 
-/* Cyan rim */
+/* ============================================================
+   LUMIÈRES
+   ============================================================ */
+
+scene.add(
+  new THREE.AmbientLight(
+    0x38535a,
+    1.35
+  )
+);
 
 const cyanLight = new THREE.PointLight(
-    0x19dfff,
-    13,
-    18
+  0x26dfff,
+  16,
+  10
 );
 
 cyanLight.position.set(
-    -4,
-    4,
-    6
+  -2.5,
+  2.4,
+  4
 );
 
 scene.add(cyanLight);
 
 
-/* White precision light */
-
 const whiteLight = new THREE.PointLight(
-    0xdffcff,
-    18,
-    15
+  0xdffcff,
+  22,
+  9
 );
 
 whiteLight.position.set(
-    4,
-    5,
-    8
+  2.7,
+  1.8,
+  4.5
 );
 
 scene.add(whiteLight);
 
 
-/* Warm mechanical light */
-
 const warmLight = new THREE.PointLight(
-    0xffa52c,
-    7,
-    9
+  0xffa52e,
+  9,
+  7
 );
 
 warmLight.position.set(
-    -3,
-    -2,
-    4
+  1.8,
+  -2.2,
+  2.8
 );
 
 scene.add(warmLight);
 
 
-/* =========================================================
-   MATERIALS
-   ========================================================= */
+/* ============================================================
+   MATÉRIAUX
+   ============================================================ */
 
-const steel = new THREE.MeshPhysicalMaterial({
-
-    color:0x788d91,
-
-    metalness:0.96,
-
+const metalSilver =
+  new THREE.MeshPhysicalMaterial({
+    color:0xbccbd0,
+    metalness:0.94,
     roughness:0.18,
-
     clearcoat:1,
+    clearcoatRoughness:.12
+  });
 
-    clearcoatRoughness:.11
-});
+const metalDark =
+  new THREE.MeshPhysicalMaterial({
+    color:0x18262b,
+    metalness:0.97,
+    roughness:0.22,
+    clearcoat:1,
+    clearcoatRoughness:.14
+  });
 
+const steel =
+  new THREE.MeshPhysicalMaterial({
+    color:0x738c92,
+    metalness:0.98,
+    roughness:0.26
+  });
 
-const polishedSteel = new THREE.MeshPhysicalMaterial({
+const gold =
+  new THREE.MeshPhysicalMaterial({
+    color:0xa87527,
+    metalness:0.96,
+    roughness:0.2,
+    clearcoat:1
+  });
 
-    color:0xc9e4e7,
-
+const blackMetal =
+  new THREE.MeshPhysicalMaterial({
+    color:0x071014,
     metalness:1,
+    roughness:.28
+  });
 
-    roughness:.10,
-
-    clearcoat:1,
-
-    clearcoatRoughness:.06
-});
-
-
-const darkSteel = new THREE.MeshPhysicalMaterial({
-
-    color:0x10191c,
-
-    metalness:.98,
-
-    roughness:.24,
-
-    clearcoat:.8
-});
-
-
-const gold = new THREE.MeshPhysicalMaterial({
-
-    color:0xb57a28,
-
-    metalness:.98,
-
-    roughness:.16,
-
-    clearcoat:1,
-
-    clearcoatRoughness:.08
-});
-
-
-const blackMetal = new THREE.MeshPhysicalMaterial({
-
-    color:0x05090a,
-
-    metalness:.96,
-
-    roughness:.14,
-
+const ruby =
+  new THREE.MeshPhysicalMaterial({
+    color:0x8b001d,
+    metalness:.25,
+    roughness:.12,
+    emissive:0x30000b,
+    emissiveIntensity:1.8,
     clearcoat:1
-});
+  });
 
 
-const ruby = new THREE.MeshPhysicalMaterial({
+/* ============================================================
+   GROUPE CENTRAL
+   ============================================================ */
 
-    color:0x7a001e,
+const machine = new THREE.Group();
 
-    metalness:.18,
+machine.scale.setScalar(.92);
 
-    roughness:.08,
-
-    emissive:0x3c0010,
-
-    emissiveIntensity:1.3,
-
-    clearcoat:1
-});
+scene.add(machine);
 
 
-const holographic = new THREE.MeshBasicMaterial({
+/* ============================================================
+   OUTILS MÉCANIQUES
+   ============================================================ */
 
-    color:0x16dfff,
-
-    transparent:true,
-
-    opacity:.38
-});
-
-
-const holoBright = new THREE.MeshBasicMaterial({
-
-    color:0x66efff,
-
-    transparent:true,
-
-    opacity:.72
-});
-
-
-/* =========================================================
-   HOLOGRAPHIC OUTER SYSTEM
-   ========================================================= */
-
-const holoGroup = new THREE.Group();
-
-scene.add(holoGroup);
-
-
-/* torus helper */
-
-function holoRing(radius, tube, opacity=.35){
-
-    const mat = new THREE.MeshBasicMaterial({
-
-        color:0x19dfff,
-
-        transparent:true,
-
-        opacity:opacity
-    });
-
-    const geo = new THREE.TorusGeometry(
-        radius,
-        tube,
-        12,
-        160
+/* anneau métallique fin */
+function ring(
+  radius,
+  tube,
+  material,
+  segments=96
+){
+  const geometry =
+    new THREE.TorusGeometry(
+      radius,
+      tube,
+      12,
+      segments
     );
 
-    const mesh = new THREE.Mesh(
-        geo,
-        mat
+  const mesh =
+    new THREE.Mesh(
+      geometry,
+      material
     );
 
-    holoGroup.add(mesh);
-
-    return mesh;
+  return mesh;
 }
 
 
-const outer1 = holoRing(4.05,.018,.48);
-const outer2 = holoRing(3.72,.012,.34);
-const outer3 = holoRing(3.42,.026,.56);
-const outer4 = holoRing(3.08,.014,.42);
-const outer5 = holoRing(2.74,.025,.72);
+/* anneau plat façon pièce usinée */
+function precisionRing(
+  radius,
+  thickness,
+  depth,
+  material
+){
+
+  const geometry =
+    new THREE.CylinderGeometry(
+      radius,
+      radius,
+      depth,
+      128,
+      1,
+      true
+    );
+
+  const mesh =
+    new THREE.Mesh(
+      geometry,
+      material
+    );
+
+  mesh.rotation.x =
+    Math.PI / 2;
+
+  return mesh;
+}
 
 
-/* =========================================================
-   RADIAL HOLOGRAPHIC MARKERS
-   ========================================================= */
+/* ============================================================
+   COURONNE MÉTALLIQUE EXTERNE
+   ============================================================ */
 
-const markerGroup = new THREE.Group();
+const outerHousing =
+  ring(
+    2.18,
+    .095,
+    metalDark,
+    160
+  );
 
-holoGroup.add(markerGroup);
+machine.add(outerHousing);
+
+
+/* deuxième chanfrein */
+const outerSteel =
+  ring(
+    2.00,
+    .055,
+    metalSilver,
+    160
+  );
+
+machine.add(outerSteel);
+
+
+/* anneau interne sombre */
+const innerHousing =
+  ring(
+    1.78,
+    .075,
+    blackMetal,
+    144
+  );
+
+machine.add(innerHousing);
+
+
+/* ============================================================
+   GRADUATIONS USINÉES
+   ============================================================ */
+
+const markings =
+  new THREE.Group();
+
+machine.add(markings);
+
+const tickMaterial =
+  new THREE.MeshStandardMaterial({
+    color:0x82999e,
+    metalness:.9,
+    roughness:.3
+  });
 
 for(let i=0;i<72;i++){
 
-    const a = (i/72)*Math.PI*2;
+  const a =
+    i / 72 * Math.PI * 2;
 
-    const major = i%6===0;
+  const major =
+    i % 6 === 0;
 
-    const radius = major ? 3.82 : 3.57;
+  const length =
+    major ? .105 : .055;
 
-    const length = major ? .17 : .08;
-
-    const geo = new THREE.BoxGeometry(
-        major ? .035 : .018,
-        length,
-        .012
+  const geometry =
+    new THREE.BoxGeometry(
+      .018,
+      length,
+      major ? .028 : .018
     );
 
-    const mesh = new THREE.Mesh(
-        geo,
-        major ? holoBright : holographic
+  const tick =
+    new THREE.Mesh(
+      geometry,
+      tickMaterial
     );
 
-    mesh.position.set(
-        Math.cos(a)*radius,
-        Math.sin(a)*radius,
-        0
-    );
+  const r = 1.87;
 
-    mesh.rotation.z = a + Math.PI/2;
+  tick.position.set(
+    Math.cos(a)*r,
+    Math.sin(a)*r,
+    .03
+  );
 
-    markerGroup.add(mesh);
+  tick.rotation.z = a;
+
+  markings.add(tick);
 }
 
 
-/* =========================================================
-   MECHANICAL CORE
-   ========================================================= */
+/* ============================================================
+   CAGES 3 AXES
+   ============================================================ */
 
-const gyro = new THREE.Group();
+function createCage(
+  radius,
+  tube,
+  material,
+  tiltX,
+  tiltY
+){
 
-gyro.position.set(
-    0,
-    .25,
-    .15
-);
+  const cage =
+    new THREE.Group();
 
-scene.add(gyro);
+  cage.rotation.x = tiltX;
+  cage.rotation.y = tiltY;
 
+  /* anneau principal */
+  const main =
+    ring(
+      radius,
+      tube,
+      material,
+      128
+    );
 
-/* ---------------- OUTER CASE ---------------- */
-
-const outerCase = new THREE.Mesh(
-    new THREE.TorusGeometry(
-        2.15,
-        .18,
-        24,
-        128
-    ),
-    polishedSteel
-);
-
-gyro.add(outerCase);
-
-
-/* secondary dark housing */
-
-const housing = new THREE.Mesh(
-    new THREE.TorusGeometry(
-        1.92,
-        .12,
-        20,
-        128
-    ),
-    darkSteel
-);
-
-gyro.add(housing);
+  cage.add(main);
 
 
-/* inner machined ring */
+  /* second anneau intérieur */
+  const inner =
+    ring(
+      radius*.72,
+      tube*.48,
+      material,
+      112
+    );
 
-const machinedRing = new THREE.Mesh(
-    new THREE.TorusGeometry(
-        1.63,
+  cage.add(inner);
+
+
+  /* pont transversal très fin */
+  const bridgeGeometry =
+    new THREE.CapsuleGeometry(
+      tube*.55,
+      radius*1.42,
+      6,
+      16
+    );
+
+  const bridge =
+    new THREE.Mesh(
+      bridgeGeometry,
+      material
+    );
+
+  bridge.rotation.z =
+    Math.PI/2;
+
+  cage.add(bridge);
+
+
+  /* axe central */
+  const shaftGeometry =
+    new THREE.CylinderGeometry(
+      tube*.32,
+      tube*.32,
+      radius*1.65,
+      24
+    );
+
+  const shaft =
+    new THREE.Mesh(
+      shaftGeometry,
+      steel
+    );
+
+  shaft.rotation.z =
+    Math.PI/2;
+
+  cage.add(shaft);
+
+
+  /* petites vis sur la cage */
+  for(let i=0;i<4;i++){
+
+    const a =
+      i * Math.PI/2 + Math.PI/4;
+
+    const screwGeometry =
+      new THREE.CylinderGeometry(
+        tube*.42,
+        tube*.42,
+        tube*.25,
+        16
+      );
+
+    const screw =
+      new THREE.Mesh(
+        screwGeometry,
+        metalSilver
+      );
+
+    screw.position.set(
+      Math.cos(a)*radius,
+      Math.sin(a)*radius,
+      .04
+    );
+
+    screw.rotation.x =
+      Math.PI/2;
+
+    cage.add(screw);
+  }
+
+  return cage;
+}
+
+
+/* ============================================================
+   AXE 1
+   Presque frontal
+   ============================================================ */
+
+const cage1 =
+  createCage(
+    1.38,
+    .052,
+    metalSilver,
+    0.10,
+    -0.12
+  );
+
+machine.add(cage1);
+
+
+/* ============================================================
+   AXE 2
+   Inclinaison importante
+   ============================================================ */
+
+const cage2 =
+  createCage(
+    1.18,
+    .047,
+    steel,
+    Math.PI*.30,
+    Math.PI*.14
+  );
+
+machine.add(cage2);
+
+
+/* ============================================================
+   AXE 3
+   Orientation différente
+   ============================================================ */
+
+const cage3 =
+  createCage(
+    .96,
+    .042,
+    gold,
+    -Math.PI*.24,
+    Math.PI*.34
+  );
+
+machine.add(cage3);
+
+
+/* ============================================================
+   ROUE DENTÉE CENTRALE
+   ============================================================ */
+
+function gear(
+  radius,
+  teeth,
+  material
+){
+
+  const group =
+    new THREE.Group();
+
+  const body =
+    ring(
+      radius,
+      .045,
+      material,
+      96
+    );
+
+  group.add(body);
+
+  for(let i=0;i<teeth;i++){
+
+    const a =
+      i / teeth * Math.PI*2;
+
+    const toothGeometry =
+      new THREE.BoxGeometry(
         .055,
-        16,
-        128
-    ),
-    steel
-);
+        .12,
+        .035
+      );
 
-gyro.add(machinedRing);
-
-
-/* =========================================================
-   ENGRAVED GRADUATIONS
-   ========================================================= */
-
-const graduationGroup = new THREE.Group();
-
-gyro.add(graduationGroup);
-
-for(let i=0;i<60;i++){
-
-    const a = i/60*Math.PI*2;
-
-    const major = i%5===0;
-
-    const radius = 1.78;
-
-    const h = major ? .16 : .085;
-
-    const geo = new THREE.BoxGeometry(
-        major ? .025 : .012,
-        h,
-        .018
-    );
-
-    const mesh = new THREE.Mesh(
-        geo,
-        darkSteel
-    );
-
-    mesh.position.set(
-        Math.cos(a)*radius,
-        Math.sin(a)*radius,
-        .08
-    );
-
-    mesh.rotation.z =
-        a + Math.PI/2;
-
-    graduationGroup.add(mesh);
-}
-
-
-/* =========================================================
-   THREE AXIS GIMBAL SYSTEM
-   ========================================================= */
-
-const axisA = new THREE.Group();
-const axisB = new THREE.Group();
-const axisC = new THREE.Group();
-
-gyro.add(axisA);
-axisA.add(axisB);
-axisB.add(axisC);
-
-
-/* outer gimbal */
-
-const gimbal1 = new THREE.Mesh(
-    new THREE.TorusGeometry(
-        1.47,
-        .075,
-        20,
-        128
-    ),
-    polishedSteel
-);
-
-axisA.add(gimbal1);
-
-gimbal1.rotation.x = Math.PI/2;
-
-
-/* second gimbal */
-
-const gimbal2 = new THREE.Mesh(
-    new THREE.TorusGeometry(
-        1.18,
-        .075,
-        20,
-        128
-    ),
-    steel
-);
-
-axisB.add(gimbal2);
-
-gimbal2.rotation.y = Math.PI/2;
-
-
-/* third gimbal */
-
-const gimbal3 = new THREE.Mesh(
-    new THREE.TorusGeometry(
-        .88,
-        .068,
-        20,
-        128
-    ),
-    gold
-);
-
-axisC.add(gimbal3);
-
-gimbal3.rotation.x = Math.PI/2;
-
-
-/* =========================================================
-   CROSS ARMS
-   ========================================================= */
-
-function arm(length, thickness, material){
-
-    const geo = new THREE.BoxGeometry(
-        length,
-        thickness,
-        thickness
-    );
-
-    return new THREE.Mesh(
-        geo,
+    const tooth =
+      new THREE.Mesh(
+        toothGeometry,
         material
+      );
+
+    tooth.position.set(
+      Math.cos(a)*radius,
+      Math.sin(a)*radius,
+      0
     );
+
+    tooth.rotation.z = a;
+
+    group.add(tooth);
+  }
+
+  return group;
 }
 
-
-const arm1 = arm(
-    2.65,
-    .095,
-    polishedSteel
-);
-
-axisA.add(arm1);
-
-const arm2 = arm(
-    2.15,
-    .085,
+const gearOuter =
+  gear(
+    .68,
+    32,
     steel
-);
+  );
 
-axisB.add(arm2);
-
-arm2.rotation.z =
-    Math.PI/2;
+machine.add(gearOuter);
 
 
-const arm3 = arm(
-    1.62,
-    .07,
+/* ============================================================
+   PETITE ROUE DORÉE
+   ============================================================ */
+
+const gearGold =
+  gear(
+    .43,
+    24,
     gold
-);
+  );
 
-axisC.add(arm3);
-
-arm3.rotation.z =
-    Math.PI/2;
+machine.add(gearGold);
 
 
-/* =========================================================
-   MICRO SCREWS
-   ========================================================= */
+/* ============================================================
+   AXE CENTRAL
+   ============================================================ */
 
-function screw(x,y,z,r=.055){
+const centralShaft =
+  new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      .105,
+      .105,
+      .58,
+      48
+    ),
+    blackMetal
+  );
 
-    const group = new THREE.Group();
+centralShaft.rotation.x =
+  Math.PI/2;
 
-    const body = new THREE.Mesh(
-        new THREE.CylinderGeometry(
-            r,
-            r,
-            .035,
-            16
-        ),
-        polishedSteel
-    );
+machine.add(centralShaft);
 
-    body.rotation.x =
-        Math.PI/2;
 
-    group.add(body);
+/* ============================================================
+   RUBIS
+   ============================================================ */
 
-    const slot = new THREE.Mesh(
-        new THREE.BoxGeometry(
-            r*1.35,
-            .018,
-            .008
-        ),
-        darkSteel
-    );
+const jewel =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      .19,
+      48,
+      32
+    ),
+    ruby
+  );
 
-    slot.position.z=.025;
+jewel.position.z=.20;
 
-    group.add(slot);
+machine.add(jewel);
 
-    group.position.set(
-        x,y,z
-    );
 
-    return group;
-}
+/* halo très discret du rubis */
+const jewelGlow =
+  new THREE.PointLight(
+    0xff174f,
+    2.2,
+    1.2
+  );
 
+jewelGlow.position.z=.28;
+
+machine.add(jewelGlow);
+
+
+/* ============================================================
+   PETITS PIVOTS
+   ============================================================ */
+
+const pivotMaterial =
+  new THREE.MeshPhysicalMaterial({
+    color:0xe1f5f7,
+    metalness:.92,
+    roughness:.14,
+    clearcoat:1
+  });
 
 for(let i=0;i<8;i++){
 
-    const a =
-        i/8*Math.PI*2;
+  const a =
+    i/8*Math.PI*2;
 
-    const r=1.88;
-
-    gyro.add(
-        screw(
-            Math.cos(a)*r,
-            Math.sin(a)*r,
-            .18
-        )
-    );
-}
-
-
-/* screws around gimbals */
-
-for(let i=0;i<6;i++){
-
-    const a =
-        i/6*Math.PI*2;
-
-    const r=.91;
-
-    axisC.add(
-        screw(
-            Math.cos(a)*r,
-            Math.sin(a)*r,
-            .12,
-            .042
-        )
-    );
-}
-
-
-/* =========================================================
-   CENTRAL TOURBILLON CAGE
-   ========================================================= */
-
-const cage = new THREE.Group();
-
-axisC.add(cage);
-
-
-/* cage ring */
-
-const cageRing = new THREE.Mesh(
-    new THREE.TorusGeometry(
-        .62,
-        .045,
-        18,
-        96
-    ),
-    polishedSteel
-);
-
-cage.add(cageRing);
-
-
-/* fine cage ring */
-
-const cageInner = new THREE.Mesh(
-    new THREE.TorusGeometry(
-        .48,
-        .025,
-        14,
-        96
-    ),
-    gold
-);
-
-cage.add(cageInner);
-
-
-/* central shaft */
-
-const shaft = new THREE.Mesh(
-    new THREE.CylinderGeometry(
+  const pivot =
+    new THREE.Mesh(
+      new THREE.SphereGeometry(
         .055,
-        .055,
-        1.22,
+        20,
         20
-    ),
-    polishedSteel
-);
+      ),
+      pivotMaterial
+    );
 
-shaft.rotation.x =
-    Math.PI/2;
+  pivot.position.set(
+    Math.cos(a)*1.48,
+    Math.sin(a)*1.48,
+    .08
+  );
 
-cage.add(shaft);
-
-
-/* =========================================================
-   CENTRAL RUBY
-   ========================================================= */
-
-const rubyOuter = new THREE.Mesh(
-    new THREE.SphereGeometry(
-        .24,
-        32,
-        32
-    ),
-    ruby
-);
-
-cage.add(rubyOuter);
+  machine.add(pivot);
+}
 
 
-/* ruby highlight */
+/* ============================================================
+   COURONNES HOLOGRAPHIQUES
+   ============================================================ */
 
-const rubyGlow = new THREE.PointLight(
-    0xff1450,
-    3.5,
-    2
-);
+const hologram =
+  new THREE.Group();
 
-rubyGlow.position.z=.4;
+scene.add(hologram);
 
-cage.add(rubyGlow);
-
-
-/* =========================================================
-   TINY GEAR TEETH
-   ========================================================= */
-
-function gear(
-    radius,
-    teeth,
-    material,
-    z
+function holoRing(
+  radius,
+  tube,
+  opacity
 ){
 
-    const group = new THREE.Group();
-
-    const base = new THREE.Mesh(
-        new THREE.CylinderGeometry(
-            radius,
-            radius,
-            .055,
-            48
-        ),
-        material
-    );
-
-    base.position.z=z;
-
-    group.add(base);
-
-
-    for(let i=0;i<teeth;i++){
-
-        const a =
-            i/teeth*Math.PI*2;
-
-        const tooth = new THREE.Mesh(
-            new THREE.BoxGeometry(
-                .075,
-                .16,
-                .065
-            ),
-            material
-        );
-
-        tooth.position.set(
-            Math.cos(a)*(radius+.045),
-            Math.sin(a)*(radius+.045),
-            z
-        );
-
-        tooth.rotation.z=a;
-
-        group.add(tooth);
-    }
-
-    return group;
-}
-
-
-const gear1 =
-    gear(.76,36,gold,.02);
-
-axisC.add(gear1);
-
-
-const gear2 =
-    gear(.55,30,darkSteel,.08);
-
-cage.add(gear2);
-
-
-/* =========================================================
-   FINE MACHINED BRIDGES
-   ========================================================= */
-
-function bridge(length, width, material){
-
-    const shape = new THREE.Shape();
-
-    shape.moveTo(-length/2,0);
-    shape.lineTo(length/2,0);
-    shape.lineTo(length/2-.08,width);
-    shape.lineTo(-length/2+.08,width);
-    shape.closePath();
-
-    const geo =
-        new THREE.ExtrudeGeometry(
-            shape,
-            {
-                depth:.055,
-                bevelEnabled:true,
-                bevelSegments:2,
-                bevelSize:.025,
-                bevelThickness:.018
-            }
-        );
-
-    const mesh =
-        new THREE.Mesh(
-            geo,
-            material
-        );
-
-    mesh.position.z=.22;
-
-    return mesh;
-}
-
-
-const bridge1 =
-    bridge(
-        1.18,
-        .12,
-        polishedSteel
-    );
-
-bridge1.rotation.z=.25;
-
-cage.add(bridge1);
-
-
-const bridge2 =
-    bridge(
-        .95,
-        .10,
-        gold
-    );
-
-bridge2.rotation.z=-.82;
-
-cage.add(bridge2);
-
-
-/* =========================================================
-   MICRO BEARINGS
-   ========================================================= */
-
-for(let i=0;i<5;i++){
-
-    const a =
-        i/5*Math.PI*2;
-
-    const r=.72;
-
-    const bearing =
-        new THREE.Mesh(
-            new THREE.TorusGeometry(
-                .065,
-                .014,
-                10,
-                32
-            ),
-            polishedSteel
-        );
-
-    bearing.position.set(
-        Math.cos(a)*r,
-        Math.sin(a)*r,
-        .25
-    );
-
-    cage.add(bearing);
-}
-
-
-/* =========================================================
-   DEPTH / BACK PLATE
-   ========================================================= */
-
-const backPlate =
-    new THREE.Mesh(
-        new THREE.CylinderGeometry(
-            1.76,
-            1.76,
-            .035,
-            96
-        ),
-        blackMetal
-    );
-
-backPlate.rotation.x =
-    Math.PI/2;
-
-backPlate.position.z=-.12;
-
-gyro.add(backPlate);
-
-
-/* =========================================================
-   SUBTLE CENTRAL GLOW
-   ========================================================= */
-
-const glowMaterial =
+  const material =
     new THREE.MeshBasicMaterial({
-        color:0x00b9d6,
-        transparent:true,
-        opacity:.055
+      color:0x00dfff,
+      transparent:true,
+      opacity,
+      blending:THREE.AdditiveBlending,
+      depthWrite:false
     });
 
-const glowDisc =
-    new THREE.Mesh(
-        new THREE.CircleGeometry(
-            2.2,
-            96
-        ),
-        glowMaterial
+  const r =
+    ring(
+      radius,
+      tube,
+      material,
+      160
     );
 
-glowDisc.position.z=-.18;
+  hologram.add(r);
 
-scene.add(glowDisc);
+  return r;
+}
 
 
-/* =========================================================
+/* grandes couronnes */
+holoRing(2.75,.012,.55);
+holoRing(3.02,.008,.38);
+holoRing(3.28,.006,.25);
+holoRing(3.55,.004,.18);
+
+
+/* ============================================================
+   SEGMENTS HUD
+   ============================================================ */
+
+const hud =
+  new THREE.Group();
+
+scene.add(hud);
+
+const hudMaterial =
+  new THREE.MeshBasicMaterial({
+    color:0x19dfff,
+    transparent:true,
+    opacity:.62,
+    blending:THREE.AdditiveBlending
+  });
+
+for(let r of [2.82,3.10,3.38]){
+
+  for(let i=0;i<24;i++){
+
+    if(i%3===1) continue;
+
+    const a =
+      i/24*Math.PI*2;
+
+    const len =
+      i%6===0 ? .20 : .10;
+
+    const geometry =
+      new THREE.BoxGeometry(
+        len,
+        .012,
+        .012
+      );
+
+    const segment =
+      new THREE.Mesh(
+        geometry,
+        hudMaterial
+      );
+
+    segment.position.set(
+      Math.cos(a)*r,
+      Math.sin(a)*r,
+      0
+    );
+
+    segment.rotation.z=a;
+
+    hud.add(segment);
+  }
+}
+
+
+/* ============================================================
+   POINTS CARDINAUX
+   ============================================================ */
+
+const pointMaterial =
+  new THREE.MeshBasicMaterial({
+    color:0xd7fbff
+  });
+
+for(let i=0;i<4;i++){
+
+  const a =
+    i*Math.PI/2;
+
+  const point =
+    new THREE.Mesh(
+      new THREE.SphereGeometry(
+        .045,
+        16,
+        16
+      ),
+      pointMaterial
+    );
+
+  point.position.set(
+    Math.cos(a)*3.56,
+    Math.sin(a)*3.56,
+    0
+  );
+
+  scene.add(point);
+}
+
+
+/* ============================================================
    ANIMATION
-   ========================================================= */
+   ============================================================ */
 
-const clock =
-    new THREE.Clock();
-
+let clock =
+  new THREE.Clock();
 
 function animate(){
 
-    requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 
-    const t =
-        clock.getElapsedTime();
-
-
-    /* -----------------------------------------
-       THREE AXES
-       Each axis has a different mechanical speed.
-       ----------------------------------------- */
-
-    axisA.rotation.z =
-        t*.42;
-
-    axisA.rotation.x =
-        Math.sin(t*.23)*.18;
+  const t =
+    clock.getElapsedTime();
 
 
-    axisB.rotation.y =
-        t*.68;
+  /* ----------------------------------------------------------
+     Trois axes réellement indépendants
+     ---------------------------------------------------------- */
 
-    axisB.rotation.z =
-        Math.sin(t*.31)*.16;
+  cage1.rotation.z =
+    t*.34;
 
-
-    axisC.rotation.x =
-        t*1.08;
-
-    axisC.rotation.z =
-        Math.sin(t*.47)*.12;
+  cage1.rotation.x =
+    .10 + Math.sin(t*.42)*.055;
 
 
-    /* central cage */
+  cage2.rotation.z =
+    -t*.51;
 
-    cage.rotation.z =
-        t*1.65;
-
-
-    /* gears */
-
-    gear1.rotation.z =
-        -t*.95;
-
-    gear2.rotation.z =
-        t*1.55;
+  cage2.rotation.x =
+    Math.PI*.30 +
+    Math.sin(t*.31)*.075;
 
 
-    /* holographic rings remain independent */
+  cage3.rotation.z =
+    t*.78;
 
-    outer1.rotation.z =
-        t*.035;
-
-    outer2.rotation.z =
-        -t*.055;
-
-    outer3.rotation.z =
-        t*.08;
-
-    outer4.rotation.z =
-        -t*.11;
-
-    outer5.rotation.z =
-        t*.14;
+  cage3.rotation.y =
+    Math.PI*.34 +
+    Math.sin(t*.37)*.09;
 
 
-    markerGroup.rotation.z =
-        -t*.025;
+  /* roues */
+  gearOuter.rotation.z =
+    -t*.72;
+
+  gearGold.rotation.z =
+    t*1.05;
 
 
-    /* very subtle mechanical breathing */
+  /* mécanisme général très léger */
+  machine.rotation.z =
+    Math.sin(t*.18)*.018;
 
-    const pulse =
-        1 +
-        Math.sin(t*.7)*.008;
+  machine.rotation.x =
+    Math.sin(t*.23)*.014;
 
-    gyro.scale.set(
-        pulse,
-        pulse,
-        pulse
-    );
+  machine.rotation.y =
+    Math.cos(t*.19)*.018;
 
 
-    renderer.render(
-        scene,
-        camera
-    );
+  /* couronnes holographiques */
+  hologram.rotation.z =
+    t*.025;
+
+  hud.rotation.z =
+    -t*.045;
+
+
+  /* respiration lumineuse */
+  cyanLight.intensity =
+    14 + Math.sin(t*1.4)*3;
+
+  jewelGlow.intensity =
+    1.8 + Math.sin(t*2.2)*.6;
+
+
+  renderer.render(
+    scene,
+    camera
+  );
 }
-
 
 animate();
 
 
-/* =========================================================
+/* ============================================================
    RESPONSIVE
-   ========================================================= */
+   ============================================================ */
 
-window.addEventListener(
-    "resize",
-    ()=>{
-        camera.aspect =
-            window.innerWidth /
-            window.innerHeight;
+function resize(){
 
-        camera.updateProjectionMatrix();
+  const w =
+    window.innerWidth;
 
-        renderer.setSize(
-            window.innerWidth,
-            window.innerHeight
-        );
+  const h =
+    window.innerHeight;
 
-        renderer.setPixelRatio(
-            Math.min(
-                window.devicePixelRatio,
-                2
-            )
-        );
-    }
-);
+  renderer.setSize(
+    w,
+    h,
+    false
+  );
+
+  camera.aspect =
+    w/h;
+
+  camera.updateProjectionMatrix();
 
 
-/* =========================================================
-   TOUCH / POINTER — légère profondeur interactive
-   ========================================================= */
+  /* Le gyrotourbillon reste volontairement compact
+     sur téléphone. */
 
-let targetX=0;
-let targetY=0;
-
-window.addEventListener(
-    "pointermove",
-    e=>{
-
-        targetX =
-            (e.clientX /
-            window.innerWidth -.5)*.18;
-
-        targetY =
-            (e.clientY /
-            window.innerHeight -.5)*.12;
-    }
-);
-
-
-function cameraMotion(){
-
-    camera.position.x +=
-        (targetX-camera.position.x)*.025;
-
-    camera.position.y +=
-        (-targetY-camera.position.y)*.025;
-
-    camera.lookAt(
-        0,
-        .15,
-        0
-    );
-
-    requestAnimationFrame(
-        cameraMotion
-    );
+  if(w < 600){
+    machine.scale.setScalar(.73);
+  }else{
+    machine.scale.setScalar(.92);
+  }
 }
 
-cameraMotion();
+window.addEventListener(
+  "resize",
+  resize
+);
+
+resize();
+
+})();
 
 </script>
 
