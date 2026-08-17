@@ -1,1828 +1,667 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+import shutil, zipfile
+
+root = Path("/mnt/data/jarvis-interface")
+
+if root.exists():
+
+    shutil.rmtree(root)
+
+(root/"src").mkdir(parents=True)
+
+(root/"docs").mkdir()
+
+(root/"package.json").write_text("""{
+
+  "name": "jarvis-interface",
+
+  "private": true,
+
+  "version": "0.1.0",
+
+  "type": "module",
+
+  "scripts": {
+
+    "dev": "vite --host",
+
+    "build": "tsc --noEmit && vite build",
+
+    "preview": "vite preview"
+
+  },
+
+  "dependencies": {
+
+    "three": "0.180.0"
+
+  },
+
+  "devDependencies": {
+
+    "@types/three": "0.180.0",
+
+    "typescript": "5.9.2",
+
+    "vite": "7.1.2"
+
+  }
+
+}""", encoding="utf-8")
+
+(root/"index.html").write_text("""<!doctype html>
+
 <html lang="fr">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-<title>JARVIS — Gyrotourbillon</title>
+  <meta charset="UTF-8">
 
-<style>
-:root {
-    --bg: #02080b;
-    --cyan: #00d9ff;
-    --cyan-soft: #3e8797;
-    --cyan-dim: #16434e;
-    --white: #d9f5fa;
-    --muted: #426b75;
-}
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-* {
-    box-sizing: border-box;
-}
+  <meta name="theme-color" content="#020711">
 
-html,
-body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: var(--bg);
-    color: var(--white);
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
-}
+  <title>JARVIS — Interface</title>
 
-body {
-    min-height: 100svh;
-}
-
-#app {
-    position: relative;
-    width: 100%;
-    height: 100svh;
-    overflow: hidden;
-    background:
-        radial-gradient(
-            ellipse at 50% 46%,
-            rgba(0, 42, 52, .28),
-            transparent 42%
-        ),
-        #02080b;
-}
-
-/* --------------------------------------------------
-   GRID
--------------------------------------------------- */
-
-#grid {
-    position: absolute;
-    inset: 0;
-    opacity: .24;
-    background-image:
-        linear-gradient(
-            rgba(0, 126, 147, .18) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(0, 126, 147, .18) 1px,
-            transparent 1px
-        );
-    background-size: 44px 44px;
-    pointer-events: none;
-}
-
-/* --------------------------------------------------
-   HEADER
--------------------------------------------------- */
-
-header {
-    position: absolute;
-    z-index: 10;
-    top: max(28px, env(safe-area-inset-top));
-    left: 0;
-    width: 100%;
-    padding: 0 7%;
-}
-
-.header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.logo {
-    font-size: clamp(22px, 7vw, 31px);
-    letter-spacing: .43em;
-    font-weight: 300;
-    white-space: nowrap;
-}
-
-.status {
-    display: flex;
-    align-items: center;
-    gap: clamp(13px, 3vw, 25px);
-}
-
-.status-item {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    color: #6d929b;
-    font-size: clamp(8px, 2.4vw, 11px);
-    letter-spacing: .28em;
-    white-space: nowrap;
-}
-
-.status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--cyan);
-    box-shadow:
-        0 0 5px rgba(0,217,255,.9),
-        0 0 13px rgba(0,217,255,.4);
-}
-
-.subtitle {
-    margin-top: 43px;
-    text-align: center;
-    color: #416873;
-    font-size: clamp(8px, 2.7vw, 12px);
-    letter-spacing: .43em;
-    white-space: nowrap;
-}
-
-/* --------------------------------------------------
-   MAIN CANVAS
--------------------------------------------------- */
-
-#scene {
-    position: absolute;
-    z-index: 2;
-    left: 0;
-    width: 100%;
-    top: 17%;
-    height: 59%;
-}
-
-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-/* --------------------------------------------------
-   DATA CARDS
--------------------------------------------------- */
-
-.cards {
-    position: absolute;
-    z-index: 8;
-    left: 5.5%;
-    right: 5.5%;
-    bottom: max(48px, env(safe-area-inset-bottom));
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px 16px;
-}
-
-.card {
-    position: relative;
-    height: 112px;
-    padding: 19px 19px 14px;
-    border: 1px solid rgba(0, 199, 229, .58);
-    background:
-        linear-gradient(
-            135deg,
-            rgba(0, 35, 43, .46),
-            rgba(0, 10, 14, .68)
-        );
-    overflow: hidden;
-}
-
-.card::before,
-.card::after {
-    content: "";
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border-color: var(--cyan);
-}
-
-.card::before {
-    top: -1px;
-    left: -1px;
-    border-top: 1px solid;
-    border-left: 1px solid;
-}
-
-.card::after {
-    right: -1px;
-    bottom: -1px;
-    border-right: 1px solid;
-    border-bottom: 1px solid;
-}
-
-.card-title {
-    color: #52b4c6;
-    font-size: 10px;
-    letter-spacing: .36em;
-}
-
-.card-value {
-    margin-top: 12px;
-    font-size: 36px;
-    font-weight: 300;
-    letter-spacing: .02em;
-    color: #d4f4f8;
-}
-
-.card-description {
-    margin-top: 7px;
-    color: #4c737c;
-    font-size: 9px;
-    letter-spacing: .22em;
-}
-
-.card-scale {
-    position: absolute;
-    right: 13px;
-    top: 21px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.card-scale i {
-    display: block;
-    width: 5px;
-    height: 5px;
-    border: 1px solid rgba(0, 217, 255, .65);
-    border-radius: 50%;
-}
-
-/* --------------------------------------------------
-   SMALL SCREENS
--------------------------------------------------- */
-
-@media (max-width: 380px) {
-
-    .status {
-        gap: 9px;
-    }
-
-    .status-item {
-        letter-spacing: .18em;
-        gap: 4px;
-    }
-
-    .subtitle {
-        letter-spacing: .29em;
-    }
-
-    .card {
-        height: 102px;
-        padding: 15px;
-    }
-
-    .card-value {
-        font-size: 32px;
-    }
-}
-
-@media (orientation: landscape) {
-
-    #scene {
-        top: 12%;
-        height: 67%;
-    }
-
-    .cards {
-        bottom: 20px;
-    }
-
-    .card {
-        height: 82px;
-    }
-}
-</style>
 </head>
 
 <body>
 
-<div id="app">
+  <div id="app"></div>
 
-    <div id="grid"></div>
-
-    <header>
-
-        <div class="header-row">
-
-            <div class="logo">JARVIS</div>
-
-            <div class="status">
-
-                <div class="status-item">
-                    <span class="status-dot"></span>
-                    ONLINE
-                </div>
-
-                <div class="status-item">
-                    <span class="status-dot"></span>
-                    SECURE
-                </div>
-
-                <div class="status-item">
-                    <span class="status-dot"></span>
-                    VOICE
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="subtitle">
-            GYROTOURBILLON · PRECISION CORE · 3 AXIS
-        </div>
-
-    </header>
-
-    <main id="scene">
-        <canvas id="canvas"></canvas>
-    </main>
-
-    <section class="cards">
-
-        <div class="card">
-            <div class="card-title">MAISON</div>
-            <div class="card-value">03</div>
-            <div class="card-description">
-                DISPOSITIFS ACTIFS
-            </div>
-            <div class="card-scale">
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">MÉTÉO</div>
-            <div class="card-value">18°</div>
-            <div class="card-description">
-                CONDITIONS STABLES
-            </div>
-            <div class="card-scale">
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">SYSTÈME</div>
-            <div class="card-value">82%</div>
-            <div class="card-description">
-                PERFORMANCE
-            </div>
-            <div class="card-scale">
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">ACTIVITÉ</div>
-            <div class="card-value">12</div>
-            <div class="card-description">
-                ÉVÉNEMENTS RÉCENTS
-            </div>
-            <div class="card-scale">
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i>
-            </div>
-        </div>
-
-    </section>
-
-</div>
-
-<script>
-/* ==================================================
-   JARVIS GYROTOURBILLON
-   Canvas 2D / pseudo-3D horloger
-   ================================================== */
-
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d", {
-    alpha: true
-});
-
-let W = 0;
-let H = 0;
-let DPR = 1;
-
-function resize() {
-
-    const rect = canvas.getBoundingClientRect();
-
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
-
-    W = rect.width;
-    H = rect.height;
-
-    canvas.width = W * DPR;
-    canvas.height = H * DPR;
-
-    ctx.setTransform(
-        DPR,
-        0,
-        0,
-        DPR,
-        0,
-        0
-    );
-}
-
-window.addEventListener("resize", resize);
-resize();
-
-/* --------------------------------------------------
-   CONFIGURATION VISUELLE
--------------------------------------------------- */
-
-/*
-   Le gyrotourbillon représente environ 20 %
-   de la largeur de l'écran.
-
-   Les couronnes occupent la majorité de la zone
-   supérieure mais gardent une marge nette avec
-   les bords.
-*/
-
-const CONFIG = {
-
-    gyroWidthRatio: 0.20,
-
-    /* marge entre écran et couronne externe */
-    edgeMarginRatio: 0.115,
-
-    /* espace entre gyro et première couronne */
-    gyroGapRatio: 0.055,
-
-    /* nombre de couronnes */
-    rings: 5,
-
-    /* épaisseur visuelle des couronnes */
-    ringThickness: 0.55,
-
-    /* densité des graduations */
-    tickDensity: 72,
-
-    /* vitesses des trois axes */
-    axisXSpeed: 0.00073,
-    axisYSpeed: -0.00107,
-    axisZSpeed: 0.00163
-};
-
-/* --------------------------------------------------
-   MATHS
--------------------------------------------------- */
-
-function clamp(v, a, b) {
-    return Math.max(a, Math.min(b, v));
-}
-
-function lerp(a, b, t) {
-    return a + (b - a) * t;
-}
-
-/*
-   Projection pseudo-3D.
-   x / y = position dans le plan
-   z     = profondeur
-*/
-
-function project(x, y, z, cx, cy, scale) {
-
-    const perspective = 1 / (1 + z * 0.72);
-
-    return {
-        x: cx + x * scale * perspective,
-        y: cy + y * scale * perspective,
-        p: perspective
-    };
-}
-
-/* --------------------------------------------------
-   COULEURS MÉTALLIQUES
--------------------------------------------------- */
-
-function metallicStroke(angle, alpha = 1) {
-
-    const grad = ctx.createLinearGradient(
-        -1,
-        -1,
-        1,
-        1
-    );
-
-    grad.addColorStop(
-        0,
-        `rgba(22,31,34,${alpha})`
-    );
-
-    grad.addColorStop(
-        .18,
-        `rgba(220,235,236,${alpha})`
-    );
-
-    grad.addColorStop(
-        .32,
-        `rgba(70,84,87,${alpha})`
-    );
-
-    grad.addColorStop(
-        .52,
-        `rgba(7,12,14,${alpha})`
-    );
-
-    grad.addColorStop(
-        .70,
-        `rgba(190,205,207,${alpha})`
-    );
-
-    grad.addColorStop(
-        .84,
-        `rgba(35,42,44,${alpha})`
-    );
-
-    grad.addColorStop(
-        1,
-        `rgba(4,8,9,${alpha})`
-    );
-
-    return grad;
-}
-
-/* --------------------------------------------------
-   GLOW CYAN
--------------------------------------------------- */
-
-function glowRing(cx, cy, radius, alpha) {
-
-    ctx.save();
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        cy,
-        radius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.strokeStyle =
-        `rgba(0,190,220,${alpha})`;
-
-    ctx.lineWidth = 1;
-
-    ctx.shadowColor =
-        `rgba(0,220,255,${alpha})`;
-
-    ctx.shadowBlur = 7;
-
-    ctx.stroke();
-
-    ctx.restore();
-}
-
-/* --------------------------------------------------
-   COURONNE DE PRÉCISION
--------------------------------------------------- */
-
-function precisionRing(
-    cx,
-    cy,
-    radius,
-    index,
-    time
-) {
-
-    const rotation =
-        time *
-        (0.000035 + index * 0.000009) *
-        (index % 2 ? -1 : 1);
-
-    ctx.save();
-
-    ctx.translate(cx, cy);
-    ctx.rotate(rotation);
-
-    /* cercle principal extrêmement fin */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        0,
-        radius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.strokeStyle =
-        "rgba(18,104,119,.75)";
-
-    ctx.lineWidth =
-        index === 0 ? 1.1 : .65;
-
-    ctx.stroke();
-
-    /* second fil mécanique */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        0,
-        radius - 5,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.strokeStyle =
-        "rgba(0,189,219,.30)";
-
-    ctx.lineWidth = .55;
-
-    ctx.stroke();
-
-    /* graduations */
-
-    const count =
-        CONFIG.tickDensity +
-        index * 24;
-
-    for (let i = 0; i < count; i++) {
-
-        const a =
-            (i / count) *
-            Math.PI * 2;
-
-        /*
-          variation irrégulière :
-          les graduations ne sont pas toutes
-          de la même longueur
-        */
-
-        const wave =
-            Math.sin(i * 2.31 + index * 1.8);
-
-        const major =
-            i % 12 === 0;
-
-        const medium =
-            i % 4 === 0;
-
-        let length;
-
-        if (major) {
-            length = 10 + wave * 2;
-        }
-        else if (medium) {
-            length = 6 + wave * 1.5;
-        }
-        else {
-            length = 3.2 + wave * 1.2;
-        }
-
-        /*
-          orientation vers le centre
-        */
-
-        const r1 = radius - 1;
-        const r2 = r1 - length;
-
-        const x1 = Math.cos(a) * r1;
-        const y1 = Math.sin(a) * r1;
-
-        const x2 = Math.cos(a) * r2;
-        const y2 = Math.sin(a) * r2;
-
-        ctx.beginPath();
-
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-
-        if (major) {
-
-            ctx.strokeStyle =
-                "rgba(210,239,242,.80)";
-
-            ctx.lineWidth = 1.35;
-
-        }
-        else if (medium) {
-
-            ctx.strokeStyle =
-                "rgba(40,153,171,.75)";
-
-            ctx.lineWidth = .9;
-
-        }
-        else {
-
-            ctx.strokeStyle =
-                "rgba(24,108,123,.62)";
-
-            ctx.lineWidth = .55;
-        }
-
-        ctx.stroke();
-
-        /*
-          petits symboles techniques
-        */
-
-        if (
-            major &&
-            index === 0
-        ) {
-
-            const sx =
-                Math.cos(a) *
-                (radius - 18);
-
-            const sy =
-                Math.sin(a) *
-                (radius - 18);
-
-            ctx.fillStyle =
-                "rgba(0,205,230,.72)";
-
-            ctx.beginPath();
-
-            ctx.arc(
-                sx,
-                sy,
-                1.4,
-                0,
-                Math.PI * 2
-            );
-
-            ctx.fill();
-        }
-    }
-
-    /*
-      petits points radiaux
-    */
-
-    for (let i = 0; i < 18; i++) {
-
-        const a =
-            (i / 18) *
-            Math.PI * 2 +
-            .11 * index;
-
-        const rr =
-            radius - 15;
-
-        ctx.fillStyle =
-            "rgba(0,205,230,.65)";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            Math.cos(a) * rr,
-            Math.sin(a) * rr,
-            1,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-    }
-
-    ctx.restore();
-}
-
-/* --------------------------------------------------
-   AXE 3D
--------------------------------------------------- */
-
-function drawAxis(
-    cx,
-    cy,
-    length,
-    angleX,
-    angleY,
-    angleZ,
-    alpha = 1
-) {
-
-    /*
-      Projection simple d'un axe 3D.
-    */
-
-    const sx =
-        Math.cos(angleY) *
-        Math.cos(angleZ);
-
-    const sy =
-        Math.sin(angleX) *
-        .42 +
-        Math.sin(angleZ) *
-        .58;
-
-    const ex =
-        sx * length;
-
-    const ey =
-        sy * length;
-
-    ctx.save();
-
-    ctx.translate(cx, cy);
-
-    /* ombre */
-
-    ctx.beginPath();
-
-    ctx.moveTo(-ex, -ey);
-    ctx.lineTo(ex, ey);
-
-    ctx.strokeStyle =
-        `rgba(0,0,0,.72)`;
-
-    ctx.lineWidth = 5;
-
-    ctx.stroke();
-
-    /* métal */
-
-    const gradient =
-        ctx.createLinearGradient(
-            -ex,
-            -ey,
-            ex,
-            ey
-        );
-
-    gradient.addColorStop(
-        0,
-        `rgba(15,22,24,${alpha})`
-    );
-
-    gradient.addColorStop(
-        .22,
-        `rgba(200,214,215,${alpha})`
-    );
-
-    gradient.addColorStop(
-        .32,
-        `rgba(65,75,77,${alpha})`
-    );
-
-    gradient.addColorStop(
-        .5,
-        `rgba(8,12,13,${alpha})`
-    );
-
-    gradient.addColorStop(
-        .68,
-        `rgba(205,220,221,${alpha})`
-    );
-
-    gradient.addColorStop(
-        1,
-        `rgba(20,26,27,${alpha})`
-    );
-
-    ctx.beginPath();
-
-    ctx.moveTo(-ex, -ey);
-    ctx.lineTo(ex, ey);
-
-    ctx.strokeStyle = gradient;
-
-    ctx.lineWidth = 2.1;
-
-    ctx.stroke();
-
-    /* extrémités */
-
-    for (const s of [-1, 1]) {
-
-        ctx.beginPath();
-
-        ctx.arc(
-            ex * s,
-            ey * s,
-            2.8,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fillStyle =
-            "rgba(165,190,192,.85)";
-
-        ctx.fill();
-    }
-
-    ctx.restore();
-}
-
-/* --------------------------------------------------
-   ANNEAU MÉCANIQUE DU GYRO
--------------------------------------------------- */
-
-function mechanicalRing(
-    cx,
-    cy,
-    radius,
-    rotation,
-    tilt,
-    brass = false
-) {
-
-    ctx.save();
-
-    ctx.translate(cx, cy);
-    ctx.rotate(rotation);
-
-    /*
-      ellipse = anneau vu avec une inclinaison
-    */
-
-    ctx.scale(
-        1,
-        clamp(Math.cos(tilt), .18, 1)
-    );
-
-    /* ombre extérieure */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        0,
-        radius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.strokeStyle =
-        "rgba(0,0,0,.92)";
-
-    ctx.lineWidth = 7;
-
-    ctx.stroke();
-
-    /* métal */
-
-    const metal =
-        brass
-        ? (() => {
-
-            const g =
-                ctx.createLinearGradient(
-                    -radius,
-                    0,
-                    radius,
-                    0
-                );
-
-            g.addColorStop(
-                0,
-                "#241b08"
-            );
-
-            g.addColorStop(
-                .25,
-                "#a77a25"
-            );
-
-            g.addColorStop(
-                .42,
-                "#e1bd62"
-            );
-
-            g.addColorStop(
-                .55,
-                "#5b4316"
-            );
-
-            g.addColorStop(
-                .78,
-                "#c29437"
-            );
-
-            g.addColorStop(
-                1,
-                "#211806"
-            );
-
-            return g;
-
-        })()
-        : metallicStroke(rotation, 1);
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        0,
-        radius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.strokeStyle = metal;
-
-    ctx.lineWidth = 2.8;
-
-    ctx.stroke();
-
-    /*
-      arête secondaire
-    */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        0,
-        radius - 4,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.strokeStyle =
-        brass
-        ? "rgba(231,187,77,.55)"
-        : "rgba(144,170,173,.42)";
-
-    ctx.lineWidth = .75;
-
-    ctx.stroke();
-
-    /*
-      micro-ciselures
-    */
-
-    const teeth = 32;
-
-    for (let i = 0; i < teeth; i++) {
-
-        const a =
-            i / teeth *
-            Math.PI * 2;
-
-        const r1 = radius - 1;
-        const r2 =
-            radius -
-            (i % 4 === 0 ? 7 : 4);
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            Math.cos(a) * r1,
-            Math.sin(a) * r1
-        );
-
-        ctx.lineTo(
-            Math.cos(a) * r2,
-            Math.sin(a) * r2
-        );
-
-        ctx.strokeStyle =
-            brass
-            ? "rgba(236,195,92,.55)"
-            : "rgba(175,198,200,.45)";
-
-        ctx.lineWidth =
-            i % 4 === 0 ? 1 : .55;
-
-        ctx.stroke();
-    }
-
-    ctx.restore();
-}
-
-/* --------------------------------------------------
-   PETITS ENGRENAGES
--------------------------------------------------- */
-
-function gear(
-    cx,
-    cy,
-    radius,
-    teeth,
-    rotation,
-    brass = false
-) {
-
-    ctx.save();
-
-    ctx.translate(cx, cy);
-    ctx.rotate(rotation);
-
-    ctx.beginPath();
-
-    for (let i = 0; i < teeth; i++) {
-
-        const a =
-            i / teeth *
-            Math.PI * 2;
-
-        const r =
-            radius +
-            (i % 2 === 0 ? 2.2 : 0);
-
-        const x =
-            Math.cos(a) * r;
-
-        const y =
-            Math.sin(a) * r;
-
-        if (i === 0) {
-            ctx.moveTo(x, y);
-        }
-        else {
-            ctx.lineTo(x, y);
-        }
-    }
-
-    ctx.closePath();
-
-    ctx.fillStyle =
-        brass
-        ? "#7c5c1c"
-        : "#242e30";
-
-    ctx.fill();
-
-    ctx.strokeStyle =
-        brass
-        ? "rgba(230,188,75,.7)"
-        : "rgba(155,179,181,.48)";
-
-    ctx.lineWidth = .7;
-
-    ctx.stroke();
-
-    /*
-      centre
-    */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        0,
-        radius * .34,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fillStyle =
-        "#080d0f";
-
-    ctx.fill();
-
-    ctx.strokeStyle =
-        brass
-        ? "rgba(219,176,64,.8)"
-        : "rgba(129,157,160,.65)";
-
-    ctx.stroke();
-
-    ctx.restore();
-}
-
-/* --------------------------------------------------
-   RUBIS CENTRAL
--------------------------------------------------- */
-
-function ruby(cx, cy, r) {
-
-    /*
-      beaucoup moins rouge que les versions
-      précédentes.
-    */
-
-    const glow =
-        ctx.createRadialGradient(
-            cx - r * .25,
-            cy - r * .3,
-            0,
-            cx,
-            cy,
-            r * 2.5
-        );
-
-    glow.addColorStop(
-        0,
-        "rgba(255,65,92,.18)"
-    );
-
-    glow.addColorStop(
-        .4,
-        "rgba(125,15,30,.10)"
-    );
-
-    glow.addColorStop(
-        1,
-        "rgba(80,0,10,0)"
-    );
-
-    ctx.fillStyle = glow;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        cy,
-        r * 2.5,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    /*
-      pierre
-    */
-
-    const stone =
-        ctx.createRadialGradient(
-            cx - r * .35,
-            cy - r * .4,
-            r * .08,
-            cx,
-            cy,
-            r
-        );
-
-    stone.addColorStop(
-        0,
-        "#ffdce1"
-    );
-
-    stone.addColorStop(
-        .16,
-        "#b9344a"
-    );
-
-    stone.addColorStop(
-        .48,
-        "#641624"
-    );
-
-    stone.addColorStop(
-        .78,
-        "#210912"
-    );
-
-    stone.addColorStop(
-        1,
-        "#070307"
-    );
-
-    ctx.fillStyle = stone;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        cy,
-        r,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    ctx.strokeStyle =
-        "rgba(206,84,103,.65)";
-
-    ctx.lineWidth = .65;
-
-    ctx.stroke();
-
-    /*
-      reflet interne
-    */
-
-    ctx.fillStyle =
-        "rgba(255,255,255,.65)";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx - r * .34,
-        cy - r * .38,
-        r * .18,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-}
-
-/* --------------------------------------------------
-   GYROTOURBILLON
--------------------------------------------------- */
-
-function drawGyro(
-    cx,
-    cy,
-    baseRadius,
-    time
-) {
-
-    /*
-      Trois rotations réellement indépendantes.
-    */
-
-    const ax =
-        time * CONFIG.axisXSpeed;
-
-    const ay =
-        time * CONFIG.axisYSpeed;
-
-    const az =
-        time * CONFIG.axisZSpeed;
-
-    /*
-      légère rotation globale
-    */
-
-    const global =
-        time * .000055;
-
-    /*
-      halo discret
-    */
-
-    ctx.save();
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        cy,
-        baseRadius * 1.08,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.strokeStyle =
-        "rgba(0,130,150,.17)";
-
-    ctx.lineWidth = 1;
-
-    ctx.stroke();
-
-    ctx.restore();
-
-    /*
-      premier anneau vertical
-    */
-
-    mechanicalRing(
-        cx,
-        cy,
-        baseRadius,
-        global + ax,
-        ay,
-        false
-    );
-
-    /*
-      deuxième axe
-    */
-
-    mechanicalRing(
-        cx,
-        cy,
-        baseRadius * .82,
-        -global * 1.7 + ay,
-        ax + .55,
-        false
-    );
-
-    /*
-      cage interne en laiton
-    */
-
-    mechanicalRing(
-        cx,
-        cy,
-        baseRadius * .61,
-        global * 1.4 + az,
-        ay + .95,
-        true
-    );
-
-    /*
-      engrenages internes
-    */
-
-    gear(
-        cx - baseRadius * .22,
-        cy + baseRadius * .08,
-        baseRadius * .19,
-        24,
-        az * 2.0,
-        true
-    );
-
-    gear(
-        cx + baseRadius * .19,
-        cy - baseRadius * .15,
-        baseRadius * .15,
-        20,
-        -ay * 2.2,
-        false
-    );
-
-    /*
-      axe X
-    */
-
-    drawAxis(
-        cx,
-        cy,
-        baseRadius * 1.02,
-        ax,
-        ay,
-        az,
-        .9
-    );
-
-    /*
-      axe Y — orientation différente
-    */
-
-    ctx.save();
-
-    ctx.translate(cx, cy);
-    ctx.rotate(Math.PI / 2);
-
-    drawAxis(
-        0,
-        0,
-        baseRadius * .88,
-        ay,
-        az,
-        ax,
-        .78
-    );
-
-    ctx.restore();
-
-    /*
-      petits ponts mécaniques
-    */
-
-    ctx.save();
-
-    ctx.translate(cx, cy);
-    ctx.rotate(az);
-
-    ctx.strokeStyle =
-        "rgba(175,191,191,.75)";
-
-    ctx.lineWidth = 1.3;
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        -baseRadius * .53,
-        0
-    );
-
-    ctx.lineTo(
-        baseRadius * .53,
-        0
-    );
-
-    ctx.stroke();
-
-    ctx.restore();
-
-    /*
-      vis de fixation
-    */
-
-    const screwPositions = [
-        [-.72, -.08],
-        [.72, .08],
-        [-.08, .72],
-        [.08, -.72]
-    ];
-
-    for (const p of screwPositions) {
-
-        const x =
-            cx + p[0] * baseRadius;
-
-        const y =
-            cy + p[1] * baseRadius;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            x,
-            y,
-            2.4,
-            0,
-            Math.PI * 2
-        );
-
-        const screw =
-            ctx.createRadialGradient(
-                x - 1,
-                y - 1,
-                0,
-                x,
-                y,
-                3
-            );
-
-        screw.addColorStop(
-            0,
-            "#eef5f5"
-        );
-
-        screw.addColorStop(
-            .35,
-            "#738386"
-        );
-
-        screw.addColorStop(
-            1,
-            "#111718"
-        );
-
-        ctx.fillStyle = screw;
-
-        ctx.fill();
-    }
-
-    /*
-      rubis central
-    */
-
-    ruby(
-        cx,
-        cy,
-        baseRadius * .115
-    );
-}
-
-/* --------------------------------------------------
-   REPÈRES CARDINAUX
--------------------------------------------------- */
-
-function cardinal(
-    cx,
-    cy,
-    radius,
-    angle,
-    text
-) {
-
-    const x =
-        cx + Math.cos(angle) * radius;
-
-    const y =
-        cy + Math.sin(angle) * radius;
-
-    ctx.save();
-
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    ctx.font =
-        "9px -apple-system, BlinkMacSystemFont, sans-serif";
-
-    ctx.fillStyle =
-        "rgba(77,172,190,.82)";
-
-    ctx.fillText(
-        text,
-        x,
-        y
-    );
-
-    ctx.restore();
-}
-
-/* --------------------------------------------------
-   RENDU PRINCIPAL
--------------------------------------------------- */
-
-let start =
-    performance.now();
-
-function render(now) {
-
-    const time =
-        now - start;
-
-    ctx.clearRect(
-        0,
-        0,
-        W,
-        H
-    );
-
-    const cx =
-        W * .5;
-
-    /*
-      centre légèrement au-dessus
-      du centre de la zone.
-    */
-
-    const cy =
-        H * .47;
-
-    /*
-      diamètre des couronnes :
-      marge d'environ 11.5 %
-      de chaque côté.
-    */
-
-    const outerRadius =
-        Math.min(
-            W * (0.5 - CONFIG.edgeMarginRatio),
-            H * .48
-        );
-
-    /*
-      couronnes très rapprochées.
-    */
-
-    const ringSpacing =
-        Math.min(
-            W * .047,
-            31
-        );
-
-    /*
-      gyrotourbillon = ~20 % largeur écran.
-    */
-
-    const gyroRadius =
-        W *
-        CONFIG.gyroWidthRatio *
-        .5;
-
-    /*
-      fond radial très discret
-    */
-
-    const ambient =
-        ctx.createRadialGradient(
-            cx,
-            cy,
-            gyroRadius * .2,
-            cx,
-            cy,
-            outerRadius
-        );
-
-    ambient.addColorStop(
-        0,
-        "rgba(0,47,57,.20)"
-    );
-
-    ambient.addColorStop(
-        .45,
-        "rgba(0,23,29,.08)"
-    );
-
-    ambient.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle = ambient;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        cy,
-        outerRadius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    /*
-      couronnes.
-      La plus grande n'est PAS collée au bord.
-    */
-
-    for (
-        let i = 0;
-        i < CONFIG.rings;
-        i++
-    ) {
-
-        const radius =
-            outerRadius -
-            i * ringSpacing;
-
-        precisionRing(
-            cx,
-            cy,
-            radius,
-            i,
-            time
-        );
-    }
-
-    /*
-      cercle discret juste autour
-      du gyrotourbillon
-    */
-
-    const innerRadius =
-        gyroRadius +
-        W * CONFIG.gyroGapRatio;
-
-    glowRing(
-        cx,
-        cy,
-        innerRadius,
-        .23
-    );
-
-    /*
-      cardinales de précision
-    */
-
-    cardinal(
-        cx,
-        cy,
-        outerRadius + 1,
-        -Math.PI / 2,
-        "00"
-    );
-
-    cardinal(
-        cx,
-        cy,
-        outerRadius + 1,
-        0,
-        "270"
-    );
-
-    cardinal(
-        cx,
-        cy,
-        outerRadius + 1,
-        Math.PI / 2,
-        "180"
-    );
-
-    cardinal(
-        cx,
-        cy,
-        outerRadius + 1,
-        Math.PI,
-        "90"
-    );
-
-    /*
-      gyrotourbillon
-    */
-
-    drawGyro(
-        cx,
-        cy,
-        gyroRadius,
-        time
-    );
-
-    requestAnimationFrame(render);
-}
-
-requestAnimationFrame(render);
-
-/* --------------------------------------------------
-   REDUCTION DU MOUVEMENT
--------------------------------------------------- */
-
-if (
-    window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-    ).matches
-) {
-
-    /*
-      Le rendu reste fonctionnel,
-      mais l'animation sera plus lente.
-    */
-
-    CONFIG.axisXSpeed *= .25;
-    CONFIG.axisYSpeed *= .25;
-    CONFIG.axisZSpeed *= .25;
-}
-</script>
+  <script type="module" src="/src/main.ts"></script>
 
 </body>
-</html>
+
+</html>""", encoding="utf-8")
+
+(root/"tsconfig.json").write_text("""{
+
+  "compilerOptions": {
+
+    "target": "ES2022",
+
+    "useDefineForClassFields": true,
+
+    "lib": ["ES2022","DOM","DOM.Iterable"],
+
+    "module": "ESNext",
+
+    "moduleResolution": "Bundler",
+
+    "strict": true,
+
+    "skipLibCheck": true,
+
+    "noEmit": true,
+
+    "allowImportingTsExtensions": true
+
+  },
+
+  "include": ["src"]
+
+}""", encoding="utf-8")
+
+(root/"src/config.ts").write_text("""export type JarvisMode = "IDLE" | "LISTENING" | "THINKING" | "RESPONDING";
+
+export const CFG = {
+
+  reference: { centerX: 0.494, centerY: 0.476, diameter: 0.475 },
+
+  colors: {
+
+    bg: 0x020711, cyan: 0x19bfff, cyanBright: 0x65dcff,
+
+    silver: 0xb9c4c7, chrome: 0x71838a, gold: 0xc5a25f,
+
+    darkMetal: 0x17232a, ruby: 0x6d001f
+
+  },
+
+  motion: { IDLE: 0.55, LISTENING: 0.82, THINKING: 1.08, RESPONDING: 0.72 },
+
+  cages: {
+
+    outer:  { radius:1.58, tube:.035, speed:.035, axis:"z" as const, x:0, y:0, z:.16, phase:.2, inertia:2.2 },
+
+    middle: { radius:1.23, tube:.027, speed:-.052, axis:"x" as const, x:.48, y:-.30, z:-.34, phase:1.9, inertia:2.8 },
+
+    inner:  { radius:.89, tube:.024, speed:.071, axis:"y" as const, x:-.33, y:.40, z:.55, phase:4.1, inertia:3.1 },
+
+    rotor:  { radius:.59, tube:.021, speed:-.115, axis:"z" as const, x:.21, y:-.16, z:.11, phase:2.7, inertia:3.8 }
+
+  }
+
+} as const;""", encoding="utf-8")
+
+(root/"src/main.ts").write_text("""import * as THREE from "three";
+
+import { CFG, type JarvisMode } from "./config";
+
+import "./styles.css";
+
+const app = document.querySelector<HTMLDivElement>("#app")!;
+
+app.innerHTML = `
+
+  <div id="scene"></div>
+
+  <div class="hud">
+
+    <div class="ring ring-a"></div><div class="ring ring-b"></div><div class="ring ring-c"></div>
+
+    <div class="ticks"></div>
+
+    <div class="top"><span>● CONNEXION SÉCURISÉE</span><b>JARVIS <small>v0.1</small></b><span>MICRO ● ACTIF</span></div>
+
+    <div class="side left"><label>NIVEAU SYSTÈME <b>98.7%</b></label><div class="meter"><i></i></div><small>CPU 21%　 GPU 34%　 CORE OK</small></div>
+
+    <div class="side right"><label>CONFIANCE <b>97.4%</b></label><div class="confidence"><i></i><i></i><i></i><i></i><i></i></div><small>ANALYSE CONTEXTUELLE</small></div>
+
+    <div class="command"><strong id="status">EN ATTENTE DE COMMANDE</strong><div id="wave"></div></div>
+
+    <div class="lower">
+
+      <article><label>MAISON <b>●</b></label><strong>NORMAL</strong><small>Système domestique simulé</small></article>
+
+      <article><label>MÉTÉO <b>●</b></label><strong>22°</strong><small>Données simulées · ciel dégagé</small></article>
+
+      <article><label>AGENDA <b>●</b></label><strong>AUCUN</strong><small>Aucun événement prioritaire</small></article>
+
+    </div>
+
+    <div class="radar"><i></i></div>
+
+    <nav id="nav"><button>MAISON</button><button>MUSIQUE</button><button>SCÉNARIOS</button><button class="mic" id="mic">◉</button><button>RECHERCHE</button><button>RACCOURCIS</button><button>PARAMÈTRES</button></nav>
+
+  </div>
+
+`;
+
+const wave = document.querySelector<HTMLDivElement>("#wave")!;
+
+for (let i=0;i<88;i++) {
+
+  const bar = document.createElement("i");
+
+  bar.style.height = `${2 + ((i*17)%13)}px`;
+
+  wave.appendChild(bar);
+
+}
+
+const sceneHost = document.querySelector<HTMLDivElement>("#scene")!;
+
+const scene = new THREE.Scene();
+
+scene.background = new THREE.Color(CFG.colors.bg);
+
+const camera = new THREE.PerspectiveCamera(28, 1, .05, 100);
+
+camera.position.set(0,0,7.25);
+
+camera.lookAt(0,0,0);
+
+const renderer = new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});
+
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure = 1.05;
+
+sceneHost.appendChild(renderer.domElement);
+
+const root = new THREE.Group();
+
+scene.add(root);
+
+const silver = new THREE.MeshStandardMaterial({color:CFG.colors.silver,metalness:.96,roughness:.20});
+
+const chrome = new THREE.MeshStandardMaterial({color:CFG.colors.chrome,metalness:1,roughness:.14});
+
+const gold = new THREE.MeshStandardMaterial({color:CFG.colors.gold,metalness:.96,roughness:.22});
+
+const ruby = new THREE.MeshPhysicalMaterial({
+
+  color:CFG.colors.ruby,metalness:.05,roughness:.10,transmission:.18,
+
+  thickness:.35,ior:1.55,clearcoat:1,clearcoatRoughness:.08,
+
+  emissive:0x250008,emissiveIntensity:.35
+
+});
+
+function torus(r:number,t:number,m:THREE.Material,arc=Math.PI*2) {
+
+  return new THREE.Mesh(new THREE.TorusGeometry(r,t,10,96,arc),m);
+
+}
+
+function cage(r:number,t:number,m:THREE.Material) {
+
+  const g=new THREE.Group();
+
+  g.add(torus(r,t,m),torus(r*.985,t*.62,m));
+
+  for(let i=0;i<12;i++){
+
+    const a=i*Math.PI*2/12+.09;
+
+    const s=new THREE.Mesh(new THREE.CylinderGeometry(.026,.026,.035,10),i%3===0?gold:silver);
+
+    s.position.set(Math.cos(a)*r,Math.sin(a)*r,.03); s.rotation.z=a; g.add(s);
+
+  }
+
+  return g;
+
+}
+
+const outer=cage(CFG.cages.outer.radius,CFG.cages.outer.tube,gold);
+
+const middle=cage(CFG.cages.middle.radius,CFG.cages.middle.tube,silver);
+
+const inner=cage(CFG.cages.inner.radius,CFG.cages.inner.tube,gold);
+
+const rotor=new THREE.Group();
+
+outer.rotation.set(0,0,CFG.cages.outer.z);
+
+middle.rotation.set(CFG.cages.middle.x,CFG.cages.middle.y,CFG.cages.middle.z);
+
+inner.rotation.set(CFG.cages.inner.x,CFG.cages.inner.y,CFG.cages.inner.z);
+
+rotor.rotation.set(CFG.cages.rotor.x,CFG.cages.rotor.y,CFG.cages.rotor.z);
+
+root.add(outer); outer.add(middle); middle.add(inner); inner.add(rotor);
+
+for (const [g,r] of [[outer,1.58],[middle,1.23],[inner,.89]] as const) {
+
+  for(let i=0;i<4;i++){
+
+    const a=i*Math.PI/2+.25;
+
+    const bridge=new THREE.Mesh(new THREE.BoxGeometry(r*.72,.032,.028),i%2?silver:gold);
+
+    bridge.position.set(Math.cos(a)*r*.60,Math.sin(a)*r*.60,.02);
+
+    bridge.rotation.z=a+.16; g.add(bridge);
+
+  }
+
+}
+
+rotor.add(torus(.59,.028,silver),torus(.49,.021,gold),torus(.36,.018,chrome));
+
+for(let i=0;i<2;i++){
+
+  const arm=new THREE.Mesh(new THREE.BoxGeometry(1.04,.026,.028),i?gold:silver);
+
+  arm.rotation.z=i*Math.PI/2+.08; rotor.add(arm);
+
+}
+
+const balance=new THREE.Group();
+
+balance.add(torus(.27,.025,chrome),torus(.22,.013,gold));
+
+for(let i=0;i<4;i++){
+
+  const a=i*Math.PI/2;
+
+  const arm=new THREE.Mesh(new THREE.BoxGeometry(.40,.015,.015),i%2?gold:silver);
+
+  arm.position.set(Math.cos(a)*.13,Math.sin(a)*.13,.02); arm.rotation.z=a; balance.add(arm);
+
+}
+
+balance.rotation.z=.25; rotor.add(balance);
+
+const axle=new THREE.Mesh(new THREE.CylinderGeometry(.11,.11,.22,32),chrome);
+
+axle.rotation.x=Math.PI/2; axle.position.z=.10; rotor.add(axle);
+
+const bezel=torus(.18,.025,gold); bezel.position.z=.22; rotor.add(bezel);
+
+const rubyMesh=new THREE.Mesh(new THREE.SphereGeometry(.105,32,20),ruby);
+
+rubyMesh.scale.z=.58; rubyMesh.position.z=.25; rotor.add(rubyMesh);
+
+scene.add(new THREE.AmbientLight(0x26343c,1.15));
+
+function light(color:number,intensity:number,x:number,y:number,z:number){
+
+  const l=new THREE.PointLight(color,intensity,10,2); l.position.set(x,y,z); scene.add(l);
+
+}
+
+light(0xdcecff,5,-3.5,3.2,4.4);
+
+light(0x1e9dff,4.2,-4,-.4,2.6);
+
+light(0x287bff,3,3.8,1.4,2);
+
+light(0xffbf62,3,2.8,-3,2.5);
+
+light(0xff2e77,1.4,0,0,3);
+
+const particles = new Float32Array(150*3);
+
+for(let i=0;i<150;i++){
+
+  const a=Math.random()*Math.PI*2, r=2+Math.random()*2.3;
+
+  particles[i*3]=Math.cos(a)*r; particles[i*3+1]=Math.sin(a)*r; particles[i*3+2]=-.9+Math.random()*2;
+
+}
+
+const pg=new THREE.BufferGeometry();
+
+pg.setAttribute("position",new THREE.BufferAttribute(particles,3));
+
+scene.add(new THREE.Points(pg,new THREE.PointsMaterial({color:CFG.colors.cyan,size:.012,transparent:true,opacity:.45,depthWrite:false})));
+
+type Rig={obj:THREE.Object3D,c:any,angle:number,velocity:number};
+
+const rigs:Rig[]=[
+
+  {obj:outer,c:CFG.cages.outer,angle:CFG.cages.outer.z,velocity:CFG.cages.outer.speed},
+
+  {obj:middle,c:CFG.cages.middle,angle:CFG.cages.middle.z,velocity:CFG.cages.middle.speed},
+
+  {obj:inner,c:CFG.cages.inner,angle:CFG.cages.inner.z,velocity:CFG.cages.inner.speed},
+
+  {obj:rotor,c:CFG.cages.rotor,angle:CFG.cages.rotor.z,velocity:CFG.cages.rotor.speed}
+
+];
+
+let mode:JarvisMode="IDLE";
+
+let speedScale=CFG.motion.IDLE;
+
+const multiplier=()=>CFG.motion[mode];
+
+function update(t:number,dt:number){
+
+  speedScale+=(multiplier()-speedScale)*(1-Math.exp(-2.3*dt));
+
+  for(const r of rigs){
+
+    const c=r.c;
+
+    const n=Math.sin(t*.17+c.phase)*.035+Math.sin(t*.071+c.phase*1.71)*.018+Math.sin(t*.311+c.phase*.37)*.009;
+
+    const desired=c.speed*speedScale*(1+n);
+
+    r.velocity+=(desired-r.velocity)*(1-Math.exp(-c.inertia*dt));
+
+    r.angle+=r.velocity*dt;
+
+    r.obj.rotation[c.axis]=r.angle;
+
+    r.obj.rotation.x=c.x+Math.sin(t*.043+c.phase)*THREE.MathUtils.degToRad(.75);
+
+    r.obj.rotation.y=c.y+Math.sin(t*.031+c.phase*1.4)*THREE.MathUtils.degToRad(.55);
+
+  }
+
+  balance.rotation.z += Math.sin(t*1.27)*.0009;
+
+  ruby.emissiveIntensity=.30+.09*(.5+.5*Math.sin(t*.83));
+
+}
+
+function resize(){
+
+  const w=sceneHost.clientWidth,h=sceneHost.clientHeight;
+
+  camera.aspect=w/h; camera.updateProjectionMatrix();
+
+  const dpr=Math.min(devicePixelRatio,2);
+
+  renderer.setPixelRatio(dpr); renderer.setSize(w,h,false);
+
+  root.scale.setScalar(Math.max(.78,Math.min(1.18,Math.min(w,h)/520)));
+
+}
+
+addEventListener("resize",resize);
+
+resize();
+
+let last=performance.now();
+
+function animate(now:number){
+
+  requestAnimationFrame(animate);
+
+  const dt=Math.min((now-last)/1000,.05); last=now;
+
+  update(now/1000,dt);
+
+  renderer.render(scene,camera);
+
+}
+
+requestAnimationFrame(animate);
+
+const status=document.querySelector<HTMLDivElement>("#status")!;
+
+const mic=document.querySelector<HTMLButtonElement>("#mic")!;
+
+const order:JarvisMode[]=["IDLE","LISTENING","THINKING","RESPONDING"];
+
+mic.addEventListener("click",()=>{
+
+  mode=order[(order.indexOf(mode)+1)%order.length];
+
+  status.textContent=mode==="IDLE"?"EN ATTENTE DE COMMANDE":mode;
+
+  document.body.dataset.jarvisMode=mode;
+
+});
+
+(window as any).jarvisTourbillon={
+
+  setState:(next:JarvisMode)=>{mode=next;status.textContent=next==="IDLE"?"EN ATTENTE DE COMMANDE":next;},
+
+  config:CFG,
+
+  scene,camera,renderer
+
+};""", encoding="utf-8")
+
+(root/"src/styles.css").write_text("""*{box-sizing:border-box}html,body,#app{width:100%;height:100%;margin:0}body{overflow:hidden;background:#020711;color:#d9edf4;font-family:Arial,"Helvetica Neue",sans-serif}.jarvis{}.scene,.hud{position:fixed;inset:0}.scene canvas{display:block;width:100%;height:100%}.hud{pointer-events:none;overflow:hidden}.ring{position:absolute;left:49.4%;top:47.6%;translate:-50% -50%;border:1px solid rgba(26,188,255,.2);border-radius:50%}.ring-a{width:67vw;height:67vw;animation:spin 130s linear infinite}.ring-b{width:57vw;height:57vw;border-style:dashed;animation:spinr 170s linear infinite}.ring-c{width:48vw;height:48vw;border-color:rgba(207,166,89,.16);animation:spin 210s linear infinite}.ticks{position:absolute;left:49.4%;top:47.6%;width:59vw;height:59vw;translate:-50% -50%;border-radius:50%;background:repeating-conic-gradient(rgba(55,202,255,.45) 0 .35deg,transparent .35deg 6deg);-webkit-mask:radial-gradient(transparent 0 48.4%,#000 48.6% 49.2%,transparent 49.4%);mask:radial-gradient(transparent 0 48.4%,#000 48.6% 49.2%,transparent 49.4%);opacity:.38;animation:spinr 240s linear infinite}.top{position:absolute;inset:0 3vw auto;height:8vh;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:clamp(9px,.75vw,13px);letter-spacing:.15em;color:#8eb6c1}.top span:last-child{text-align:right}.top b{font-size:clamp(20px,2.1vw,34px);letter-spacing:.28em;color:#e8f6fa;font-weight:300}.top small{font-size:.32em;opacity:.55}.side{position:absolute;top:33%;width:min(18vw,230px);padding:13px 15px;border:1px solid rgba(29,190,255,.22);background:rgba(2,12,21,.42);color:#557b88;font-size:9px;letter-spacing:.08em}.side.left{left:2.4vw}.side.right{right:2.4vw}.side label,.lower label{display:flex;justify-content:space-between;color:#9fd1df}.side b,.lower b{color:#52d7ff;font-weight:400}.meter{height:2px;margin:13px 0;background:rgba(255,255,255,.08)}.meter i{display:block;width:87%;height:100%;background:#22bdf6;box-shadow:0 0 7px #22bdf6}.confidence{display:flex;gap:5px;margin:15px 0}.confidence i{flex:1;height:2px;background:#20bdf5;box-shadow:0 0 5px #20bdf5}.command{position:absolute;left:50%;top:90.6%;translate:-50% -50%;width:min(78vw,820px);text-align:center}.command strong{font-size:clamp(12px,1.25vw,20px);font-weight:400;letter-spacing:.15em;color:#21c4ff;text-shadow:0 0 9px rgba(20,180,255,.6)}#wave{height:24px;display:flex;align-items:center;justify-content:center;gap:2px;margin-top:10px}.command #wave i{width:2px;background:#19bfff;box-shadow:0 0 4px rgba(25,191,255,.55);animation:wave 2.8s ease-in-out infinite}.command #wave i:nth-child(3n){animation-delay:-.8s}.command #wave i:nth-child(5n){animation-delay:-1.6s}.lower{position:absolute;left:50%;bottom:13%;translate:-50% 0;width:min(91vw,1080px);display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.lower article{padding:11px 13px;border:1px solid rgba(29,190,255,.18);background:rgba(2,12,21,.34)}.lower strong{display:block;margin-top:8px;font-size:clamp(16px,1.35vw,23px);font-weight:300;color:#e2f0f3}.lower small{display:block;margin-top:4px;font-size:8px;color:#4c7582}.radar{position:absolute;right:4vw;bottom:13%;width:80px;height:80px;border:1px solid rgba(35,192,255,.35);border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 19px,rgba(35,192,255,.1) 20px 21px)}.radar:before,.radar:after{content:"";position:absolute;background:rgba(35,192,255,.25)}.radar:before{left:0;right:0;top:50%;height:1px}.radar:after{top:0;bottom:0;left:50%;width:1px}.radar i{position:absolute;inset:50% 50% 0 0;transform-origin:100% 0;background:linear-gradient(45deg,transparent,rgba(35,192,255,.5));animation:spin 8s linear infinite}.nav{position:absolute;left:50%;bottom:2.2%;translate:-50% 0;width:min(94vw,1040px);display:flex;justify-content:center;align-items:center;gap:clamp(7px,1.3vw,18px);pointer-events:auto}.nav button{border:0;background:transparent;color:#52737d;font:9px Arial;letter-spacing:.1em;padding:8px 3px;cursor:pointer}.nav button:hover{color:#bdebf5;text-shadow:0 0 9px rgba(29,190,255,.7)}.nav .mic{width:58px;height:58px;border:1px solid rgba(34,193,255,.65);border-radius:50%;color:#58d9ff;box-shadow:0 0 16px rgba(22,175,255,.16),inset 0 0 12px rgba(22,175,255,.08);font-size:24px}.nav .mic:hover{box-shadow:0 0 28px rgba(22,175,255,.35),inset 0 0 18px rgba(22,175,255,.13)}@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}@keyframes spinr{to{transform:translate(-50%,-50%) rotate(-360deg)}}@keyframes wave{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1.35)}}@media(max-width:760px){.top{padding:0 4vw}.top b{font-size:18px}.side{top:24%;width:27vw;padding:9px}.side.left{left:1.8vw}.side.right{right:1.8vw}.side small{display:none}.lower{width:92vw;bottom:14%;gap:5px}.lower article{padding:8px}.lower small{font-size:7px}.radar{display:none}.nav{gap:4px}.nav button{font-size:7px;letter-spacing:.06em}.nav .mic{width:50px;height:50px}.ring-a{width:92vw;height:92vw}.ring-b{width:78vw;height:78vw}.ring-c{width:66vw;height:66vw}.ticks{width:80vw;height:80vw}}@media(prefers-reduced-motion:reduce){.ring,.ticks,.radar i,#wave i{animation-play-state:paused}}""", encoding="utf-8")
+
+(root/"README.md").write_text("""# JARVIS — interface visuelle 3D
+
+Prototype Vite + TypeScript + Three.js.
+
+## Référence mesurée
+
+La capture fournie dans la conversation est **1095×945 px**.
+
+Mesures visuelles principales :
+
+- centre du tourbillon ≈ **49,4% X / 47,6% Y** ;
+
+- diamètre visible ≈ **47–48% de la largeur** ;
+
+- texte « EN ATTENTE DE COMMANDE » ≈ **90,6% Y** ;
+
+- waveform ≈ **95% Y**.
+
+La capture fournie ne montre pas l'ensemble des panneaux décrits dans le prompt maître. Ces zones sont donc construites à partir de la spécification textuelle et non à partir d'un pixel-match vérifiable.
+
+## Lancer
+
+```bash
+
+npm install
+
+npm run dev
+
+```
+
+Puis ouvrir l'adresse Vite, généralement `http://localhost:5173`.
+
+Production :
+
+```bash
+
+npm run build
+
+npm run preview
+
+```
+
+## Structure
+
+```text
+
+src/
+
+├── config.ts
+
+├── main.ts
+
+└── styles.css
+
+docs/
+
+└── REFERENCE_ANALYSIS.md
+
+```
+
+## Tourbillon
+
+Le centre est réellement rendu en WebGL :
+
+- cage externe : Z ;
+
+- cage intermédiaire : X ;
+
+- cage interne : Y ;
+
+- rotor indépendant ;
+
+- balancier ;
+
+- rubis ;
+
+- profondeur ;
+
+- métal PBR ;
+
+- éclairage froid/bleu/chaud ;
+
+- micro-variations ;
+
+- inertie amortie ;
+
+- deltaTime.
+
+## États
+
+Le bouton microphone fait défiler :
+
+`IDLE → LISTENING → THINKING → RESPONDING`.
+
+API disponible :
+
+```js
+
+window.jarvisTourbillon.setState("THINKING")
+
+```
+
+Les données Maison/Météo/Agenda sont simulées et séparées de la logique graphique.
+
+## Priorité
+
+Fidélité visuelle > simplicité du code > effets spectaculaires.
+
+Pour un vrai pixel-match de toute l'interface, fournir une capture contenant également les zones qui ne sont pas visibles dans la référence actuelle.
+
+""", encoding="utf-8")
+
+(root/"docs/REFERENCE_ANALYSIS.md").write_text("""# Analyse de la référence
+
+## Format
+
+1095 × 945 px.
+
+## Centre mécanique
+
+Le point de gravité visuel du tourbillon est autour de :
+
+- X ≈ 541 px = 49,4 % ;
+
+- Y ≈ 450 px = 47,6 %.
+
+La structure métallique occupe approximativement x=285–805 et y=190–710.
+
+## Hiérarchie
+
+1. mécanisme horloger central ;
+
+2. anneaux HUD ;
+
+3. détails lumineux et graduations ;
+
+4. texte d'état ;
+
+5. waveform.
+
+## Palette
+
+Fond : bleu-noir presque noir.
+
+HUD : cyan/bleu électrique.
+
+Mécanique : argent, chrome sombre, or/champagne.
+
+Centre : petit rubis rouge sombre.
+
+## Point important
+
+La valeur « y ≈ 26–28 % » présente dans l'ancien prompt ne correspond pas à cette capture. Elle placerait le mécanisme beaucoup trop haut.
+
+La capture actuelle doit donc être la référence géométrique : **49,4 % / 47,6 %**.
+
+## Limite
+
+La capture ne permet pas de mesurer les panneaux d'en-tête, latéraux, inférieurs ou la barre de navigation décrits séparément. Ces éléments doivent être ajustés lorsqu'une capture complète sera disponible.
+
+""", encoding="utf-8")
+
+# Copie de la capture comme référence de travail
+
+ref = Path("/mnt/data/B4BE6C23-AE6B-44DA-8D13-0028A2548246.jpeg")
+
+if ref.exists():
+
+    shutil.copy2(ref, root/"docs"/"reference.jpg")
+
+zip_path = Path("/mnt/data/jarvis-interface-github.zip")
+
+if zip_path.exists():
+
+    zip_path.unlink()
+
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+
+    for p in root.rglob("*"):
+
+        if p.is_file():
+
+            z.write(p, p.relative_to(root.parent))
+
+print("Projet généré :", root)
+
+print("Archive :", zip_path)
+
+print("Fichiers :", len([p for p in root.rglob("*") if p.is_file()]))
