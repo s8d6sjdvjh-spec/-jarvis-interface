@@ -2,266 +2,267 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1,
-               maximum-scale=1,
-               viewport-fit=cover">
 
-<title>JARVIS — Gyrotourbillon Precision Core</title>
+<meta
+  name="viewport"
+  content="width=device-width,
+           initial-scale=1,
+           maximum-scale=1,
+           viewport-fit=cover">
+
+<title>JARVIS — Precision Gyrotourbillon</title>
 
 <style>
 :root{
-    --bg:#02080b;
-    --cyan:#27dfff;
-    --cyan2:#78efff;
-    --text:#d8f8ff;
-    --muted:#4c7b86;
-    --panel:rgba(2,16,22,.76);
+  --bg:#02070a;
+  --cyan:#24dcff;
+  --cyanSoft:#79edff;
+  --text:#d9f8ff;
+  --muted:#527984;
+  --panel:#031117;
 }
 
 *{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,
 body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#02080b;
-    color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#02070a;
+  color:var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
 }
 
 #app{
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-    background:
-        radial-gradient(
-            circle at 50% 39%,
-            rgba(0,95,116,.20),
-            transparent 32%
-        ),
-        #02080b;
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  background:
+    radial-gradient(
+      circle at 50% 39%,
+      rgba(0,110,135,.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 50% 43%,
+      rgba(0,40,52,.16),
+      transparent 48%
+    ),
+    #02070a;
 }
 
 #grid{
-    position:absolute;
-    inset:0;
-    opacity:.28;
-    pointer-events:none;
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.30;
 
-    background-image:
-        linear-gradient(
-            rgba(29,112,128,.16) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(29,112,128,.16) 1px,
-            transparent 1px
-        );
+  background-image:
+    linear-gradient(
+      rgba(25,105,120,.14) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(25,105,120,.14) 1px,
+      transparent 1px
+    );
 
-    background-size:44px 44px;
+  background-size:44px 44px;
 }
 
 #topbar{
-    position:absolute;
-    z-index:10;
-    top:0;
-    left:0;
-    right:0;
-    height:92px;
+  position:absolute;
+  z-index:20;
+  top:0;
+  left:0;
+  right:0;
+  height:92px;
 
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 
-    padding:
-        env(safe-area-inset-top)
-        28px
-        0 28px;
+  padding:
+    env(safe-area-inset-top)
+    24px
+    0
+    24px;
 }
 
 .brand{
-    font-size:17px;
-    letter-spacing:.56em;
-    font-weight:300;
-    white-space:nowrap;
+  font-size:17px;
+  font-weight:300;
+  letter-spacing:.54em;
+  white-space:nowrap;
 }
 
 .status{
-    display:flex;
-    gap:25px;
-    align-items:center;
+  display:flex;
+  align-items:center;
+  gap:20px;
 }
 
 .statusItem{
-    display:flex;
-    align-items:center;
-    gap:8px;
+  display:flex;
+  align-items:center;
+  gap:7px;
 
-    color:#638d97;
-    font-size:10px;
-    letter-spacing:.35em;
+  color:#668b94;
+  font-size:9px;
+  letter-spacing:.34em;
 }
 
 .dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:#18dfff;
-    box-shadow:
-        0 0 8px #18dfff,
-        0 0 18px rgba(24,223,255,.45);
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#16dcff;
+
+  box-shadow:
+    0 0 7px #16dcff,
+    0 0 18px rgba(22,220,255,.55);
 }
 
 #subtitle{
-    position:absolute;
-    z-index:5;
-    top:105px;
-    left:0;
-    right:0;
+  position:absolute;
+  z-index:20;
+  top:104px;
+  left:0;
+  right:0;
 
-    text-align:center;
+  text-align:center;
 
-    font-size:10px;
-    letter-spacing:.42em;
-    color:#4b7c86;
+  color:#4d7781;
+  font-size:8px;
+  letter-spacing:.40em;
 }
 
 #scene{
-    position:absolute;
-    left:0;
-    right:0;
-
-    top:118px;
-    bottom:255px;
+  position:absolute;
+  left:0;
+  right:0;
+  top:115px;
+  bottom:245px;
 }
 
 #three{
-    width:100%;
-    height:100%;
-    display:block;
+  width:100%;
+  height:100%;
+  display:block;
 }
 
 #panels{
-    position:absolute;
-    z-index:10;
+  position:absolute;
+  z-index:30;
 
-    left:28px;
-    right:28px;
-    bottom:42px;
+  left:28px;
+  right:28px;
+  bottom:28px;
 
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
 }
 
 .panel{
-    min-height:92px;
+  min-height:86px;
 
-    padding:17px 16px 14px;
+  padding:14px 14px 12px;
 
-    border:1px solid rgba(18,202,235,.38);
+  border:1px solid rgba(18,202,235,.38);
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(8,38,47,.75),
-            rgba(1,10,14,.72)
-        );
+  background:
+    linear-gradient(
+      145deg,
+      rgba(5,30,38,.82),
+      rgba(1,9,13,.88)
+    );
 
-    box-shadow:
-        inset 0 0 24px rgba(0,150,190,.045),
-        0 0 18px rgba(0,120,160,.025);
+  box-shadow:
+    inset 0 0 24px rgba(0,160,200,.035),
+    0 0 15px rgba(0,130,170,.025);
 }
 
 .panelTitle{
-    color:#55bfd2;
-    font-size:9px;
-    letter-spacing:.38em;
-    margin-bottom:10px;
+  margin-bottom:9px;
+
+  color:#57c4d6;
+  font-size:8px;
+  letter-spacing:.38em;
 }
 
 .panelValue{
-    font-size:28px;
-    font-weight:300;
-    line-height:1;
-    color:#d8faff;
+  color:#d9faff;
+  font-size:26px;
+  line-height:1;
+  font-weight:300;
 }
 
 .panelSub{
-    margin-top:9px;
-    font-size:9px;
-    letter-spacing:.18em;
-    color:#4e7780;
-}
+  margin-top:8px;
 
-#activity{
-    position:absolute;
-    z-index:9;
-
-    top:135px;
-    left:50%;
-    transform:translateX(-50%);
-
-    color:#456d76;
-    font-size:8px;
-    letter-spacing:.35em;
-    white-space:nowrap;
+  color:#4c747e;
+  font-size:8px;
+  letter-spacing:.16em;
 }
 
 @media(max-width:430px){
 
-    #topbar{
-        padding-left:20px;
-        padding-right:20px;
-    }
+  #topbar{
+    padding-left:18px;
+    padding-right:18px;
+  }
 
-    .brand{
-        font-size:15px;
-    }
+  .brand{
+    font-size:15px;
+  }
 
-    .status{
-        gap:13px;
-    }
+  .status{
+    gap:11px;
+  }
 
-    .statusItem{
-        font-size:8px;
-        gap:5px;
-        letter-spacing:.25em;
-    }
+  .statusItem{
+    font-size:7px;
+    gap:5px;
+    letter-spacing:.22em;
+  }
 
-    #scene{
-        top:105px;
-        bottom:250px;
-    }
+  #subtitle{
+    top:97px;
+    font-size:7px;
+  }
 
-    #subtitle{
-        top:96px;
-        font-size:8px;
-    }
+  #scene{
+    top:108px;
+    bottom:245px;
+  }
 
-    #panels{
-        left:20px;
-        right:20px;
-        bottom:28px;
-        gap:9px;
-    }
+  #panels{
+    left:20px;
+    right:20px;
+    bottom:22px;
+    gap:8px;
+  }
 
-    .panel{
-        min-height:87px;
-        padding:14px 13px 12px;
-    }
+  .panel{
+    min-height:84px;
+    padding:13px 12px 11px;
+  }
 
-    .panelValue{
-        font-size:25px;
-    }
+  .panelValue{
+    font-size:24px;
+  }
 }
 </style>
 </head>
@@ -270,84 +271,80 @@ body{
 
 <div id="app">
 
-    <div id="grid"></div>
+  <div id="grid"></div>
 
-    <header id="topbar">
+  <header id="topbar">
 
-        <div class="brand">
-            J A R V I S
-        </div>
-
-        <div class="status">
-
-            <div class="statusItem">
-                <span class="dot"></span>
-                ONLINE
-            </div>
-
-            <div class="statusItem">
-                <span class="dot"></span>
-                SECURE
-            </div>
-
-            <div class="statusItem">
-                <span class="dot"></span>
-                VOICE
-            </div>
-
-        </div>
-
-    </header>
-
-    <div id="subtitle">
-        GYROTOURBILLON · PRECISION CORE · 3 AXIS
+    <div class="brand">
+      J A R V I S
     </div>
 
-    <div id="scene">
-        <canvas id="three"></canvas>
+    <div class="status">
+
+      <div class="statusItem">
+        <span class="dot"></span>
+        ONLINE
+      </div>
+
+      <div class="statusItem">
+        <span class="dot"></span>
+        SECURE
+      </div>
+
+      <div class="statusItem">
+        <span class="dot"></span>
+        VOICE
+      </div>
+
     </div>
 
-    <div id="activity">
-        PRECISION MECHANISM · ACTIVE
+  </header>
+
+  <div id="subtitle">
+    GYROTOURBILLON · PRECISION CORE · 3 AXIS
+  </div>
+
+  <div id="scene">
+    <canvas id="three"></canvas>
+  </div>
+
+  <section id="panels">
+
+    <div class="panel">
+      <div class="panelTitle">MAISON</div>
+      <div class="panelValue">03</div>
+      <div class="panelSub">DISPOSITIFS ACTIFS</div>
     </div>
 
-    <section id="panels">
+    <div class="panel">
+      <div class="panelTitle">MÉTÉO</div>
+      <div class="panelValue">18°</div>
+      <div class="panelSub">CONDITIONS STABLES</div>
+    </div>
 
-        <div class="panel">
-            <div class="panelTitle">MAISON</div>
-            <div class="panelValue">03</div>
-            <div class="panelSub">DISPOSITIFS ACTIFS</div>
-        </div>
+    <div class="panel">
+      <div class="panelTitle">SYSTÈME</div>
+      <div class="panelValue">82%</div>
+      <div class="panelSub">PERFORMANCE</div>
+    </div>
 
-        <div class="panel">
-            <div class="panelTitle">MÉTÉO</div>
-            <div class="panelValue">18°</div>
-            <div class="panelSub">CONDITIONS STABLES</div>
-        </div>
+    <div class="panel">
+      <div class="panelTitle">ACTIVITÉ</div>
+      <div class="panelValue">12</div>
+      <div class="panelSub">ÉVÉNEMENTS RÉCENTS</div>
+    </div>
 
-        <div class="panel">
-            <div class="panelTitle">SYSTÈME</div>
-            <div class="panelValue">82%</div>
-            <div class="panelSub">PERFORMANCE</div>
-        </div>
-
-        <div class="panel">
-            <div class="panelTitle">ACTIVITÉ</div>
-            <div class="panelValue">12</div>
-            <div class="panelSub">ÉVÉNEMENTS RÉCENTS</div>
-        </div>
-
-    </section>
+  </section>
 
 </div>
 
 
 <script type="importmap">
 {
-    "imports": {
-        "three":
-        "https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js"
-    }
+  "imports":{
+    "three":
+      "https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js"
+  }
 }
 </script>
 
@@ -358,173 +355,179 @@ import * as THREE from "three";
 
 
 /* ============================================================
+   RENDERER
+============================================================ */
+
+const canvas =
+  document.getElementById("three");
+
+const renderer =
+  new THREE.WebGLRenderer({
+    canvas,
+    antialias:true,
+    alpha:false,
+    powerPreference:"high-performance"
+  });
+
+renderer.setPixelRatio(
+  Math.min(window.devicePixelRatio,2)
+);
+
+renderer.outputColorSpace =
+  THREE.SRGBColorSpace;
+
+renderer.toneMapping =
+  THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure =
+  1.15;
+
+
+/* ============================================================
    SCENE
 ============================================================ */
 
-const canvas = document.getElementById("three");
+const scene =
+  new THREE.Scene();
 
-const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias:true,
-    alpha:true,
-    powerPreference:"high-performance"
-});
-
-renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2)
-);
-
-renderer.setSize(
-    canvas.clientWidth,
-    canvas.clientHeight,
-    false
-);
-
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.08;
-
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type =
-    THREE.PCFSoftShadowMap;
+scene.background =
+  new THREE.Color(0x02070a);
 
 
 /* ============================================================
-   SCENE / CAMERA
+   CAMERA
 ============================================================ */
 
-const scene = new THREE.Scene();
-
-scene.background = new THREE.Color(0x02080b);
-
-scene.fog = new THREE.FogExp2(
-    0x02080b,
-    0.055
-);
-
-
-const camera = new THREE.PerspectiveCamera(
-    34,
+const camera =
+  new THREE.PerspectiveCamera(
+    31,
     1,
-    0.1,
+    .1,
     100
-);
+  );
 
 camera.position.set(
-    0,
-    0.15,
-    8.7
+  0,
+  .10,
+  8.8
 );
 
 camera.lookAt(
-    0,
-    0,
-    0
+  0,
+  0,
+  0
 );
 
 
 /* ============================================================
-   PROCEDURAL REFLECTION ENVIRONMENT
+   ENVIRONMENT
 ============================================================ */
 
 function createEnvironment(){
 
-    const c =
-        document.createElement("canvas");
+  const c =
+    document.createElement("canvas");
 
-    c.width = 512;
-    c.height = 256;
+  c.width=1024;
+  c.height=512;
 
-    const ctx =
-        c.getContext("2d");
+  const ctx =
+    c.getContext("2d");
 
-    const g =
-        ctx.createLinearGradient(
-            0,0,
-            0,256
-        );
-
-    g.addColorStop(
-        0,
-        "#06151b"
+  const g =
+    ctx.createLinearGradient(
+      0,0,
+      0,512
     );
 
-    g.addColorStop(
-        .42,
-        "#02070a"
+  g.addColorStop(
+    0,
+    "#0b2028"
+  );
+
+  g.addColorStop(
+    .25,
+    "#02090d"
+  );
+
+  g.addColorStop(
+    .55,
+    "#07151b"
+  );
+
+  g.addColorStop(
+    .78,
+    "#010407"
+  );
+
+  g.addColorStop(
+    1,
+    "#000204"
+  );
+
+  ctx.fillStyle=g;
+  ctx.fillRect(
+    0,0,
+    1024,512
+  );
+
+
+  /* bandes de réflexion */
+
+  const strips=[
+    [70,170],
+    [240,90],
+    [470,140],
+    [700,70],
+    [890,120]
+  ];
+
+  for(
+    const [x,w]
+    of strips
+  ){
+
+    const lg =
+      ctx.createLinearGradient(
+        x,0,
+        x+w,0
+      );
+
+    lg.addColorStop(
+      0,
+      "rgba(120,230,255,0)"
     );
 
-    g.addColorStop(
-        .72,
-        "#0a2028"
+    lg.addColorStop(
+      .5,
+      "rgba(210,250,255,.23)"
     );
 
-    g.addColorStop(
-        1,
-        "#010406"
+    lg.addColorStop(
+      1,
+      "rgba(80,220,255,0)"
     );
 
-    ctx.fillStyle = g;
+    ctx.fillStyle=lg;
+
     ctx.fillRect(
-        0,0,
-        512,256
+      x,0,
+      w,512
     );
+  }
 
-    /* reflected light strips */
 
-    const lights = [
-        [80,0,100,256],
-        [220,0,40,256],
-        [355,0,90,256],
-        [470,0,25,256]
-    ];
+  const texture =
+    new THREE.CanvasTexture(c);
 
-    for(const l of lights){
+  texture.mapping =
+    THREE.EquirectangularReflectionMapping;
 
-        const lg =
-            ctx.createLinearGradient(
-                l[0],
-                0,
-                l[0]+l[2],
-                0
-            );
+  texture.colorSpace =
+    THREE.SRGBColorSpace;
 
-        lg.addColorStop(
-            0,
-            "rgba(80,220,255,0)"
-        );
-
-        lg.addColorStop(
-            .5,
-            "rgba(150,240,255,.18)"
-        );
-
-        lg.addColorStop(
-            1,
-            "rgba(80,220,255,0)"
-        );
-
-        ctx.fillStyle = lg;
-
-        ctx.fillRect(
-            l[0],
-            0,
-            l[2],
-            256
-        );
-    }
-
-    const texture =
-        new THREE.CanvasTexture(c);
-
-    texture.mapping =
-        THREE.EquirectangularReflectionMapping;
-
-    texture.colorSpace =
-        THREE.SRGBColorSpace;
-
-    scene.environment = texture;
+  scene.environment=
+    texture;
 }
 
 createEnvironment();
@@ -535,63 +538,56 @@ createEnvironment();
 ============================================================ */
 
 const hemi =
-    new THREE.HemisphereLight(
-        0x8bdfff,
-        0x020508,
-        1.5
-    );
+  new THREE.HemisphereLight(
+    0xa8eaff,
+    0x020306,
+    1.5
+  );
 
 scene.add(hemi);
 
 
 const key =
-    new THREE.DirectionalLight(
-        0xdfffff,
-        4.5
-    );
+  new THREE.DirectionalLight(
+    0xffffff,
+    5
+  );
 
 key.position.set(
-    -4,
-    5,
-    7
-);
-
-key.castShadow = true;
-
-key.shadow.mapSize.set(
-    1024,
-    1024
+  -4,
+  5,
+  7
 );
 
 scene.add(key);
 
 
-const rim =
-    new THREE.DirectionalLight(
-        0x27dfff,
-        3.2
-    );
+const cyanLight =
+  new THREE.DirectionalLight(
+    0x29ddff,
+    3.5
+  );
 
-rim.position.set(
-    5,
-    1,
-    -3
+cyanLight.position.set(
+  5,
+  1,
+  -4
 );
 
-scene.add(rim);
+scene.add(cyanLight);
 
 
 const warm =
-    new THREE.PointLight(
-        0xffb45e,
-        18,
-        8
-    );
+  new THREE.PointLight(
+    0xffa94f,
+    14,
+    9
+  );
 
 warm.position.set(
-    -2,
-    -1,
-    3
+  -2,
+  -1,
+  3
 );
 
 scene.add(warm);
@@ -602,884 +598,936 @@ scene.add(warm);
 ============================================================ */
 
 const steel =
-    new THREE.MeshPhysicalMaterial({
+  new THREE.MeshPhysicalMaterial({
 
-        color:0xb8d3d8,
+    color:0xaec7cb,
 
-        metalness:0.96,
-        roughness:0.18,
+    metalness:.98,
 
-        clearcoat:1,
-        clearcoatRoughness:.12,
+    roughness:.20,
 
-        envMapIntensity:2.3
-    });
+    clearcoat:1,
+
+    clearcoatRoughness:.12,
+
+    envMapIntensity:2.7
+  });
 
 
-const polished =
-    new THREE.MeshPhysicalMaterial({
+const polishedSteel =
+  new THREE.MeshPhysicalMaterial({
 
-        color:0xdceff1,
+    color:0xe2f3f5,
 
-        metalness:1,
-        roughness:0.09,
+    metalness:1,
 
-        clearcoat:1,
-        clearcoatRoughness:.06,
+    roughness:.075,
 
-        envMapIntensity:3
-    });
+    clearcoat:1,
+
+    clearcoatRoughness:.045,
+
+    envMapIntensity:3.5
+  });
 
 
 const darkSteel =
-    new THREE.MeshPhysicalMaterial({
+  new THREE.MeshPhysicalMaterial({
 
-        color:0x15262b,
+    color:0x142329,
 
-        metalness:.98,
-        roughness:.23,
+    metalness:.98,
 
-        clearcoat:.75,
-        clearcoatRoughness:.15,
+    roughness:.24,
 
-        envMapIntensity:1.8
-    });
+    clearcoat:.9,
+
+    clearcoatRoughness:.12,
+
+    envMapIntensity:2
+  });
+
+
+const blackMetal =
+  new THREE.MeshPhysicalMaterial({
+
+    color:0x020506,
+
+    metalness:.96,
+
+    roughness:.25,
+
+    envMapIntensity:1.8
+  });
 
 
 const brass =
-    new THREE.MeshPhysicalMaterial({
+  new THREE.MeshPhysicalMaterial({
 
-        color:0x9b621e,
+    color:0xb67625,
 
-        metalness:.96,
-        roughness:.19,
+    metalness:.97,
 
-        clearcoat:1,
-        clearcoatRoughness:.1,
+    roughness:.17,
 
-        envMapIntensity:2
-    });
+    clearcoat:1,
+
+    clearcoatRoughness:.08,
+
+    envMapIntensity:2.6
+  });
 
 
-const black =
-    new THREE.MeshPhysicalMaterial({
+const darkBrass =
+  new THREE.MeshPhysicalMaterial({
 
-        color:0x020607,
+    color:0x704315,
 
-        metalness:.85,
-        roughness:.28,
+    metalness:.98,
 
-        envMapIntensity:1.4
-    });
+    roughness:.22,
+
+    envMapIntensity:2
+  });
 
 
 const ruby =
-    new THREE.MeshPhysicalMaterial({
+  new THREE.MeshPhysicalMaterial({
 
-        color:0xff063d,
+    color:0xff0649,
 
-        metalness:.15,
-        roughness:.08,
+    metalness:.05,
 
-        transmission:.12,
+    roughness:.055,
 
-        clearcoat:1,
-        clearcoatRoughness:.04,
+    clearcoat:1,
 
-        emissive:0x5b0018,
-        emissiveIntensity:.8
-    });
+    clearcoatRoughness:.025,
+
+    emissive:0x61001d,
+
+    emissiveIntensity:.7
+  });
+
+
+const cyanMetal =
+  new THREE.MeshPhysicalMaterial({
+
+    color:0x42d8ef,
+
+    metalness:.9,
+
+    roughness:.15,
+
+    clearcoat:1,
+
+    clearcoatRoughness:.08,
+
+    envMapIntensity:2.5
+  });
 
 
 /* ============================================================
-   ROOT
+   GYRO ROOT
 ============================================================ */
 
 const gyro =
-    new THREE.Group();
+  new THREE.Group();
 
-gyro.scale.setScalar(
-    1.00
-);
+gyro.scale.setScalar(.82);
 
 scene.add(gyro);
 
 
 /* ============================================================
-   OUTER PRECISION HOUSING
+   HELPERS
 ============================================================ */
 
 function torus(
-    radius,
-    tube,
-    material,
-    segments=128,
-    radial=18
+  radius,
+  tube,
+  material,
+  segments=96,
+  radial=16
 ){
 
-    const geo =
-        new THREE.TorusGeometry(
-            radius,
-            tube,
-            radial,
-            segments
-        );
+  const geo =
+    new THREE.TorusGeometry(
+      radius,
+      tube,
+      radial,
+      segments
+    );
 
-    const mesh =
-        new THREE.Mesh(
-            geo,
-            material
-        );
+  const mesh =
+    new THREE.Mesh(
+      geo,
+      material
+    );
 
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+  mesh.castShadow=true;
+  mesh.receiveShadow=true;
 
-    return mesh;
+  return mesh;
 }
 
 
-const housing =
-    torus(
-        1.65,
-        .095,
-        polished
+function cylinder(
+  radius,
+  depth,
+  material,
+  segments=48
+){
+
+  const geo =
+    new THREE.CylinderGeometry(
+      radius,
+      radius,
+      depth,
+      segments
     );
+
+  const mesh =
+    new THREE.Mesh(
+      geo,
+      material
+    );
+
+  mesh.castShadow=true;
+  mesh.receiveShadow=true;
+
+  return mesh;
+}
+
+
+function screw(
+  radius,
+  depth,
+  material
+){
+
+  const g =
+    new THREE.Group();
+
+  const body =
+    cylinder(
+      radius,
+      depth,
+      material,
+      32
+    );
+
+  g.add(body);
+
+
+  const slot =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        radius*1.45,
+        depth+.01,
+        radius*.18
+      ),
+      blackMetal
+    );
+
+  slot.rotation.z=
+    Math.PI/2;
+
+  g.add(slot);
+
+  return g;
+}
+
+
+/* ============================================================
+   OUTER HOROLOGICAL HOUSING
+============================================================ */
+
+const housing =
+  new THREE.Group();
 
 gyro.add(housing);
 
 
-/* inner dark cavity */
+/* épaulement arrière */
 
-const cavity =
-    new THREE.Mesh(
-        new THREE.CylinderGeometry(
-            1.48,
-            1.48,
-            .18,
-            128
-        ),
-        black
-    );
+const rear =
+  torus(
+    1.66,
+    .105,
+    darkSteel
+  );
 
-cavity.rotation.x =
-    Math.PI/2;
-
-cavity.position.z =
-    -.04;
-
-cavity.receiveShadow = true;
-
-gyro.add(cavity);
+housing.add(rear);
 
 
-/* inner metallic lip */
-
-const innerLip =
-    torus(
-        1.37,
-        .045,
-        steel,
-        128,
-        14
-    );
-
-gyro.add(innerLip);
-
-
-/* ============================================================
-   PRECISION GRADUATIONS
-============================================================ */
-
-const graduationGroup =
-    new THREE.Group();
-
-gyro.add(graduationGroup);
-
-
-for(
-    let i=0;
-    i<72;
-    i++
-){
-
-    const angle =
-        (i/72)*Math.PI*2;
-
-    const major =
-        i%6===0;
-
-    const length =
-        major ? .12 : .065;
-
-    const width =
-        major ? .018 : .009;
-
-    const geo =
-        new THREE.BoxGeometry(
-            width,
-            length,
-            .025
-        );
-
-    const tick =
-        new THREE.Mesh(
-            geo,
-            major
-                ? polished
-                : darkSteel
-        );
-
-    const r =
-        1.50;
-
-    tick.position.set(
-        Math.cos(angle)*r,
-        Math.sin(angle)*r,
-        .07
-    );
-
-    tick.rotation.z =
-        angle - Math.PI/2;
-
-    graduationGroup.add(tick);
-}
-
-
-/* ============================================================
-   OUTER SCREWS
-============================================================ */
-
-function createScrew(){
-
-    const group =
-        new THREE.Group();
-
-    const head =
-        new THREE.Mesh(
-            new THREE.CylinderGeometry(
-                .055,
-                .055,
-                .025,
-                20
-            ),
-            polished
-        );
-
-    head.rotation.x =
-        Math.PI/2;
-
-    group.add(head);
-
-    const slot =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                .065,
-                .012,
-                .008
-            ),
-            darkSteel
-        );
-
-    slot.position.z =
-        .017;
-
-    group.add(slot);
-
-    return group;
-}
-
-
-for(
-    let i=0;
-    i<8;
-    i++
-){
-
-    const angle =
-        (i/8)*Math.PI*2;
-
-    const screw =
-        createScrew();
-
-    const r =
-        1.53;
-
-    screw.position.set(
-        Math.cos(angle)*r,
-        Math.sin(angle)*r,
-        .11
-    );
-
-    screw.lookAt(
-        new THREE.Vector3(
-            screw.position.x,
-            screw.position.y,
-            5
-        )
-    );
-
-    gyro.add(screw);
-}
-
-
-/* ============================================================
-   THREE-AXIS GIMBAL
-============================================================ */
-
-const axisOuter =
-    new THREE.Group();
-
-gyro.add(axisOuter);
-
-
-/* OUTER AXIS */
+/* corps métallique principal */
 
 const outerRing =
-    torus(
-        1.13,
-        .065,
-        steel,
-        128,
-        20
-    );
+  torus(
+    1.54,
+    .125,
+    polishedSteel
+  );
 
-axisOuter.add(
-    outerRing
-);
+housing.add(outerRing);
 
 
-/* external support arms */
-
-function supportArm(
-    length,
-    material
-){
-
-    const arm =
-        new THREE.Mesh(
-            new THREE.CylinderGeometry(
-                .035,
-                .035,
-                length,
-                24
-            ),
-            material
-        );
-
-    arm.castShadow = true;
-
-    return arm;
-}
-
-
-const armTop =
-    supportArm(
-        .45,
-        polished
-    );
-
-armTop.position.y =
-    1.02;
-
-axisOuter.add(
-    armTop
-);
-
-
-const armBottom =
-    supportArm(
-        .45,
-        polished
-    );
-
-armBottom.position.y =
-    -1.02;
-
-axisOuter.add(
-    armBottom
-);
-
-
-/* ============================================================
-   SECOND AXIS
-============================================================ */
-
-const axisMiddle =
-    new THREE.Group();
-
-axisOuter.add(
-    axisMiddle
-);
-
-const middleRing =
-    torus(
-        .83,
-        .062,
-        polished,
-        128,
-        20
-    );
-
-middleRing.rotation.x =
-    Math.PI/2;
-
-axisMiddle.add(
-    middleRing
-);
-
-
-/* ============================================================
-   THIRD AXIS
-============================================================ */
-
-const axisInner =
-    new THREE.Group();
-
-axisMiddle.add(
-    axisInner
-);
+/* anneau intérieur */
 
 const innerRing =
-    torus(
-        .57,
-        .052,
-        brass,
-        128,
-        20
-    );
+  torus(
+    1.36,
+    .060,
+    steel
+  );
 
-innerRing.rotation.y =
-    Math.PI/2;
-
-axisInner.add(
-    innerRing
-);
+housing.add(innerRing);
 
 
-/* ============================================================
-   INNER BALANCE BRIDGE
-============================================================ */
+/* gorge noire */
 
-const bridge =
-    new THREE.Mesh(
-        new THREE.BoxGeometry(
-            1.05,
-            .065,
-            .055
-        ),
-        polished
-    );
+const groove =
+  torus(
+    1.27,
+    .035,
+    blackMetal
+  );
 
-bridge.castShadow = true;
-
-axisInner.add(
-    bridge
-);
-
-
-const bridge2 =
-    bridge.clone();
-
-bridge2.rotation.z =
-    Math.PI/2;
-
-axisInner.add(
-    bridge2
-);
+housing.add(groove);
 
 
 /* ============================================================
-   CENTRAL BARREL
+   OUTER GRADUATIONS
 ============================================================ */
 
-const barrel =
+const graduationRing =
+  new THREE.Group();
+
+housing.add(
+  graduationRing
+);
+
+const tickCount=72;
+
+for(
+  let i=0;
+  i<tickCount;
+  i++
+){
+
+  const a =
+    i/tickCount*
+    Math.PI*2;
+
+  const major =
+    i%6===0;
+
+  const length =
+    major ? .13 : .075;
+
+  const width =
+    major ? .020 : .012;
+
+  const geo =
+    new THREE.BoxGeometry(
+      width,
+      length,
+      .018
+    );
+
+  const tick =
     new THREE.Mesh(
-        new THREE.CylinderGeometry(
-            .39,
-            .39,
-            .15,
-            96
-        ),
-        darkSteel
+      geo,
+      major
+        ? polishedSteel
+        : darkSteel
     );
 
-barrel.rotation.x =
-    Math.PI/2;
+  const r =
+    1.395;
 
-axisInner.add(
-    barrel
-);
+  tick.position.set(
+    Math.cos(a)*r,
+    Math.sin(a)*r,
+    .10
+  );
 
+  tick.rotation.z=
+    a-Math.PI/2;
 
-/* brass inner ring */
-
-const brassRing =
-    torus(
-        .36,
-        .035,
-        brass,
-        96,
-        16
-    );
-
-axisInner.add(
-    brassRing
-);
+  graduationRing.add(tick);
+}
 
 
 /* ============================================================
-   RUBY JEWEL
+   SCREWS ON HOUSING
 ============================================================ */
 
-const jewelMount =
-    new THREE.Mesh(
-        new THREE.CylinderGeometry(
-            .23,
-            .23,
-            .10,
-            64
-        ),
-        polished
+const screwRing =
+  new THREE.Group();
+
+housing.add(screwRing);
+
+for(
+  let i=0;
+  i<8;
+  i++
+){
+
+  const a =
+    i/8*Math.PI*2;
+
+  const s =
+    screw(
+      .060,
+      .028,
+      polishedSteel
     );
 
-jewelMount.rotation.x =
+  s.position.set(
+    Math.cos(a)*1.48,
+    Math.sin(a)*1.48,
+    .16
+  );
+
+  screwRing.add(s);
+}
+
+
+/* ============================================================
+   THREE AXIS GIMBAL SYSTEM
+============================================================ */
+
+
+/*
+   AXE 1
+   Anneau principal
+*/
+
+const axis1 =
+  new THREE.Group();
+
+gyro.add(axis1);
+
+axis1.rotation.z=
+  THREE.MathUtils.degToRad(8);
+
+
+const gimbal1 =
+  torus(
+    1.08,
+    .075,
+    polishedSteel,
+    96,
+    18
+  );
+
+axis1.add(gimbal1);
+
+
+/* supports axe 1 */
+
+for(
+  const y of [-1.08,1.08]
+){
+
+  const support =
+    cylinder(
+      .055,
+      .32,
+      darkSteel
+    );
+
+  support.rotation.z=
     Math.PI/2;
 
-axisInner.add(
-    jewelMount
-);
+  support.position.set(
+    0,
+    y,
+    .02
+  );
 
+  axis1.add(support);
+}
+
+
+/*
+   AXE 2
+   second gimbal
+*/
+
+const axis2 =
+  new THREE.Group();
+
+gyro.add(axis2);
+
+axis2.rotation.x=
+  THREE.MathUtils.degToRad(18);
+
+
+const gimbal2 =
+  torus(
+    .86,
+    .070,
+    steel,
+    96,
+    18
+  );
+
+axis2.add(gimbal2);
+
+
+/*
+   axe 2 crosses
+*/
+
+const cross2 =
+  new THREE.Group();
+
+axis2.add(cross2);
+
+
+const axle2 =
+  cylinder(
+    .038,
+    1.95,
+    darkSteel
+  );
+
+cross2.add(axle2);
+
+
+const axle2Cap1 =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      .075,
+      24,
+      16
+    ),
+    polishedSteel
+  );
+
+axle2Cap1.position.y=
+  .98;
+
+cross2.add(axle2Cap1);
+
+
+const axle2Cap2 =
+  axle2Cap1.clone();
+
+axle2Cap2.position.y=
+  -.98;
+
+cross2.add(axle2Cap2);
+
+
+/*
+   AXE 3
+   cœur du gyrotourbillon
+*/
+
+const axis3 =
+  new THREE.Group();
+
+gyro.add(axis3);
+
+axis3.rotation.y=
+  THREE.MathUtils.degToRad(25);
+
+
+const gimbal3 =
+  torus(
+    .63,
+    .060,
+    polishedSteel,
+    96,
+    18
+  );
+
+axis3.add(gimbal3);
+
+
+/* ============================================================
+   CENTRAL CAGE
+============================================================ */
+
+const cage =
+  new THREE.Group();
+
+axis3.add(cage);
+
+
+/* cage circulaire */
+
+const cageRing =
+  torus(
+    .43,
+    .048,
+    brass,
+    96,
+    14
+  );
+
+cage.add(cageRing);
+
+
+/* cage intérieure */
+
+const cageInner =
+  torus(
+    .29,
+    .036,
+    steel,
+    80,
+    12
+  );
+
+cage.add(cageInner);
+
+
+/* ============================================================
+   CENTRAL BALANCE
+============================================================ */
+
+const balance =
+  new THREE.Group();
+
+cage.add(balance);
+
+
+/* axe vertical */
+
+const balanceAxle =
+  cylinder(
+    .027,
+    .82,
+    polishedSteel
+  );
+
+balance.add(balanceAxle);
+
+
+/* roue */
+
+const balanceWheel =
+  torus(
+    .245,
+    .030,
+    brass,
+    96,
+    14
+  );
+
+balance.add(balanceWheel);
+
+
+/* roue noire interne */
+
+const balanceInner =
+  torus(
+    .175,
+    .020,
+    darkSteel,
+    72,
+    12
+  );
+
+balance.add(balanceInner);
+
+
+/* rubis central */
 
 const jewel =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      .115,
+      32,
+      24
+    ),
+    ruby
+  );
+
+balance.add(jewel);
+
+
+/* ============================================================
+   BALANCE SPOKES
+============================================================ */
+
+for(
+  let i=0;
+  i<6;
+  i++
+){
+
+  const a =
+    i/6*Math.PI*2;
+
+  const spoke =
     new THREE.Mesh(
-        new THREE.SphereGeometry(
-            .155,
-            48,
-            32
-        ),
-        ruby
+      new THREE.BoxGeometry(
+        .020,
+        .39,
+        .020
+      ),
+      brass
     );
 
-jewel.position.z =
-    .08;
+  spoke.position.set(
+    Math.cos(a)*.10,
+    Math.sin(a)*.10,
+    .035
+  );
 
-jewel.castShadow = true;
+  spoke.rotation.z=
+    a;
 
-axisInner.add(
-    jewel
+  balance.add(spoke);
+}
+
+
+/* ============================================================
+   MICRO GRADUATIONS AROUND CORE
+============================================================ */
+
+const microMarks =
+  new THREE.Group();
+
+cage.add(microMarks);
+
+for(
+  let i=0;
+  i<36;
+  i++
+){
+
+  const a =
+    i/36*Math.PI*2;
+
+  const major =
+    i%3===0;
+
+  const mark =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        major ? .017 : .010,
+        major ? .075 : .045,
+        .012
+      ),
+      major
+        ? polishedSteel
+        : darkSteel
+    );
+
+  const r=.50;
+
+  mark.position.set(
+    Math.cos(a)*r,
+    Math.sin(a)*r,
+    .035
+  );
+
+  mark.rotation.z=
+    a-Math.PI/2;
+
+  microMarks.add(mark);
+}
+
+
+/* ============================================================
+   SECONDARY AXLE
+============================================================ */
+
+const secondaryAxis =
+  new THREE.Group();
+
+cage.add(secondaryAxis);
+
+const secondaryBar =
+  new THREE.Mesh(
+    new THREE.BoxGeometry(
+      .76,
+      .026,
+      .032
+    ),
+    polishedSteel
+  );
+
+secondaryAxis.add(
+  secondaryBar
 );
 
 
-/* ============================================================
-   JEWEL RING GRADUATIONS
-============================================================ */
-
-const jewelTicks =
-    new THREE.Group();
-
-axisInner.add(
-    jewelTicks
-);
+/* petites vis */
 
 for(
-    let i=0;
-    i<24;
-    i++
+  let i=0;
+  i<4;
+  i++
 ){
 
-    const a =
-        i/24*Math.PI*2;
+  const a =
+    i/4*Math.PI*2;
 
-    const tick =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                .012,
-                i%6===0 ? .075 : .045,
-                .018
-            ),
-            i%6===0
-                ? polished
-                : darkSteel
-        );
-
-    tick.position.set(
-        Math.cos(a)*.28,
-        Math.sin(a)*.28,
-        .10
+  const s =
+    screw(
+      .032,
+      .018,
+      polishedSteel
     );
 
-    tick.rotation.z =
-        a-Math.PI/2;
+  s.position.set(
+    Math.cos(a)*.38,
+    Math.sin(a)*.38,
+    .055
+  );
 
-    jewelTicks.add(
-        tick
-    );
+  cage.add(s);
 }
 
 
 /* ============================================================
-   MICRO SCREWS ON GIMBAL
+   OUTER TECHNICAL RINGS
 ============================================================ */
 
-function addMicroScrew(
-    parent,
-    radius,
-    angle,
-    z=.08
+function technicalRing(
+  radius,
+  tube,
+  material,
+  rotationZ=0
 ){
 
-    const s =
-        createScrew();
-
-    s.scale.setScalar(.72);
-
-    s.position.set(
-        Math.cos(angle)*radius,
-        Math.sin(angle)*radius,
-        z
+  const ring =
+    torus(
+      radius,
+      tube,
+      material,
+      128,
+      12
     );
 
-    parent.add(s);
+  ring.rotation.z=
+    rotationZ;
+
+  gyro.add(ring);
+
+  return ring;
 }
 
 
+const tech1 =
+  technicalRing(
+    1.78,
+    .018,
+    cyanMetal,
+    .15
+  );
+
+
+const tech2 =
+  technicalRing(
+    1.90,
+    .012,
+    darkSteel,
+    -.21
+  );
+
+
+const tech3 =
+  technicalRing(
+    2.02,
+    .009,
+    cyanMetal,
+    .08
+  );
+
+
+/* ============================================================
+   OUTER INDEX MARKS
+============================================================ */
+
+const indexes =
+  new THREE.Group();
+
+gyro.add(indexes);
+
 for(
-    let i=0;
-    i<6;
-    i++
+  let i=0;
+  i<48;
+  i++
 ){
 
-    addMicroScrew(
-        axisOuter,
-        1.02,
-        i/6*Math.PI*2
+  const a =
+    i/48*Math.PI*2;
+
+  const major =
+    i%4===0;
+
+  const r =
+    major ? 2.08 : 2.02;
+
+  const len =
+    major ? .11 : .055;
+
+  const mark =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        major ? .020 : .010,
+        len,
+        .010
+      ),
+      major
+        ? polishedSteel
+        : cyanMetal
     );
-}
 
+  mark.position.set(
+    Math.cos(a)*r,
+    Math.sin(a)*r,
+    -.02
+  );
 
-for(
-    let i=0;
-    i<4;
-    i++
-){
+  mark.rotation.z=
+    a-Math.PI/2;
 
-    addMicroScrew(
-        axisMiddle,
-        .72,
-        i/4*Math.PI*2
-    );
+  indexes.add(mark);
 }
 
 
 /* ============================================================
-   SECONDARY MICRO-GEARS
+   CENTRAL SHADOW DISC
 ============================================================ */
 
-function createGear(
-    radius,
-    teeth,
-    material
-){
+const shadowDisc =
+  new THREE.Mesh(
+    new THREE.CircleGeometry(
+      .72,
+      96
+    ),
+    new THREE.MeshBasicMaterial({
+      color:0x020609
+    })
+  );
 
-    const group =
-        new THREE.Group();
+shadowDisc.position.z=
+  -.045;
 
-    const body =
-        new THREE.Mesh(
-            new THREE.CylinderGeometry(
-                radius,
-                radius,
-                .055,
-                64
-            ),
-            material
-        );
-
-    body.rotation.x =
-        Math.PI/2;
-
-    group.add(body);
+gyro.add(shadowDisc);
 
 
-    for(
-        let i=0;
-        i<teeth;
-        i++
-    ){
+/* ============================================================
+   RE-ORDER FRONT OBJECTS
+============================================================ */
 
-        const a =
-            i/teeth*Math.PI*2;
-
-        const tooth =
-            new THREE.Mesh(
-                new THREE.BoxGeometry(
-                    .035,
-                    .095,
-                    .065
-                ),
-                material
-            );
-
-        tooth.position.set(
-            Math.cos(a)*(radius+.025),
-            Math.sin(a)*(radius+.025),
-            0
-        );
-
-        tooth.rotation.z =
-            a;
-
-        group.add(tooth);
+gyro.traverse(
+  obj=>{
+    if(obj.isMesh){
+      obj.renderOrder=2;
     }
-
-    return group;
-}
-
-
-const gear =
-    createGear(
-        .22,
-        18,
-        darkSteel
-    );
-
-axisInner.add(
-    gear
+  }
 );
-
-
-/* ============================================================
-   OUTER HUD RINGS
-============================================================ */
-
-function hudRing(
-    radius,
-    tube,
-    opacity,
-    dash=false
-){
-
-    const group =
-        new THREE.Group();
-
-    const segments =
-        dash ? 96 : 160;
-
-    for(
-        let i=0;
-        i<segments;
-        i++
-    ){
-
-        if(
-            dash &&
-            i%3!==0
-        ) continue;
-
-        const a1 =
-            i/segments*Math.PI*2;
-
-        const a2 =
-            (i+1)/segments*Math.PI*2;
-
-        const points = [
-            new THREE.Vector3(
-                Math.cos(a1)*radius,
-                Math.sin(a1)*radius,
-                -.16
-            ),
-            new THREE.Vector3(
-                Math.cos(a2)*radius,
-                Math.sin(a2)*radius,
-                -.16
-            )
-        ];
-
-        const geo =
-            new THREE.BufferGeometry()
-                .setFromPoints(points);
-
-        const mat =
-            new THREE.LineBasicMaterial({
-                color:0x28dfff,
-                transparent:true,
-                opacity
-            });
-
-        const line =
-            new THREE.Line(
-                geo,
-                mat
-            );
-
-        group.add(line);
-    }
-
-    return group;
-}
-
-
-gyro.add(
-    hudRing(
-        1.94,
-        .01,
-        .45,
-        false
-    )
-);
-
-
-gyro.add(
-    hudRing(
-        2.15,
-        .01,
-        .32,
-        true
-    )
-);
-
-
-gyro.add(
-    hudRing(
-        2.34,
-        .01,
-        .22,
-        true
-    )
-);
-
-
-/* cardinal dots */
-
-for(
-    let i=0;
-    i<4;
-    i++
-){
-
-    const a =
-        i*Math.PI/2;
-
-    const dot =
-        new THREE.Mesh(
-            new THREE.SphereGeometry(
-                .035,
-                16,
-                16
-            ),
-            new THREE.MeshBasicMaterial({
-                color:0xd8fbff
-            })
-        );
-
-    dot.position.set(
-        Math.cos(a)*2.34,
-        Math.sin(a)*2.34,
-        -.08
-    );
-
-    gyro.add(dot);
-}
 
 
 /* ============================================================
@@ -1487,194 +1535,186 @@ for(
 ============================================================ */
 
 const clock =
-    new THREE.Clock();
+  new THREE.Clock();
 
 
 function animate(){
 
-    requestAnimationFrame(
-        animate
-    );
+  requestAnimationFrame(
+    animate
+  );
 
-    const t =
-        clock.getElapsedTime();
-
-
-    /*
-       THREE AXES
-       --------------------------------
-       Chaque cage possède sa propre
-       vitesse et son propre axe.
-    */
-
-    axisOuter.rotation.z =
-        t * .20;
-
-    axisOuter.rotation.x =
-        Math.sin(t*.42)*.07;
+  const t =
+    clock.getElapsedTime();
 
 
-    axisMiddle.rotation.x =
-        t * .34;
+  /*
+     mouvement lent du gyrotourbillon.
+     Chaque axe possède sa propre vitesse.
+  */
 
-    axisMiddle.rotation.z =
-        Math.sin(t*.27)*.10;
-
-
-    axisInner.rotation.y =
-        t * .58;
-
-    axisInner.rotation.z =
-        Math.sin(t*.65)*.045;
-
-
-    /* balance */
-
-    bridge.rotation.z =
-        Math.sin(t*4.0)*.22;
+  axis1.rotation.z =
+    THREE.MathUtils.degToRad(8)
+    +
+    Math.sin(t*.34)*.16
+    +
+    t*.055;
 
 
-    /* jewel breathing */
-
-    const pulse =
-        1 +
-        Math.sin(t*2.3)*.025;
-
-    jewel.scale.setScalar(
-        pulse
-    );
+  axis2.rotation.x =
+    THREE.MathUtils.degToRad(18)
+    +
+    Math.sin(t*.27)*.12;
 
 
-    /* subtle whole mechanism breathing */
-
-    const s =
-        1 +
-        Math.sin(t*.75)*.006;
-
-    gyro.scale.set(
-        s,
-        s,
-        s
-    );
+  axis2.rotation.z =
+    Math.cos(t*.19)*.08;
 
 
-    renderer.render(
-        scene,
-        camera
-    );
+  axis3.rotation.y =
+    THREE.MathUtils.degToRad(25)
+    +
+    t*.22;
+
+
+  cage.rotation.z =
+    t*.72;
+
+
+  balance.rotation.z =
+    -t*1.9;
+
+
+  secondaryAxis.rotation.z =
+    t*2.8;
+
+
+  /*
+     petite respiration de la mécanique
+  */
+
+  const pulse =
+    1 +
+    Math.sin(t*1.15)*.006;
+
+  cage.scale.setScalar(
+    pulse
+  );
+
+
+  /*
+     rotation extrêmement lente
+     de l'ensemble extérieur
+  */
+
+  tech1.rotation.z =
+    .15+t*.018;
+
+  tech2.rotation.z =
+    -.21-t*.012;
+
+  tech3.rotation.z =
+    .08+t*.008;
+
+
+  renderer.render(
+    scene,
+    camera
+  );
 }
 
+
+/* ============================================================
+   RESIZE
+============================================================ */
+
+function resize(){
+
+  const w =
+    canvas.clientWidth;
+
+  const h =
+    canvas.clientHeight;
+
+  if(!w || !h){
+    return;
+  }
+
+  renderer.setSize(
+    w,
+    h,
+    false
+  );
+
+  camera.aspect =
+    w/h;
+
+  camera.updateProjectionMatrix();
+}
+
+
+const resizeObserver =
+  new ResizeObserver(
+    resize
+  );
+
+resizeObserver.observe(
+  canvas
+);
+
+resize();
 
 animate();
 
 
 /* ============================================================
-   RESPONSIVE CAMERA
+   TOUCH / POINTER — MICRO PARALLAX
 ============================================================ */
 
-function resize(){
-
-    const w =
-        canvas.clientWidth;
-
-    const h =
-        canvas.clientHeight;
-
-    if(
-        !w ||
-        !h
-    ) return;
-
-    camera.aspect =
-        w/h;
-
-    /*
-       La caméra reste suffisamment
-       éloignée pour que le mécanisme
-       reste compact sur l'iPhone.
-    */
-
-    camera.position.z =
-        w < 430
-            ? 8.9
-            : 8.2;
-
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(
-        w,
-        h,
-        false
-    );
-}
-
+let targetX=0;
+let targetY=0;
 
 window.addEventListener(
-    "resize",
-    resize
-);
+  "pointermove",
+  e=>{
 
-resize();
+    const x =
+      (e.clientX /
+       window.innerWidth)-.5;
 
+    const y =
+      (e.clientY /
+       window.innerHeight)-.5;
 
-/* ============================================================
-   INTERACTION TACTILE LÉGÈRE
-============================================================ */
-
-let down = false;
-let lastX = 0;
-let lastY = 0;
-
-canvas.addEventListener(
-    "pointerdown",
-    e => {
-
-        down = true;
-
-        lastX = e.clientX;
-        lastY = e.clientY;
-    }
+    targetX=x;
+    targetY=y;
+  },
+  {passive:true}
 );
 
 
-canvas.addEventListener(
-    "pointermove",
-    e => {
+function parallax(){
 
-        if(!down) return;
+  camera.position.x +=
+    (targetX*.28 -
+     camera.position.x)*.025;
 
-        const dx =
-            e.clientX-lastX;
+  camera.position.y +=
+    (0.10-targetY*.20 -
+     camera.position.y)*.025;
 
-        const dy =
-            e.clientY-lastY;
+  camera.lookAt(
+    0,
+    0,
+    0
+  );
 
-        gyro.rotation.y +=
-            dx*.002;
+  requestAnimationFrame(
+    parallax
+  );
+}
 
-        gyro.rotation.x +=
-            dy*.0015;
-
-        lastX = e.clientX;
-        lastY = e.clientY;
-    }
-);
-
-
-canvas.addEventListener(
-    "pointerup",
-    () => {
-        down = false;
-    }
-);
-
-
-canvas.addEventListener(
-    "pointercancel",
-    () => {
-        down = false;
-    }
-);
+parallax();
 
 </script>
 
