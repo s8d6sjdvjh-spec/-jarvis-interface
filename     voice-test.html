@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JARVIS Voice Test</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #020508;
+        color: #dffaff;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        text-align: center;
+    }
+
+    button {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        border: 1px solid #00d9ff;
+        background: radial-gradient(circle, #00d9ff, #003b50 45%, #020508 70%);
+        color: white;
+        font-size: 18px;
+        box-shadow: 0 0 40px rgba(0, 210, 255, .5);
+    }
+
+    #status {
+        margin-top: 35px;
+        font-size: 14px;
+        letter-spacing: 3px;
+        color: #00d9ff;
+    }
+
+    #result {
+        margin-top: 25px;
+        max-width: 85%;
+        font-size: 20px;
+    }
+</style>
+</head>
+
+<body>
+
+<button id="listen">PARLER</button>
+
+<div id="status">VOICE TEST READY</div>
+
+<div id="result">
+    En attente…
+</div>
+
+<script>
+
+const button = document.getElementById("listen");
+const status = document.getElementById("status");
+const result = document.getElementById("result");
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+if (!SpeechRecognition) {
+
+    status.textContent = "NOT AVAILABLE";
+    result.textContent =
+        "La reconnaissance vocale n'est pas disponible dans ce contexte.";
+
+} else {
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "fr-FR";
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    button.addEventListener("click", () => {
+
+        result.textContent = "Je vous écoute…";
+        status.textContent = "LISTENING";
+
+        recognition.start();
+    });
+
+    recognition.onresult = (event) => {
+
+        let transcript = "";
+
+        for (let i = event.resultIndex;
+             i < event.results.length;
+             i++) {
+
+            transcript += event.results[i][0].transcript;
+        }
+
+        result.textContent = transcript;
+    };
+
+    recognition.onend = () => {
+
+        status.textContent = "VOICE READY";
+    };
+
+    recognition.onerror = (event) => {
+
+        status.textContent = "VOICE ERROR";
+
+        result.textContent =
+            "Erreur : " + event.error;
+    };
+}
+
+</script>
+
+</body>
+</html>
