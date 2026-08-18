@@ -2,20 +2,24 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport"
-content="width=device-width,
-initial-scale=1,
-maximum-scale=1,
-user-scalable=no">
+      content="width=device-width,
+               initial-scale=1,
+               maximum-scale=1,
+               user-scalable=no,
+               viewport-fit=cover">
 
-<title>JARVIS — Visual Core</title>
+<title>JARVIS — Gyrotourbillon Precision Core</title>
 
 <style>
-
-/* ==================================================
-   BASE
-================================================== */
+:root {
+    --bg: #02080b;
+    --cyan: #00d9ff;
+    --cyan-soft: #5eeaff;
+    --cyan-dark: #0b5364;
+    --white: #d9f8ff;
+    --panel: rgba(2, 14, 19, 0.78);
+}
 
 * {
     box-sizing: border-box;
@@ -24,1447 +28,2974 @@ user-scalable=no">
 
 html,
 body {
-    margin: 0;
     width: 100%;
     height: 100%;
+    margin: 0;
     overflow: hidden;
-
-    background: #020609;
-    color: #d9faff;
-
+    background: var(--bg);
     font-family:
         -apple-system,
         BlinkMacSystemFont,
-        "SF Pro Display",
-        Arial,
+        "Segoe UI",
         sans-serif;
 }
 
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative;
+    color: var(--white);
 }
 
-
-/* ==================================================
-   SCÈNE
-================================================== */
-
-.scene {
+#app {
     position: relative;
-
     width: 100vw;
-    height: 100vh;
-
+    height: 100dvh;
+    min-height: 650px;
     overflow: hidden;
-
     background:
         radial-gradient(
-            circle at 50% 35%,
-            rgba(0, 205, 255, .10),
-            transparent 27%
+            ellipse at 50% 38%,
+            rgba(3, 30, 38, 0.48),
+            transparent 46%
         ),
-        radial-gradient(
-            circle at 50% 35%,
-            rgba(0, 120, 180, .055),
-            transparent 48%
-        ),
-        #020609;
+        #02080b;
 }
 
+/* ---------------------------------------------------------
+   GRID
+--------------------------------------------------------- */
 
-/* grille technique */
-
-.scene::before {
-    content: "";
-
+.grid {
     position: absolute;
     inset: 0;
-
+    pointer-events: none;
+    opacity: 0.22;
     background-image:
         linear-gradient(
-            rgba(50, 210, 240, .026) 1px,
+            rgba(32, 121, 139, 0.14) 1px,
             transparent 1px
         ),
         linear-gradient(
             90deg,
-            rgba(50, 210, 240, .026) 1px,
+            rgba(32, 121, 139, 0.14) 1px,
             transparent 1px
         );
+    background-size: 74px 74px;
+}
 
-    background-size: 27px 27px;
-
-    mask-image:
+.grid::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
         radial-gradient(
-            circle at 50% 35%,
-            black 0%,
-            transparent 73%
+            circle at 50% 45%,
+            transparent 0%,
+            transparent 38%,
+            rgba(0, 0, 0, 0.3) 76%,
+            rgba(0, 0, 0, 0.7) 100%
         );
 }
 
+/* ---------------------------------------------------------
+   HEADER
+--------------------------------------------------------- */
 
-/* ==================================================
-   ENTÊTE
-================================================== */
-
-.header {
+header {
     position: absolute;
-
-    top: 18px;
-    left: 22px;
-    right: 22px;
-
+    z-index: 20;
+    top: max(28px, env(safe-area-inset-top));
+    left: 0;
+    width: 100%;
+    padding: 0 42px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    z-index: 20;
 }
 
 .brand {
-    font-size: 13px;
-    letter-spacing: 6px;
-
-    color: #c8f8ff;
-
+    font-size: clamp(25px, 7vw, 39px);
+    letter-spacing: 0.32em;
+    font-weight: 300;
+    color: #d8f9ff;
     text-shadow:
-        0 0 9px rgba(0,220,255,.45);
+        0 0 12px rgba(120, 235, 255, 0.08);
 }
 
 .status {
     display: flex;
-    gap: 13px;
-
-    font-size: 8px;
-    letter-spacing: 3px;
-
-    color: rgba(160,235,250,.65);
+    align-items: center;
+    gap: clamp(15px, 4vw, 28px);
 }
 
-.status span::before {
-    content: "●";
-
-    margin-right: 5px;
-
-    color: #00e4ff;
-
-    text-shadow:
-        0 0 7px #00e4ff;
+.statusItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 9px;
+    letter-spacing: 0.34em;
+    color: #60828b;
+    white-space: nowrap;
 }
 
-
-/* ==================================================
-   ZONE CENTRALE
-================================================== */
-
-.core-area {
-
-    position: absolute;
-
-    left: 50%;
-    top: 35%;
-
-    width: min(96vw, 570px);
-    aspect-ratio: 1;
-
-    transform:
-        translate(-50%, -50%);
-
-    transition:
-        transform .7s cubic-bezier(.2,.8,.2,1);
-
-    z-index: 5;
-}
-
-
-/* halo principal */
-
-.halo {
-
-    position: absolute;
-
-    inset: 9%;
-
+.statusDot {
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(0,225,255,.17),
-            rgba(0,130,180,.06) 38%,
-            transparent 70%
-        );
-
-    filter: blur(18px);
-
-    animation:
-        haloPulse 4s ease-in-out infinite;
+    background: #00d9ff;
+    box-shadow:
+        0 0 7px #00d9ff,
+        0 0 16px rgba(0, 217, 255, 0.55);
 }
 
-@keyframes haloPulse {
+/* ---------------------------------------------------------
+   SUBTITLE
+--------------------------------------------------------- */
 
-    0%,100% {
-        transform: scale(.95);
-        opacity: .55;
-    }
-
-    50% {
-        transform: scale(1.05);
-        opacity: .95;
-    }
-}
-
-
-/* ==================================================
-   SVG PRINCIPAL
-================================================== */
-
-.core-svg {
-
+.subtitle {
     position: absolute;
+    z-index: 20;
+    top: 24.5%;
+    width: 100%;
+    text-align: center;
+    color: #42717c;
+    font-size: 10px;
+    letter-spacing: 0.48em;
+    font-weight: 400;
+}
 
+/* ---------------------------------------------------------
+   MAIN VISUAL
+--------------------------------------------------------- */
+
+.visual {
+    position: absolute;
+    z-index: 5;
+    top: 16.5%;
+    left: 50%;
+    width: min(96vw, 620px);
+    height: min(61vw, 620px);
+    transform: translateX(-50%);
+}
+
+#scene {
+    position: absolute;
     inset: 0;
-
     width: 100%;
     height: 100%;
-
-    overflow: visible;
+    display: block;
 }
 
+/* ---------------------------------------------------------
+   PANELS
+--------------------------------------------------------- */
 
-/* ==================================================
-   ROTATIONS DES COURONNES
-================================================== */
-
-.ring-slow {
-
-    transform-origin: 250px 250px;
-
-    animation:
-        rotateClockwise 55s linear infinite;
-}
-
-.ring-slow-reverse {
-
-    transform-origin: 250px 250px;
-
-    animation:
-        rotateCounter 72s linear infinite;
-}
-
-.ring-medium {
-
-    transform-origin: 250px 250px;
-
-    animation:
-        rotateClockwise 30s linear infinite;
-}
-
-.ring-medium-reverse {
-
-    transform-origin: 250px 250px;
-
-    animation:
-        rotateCounter 37s linear infinite;
-}
-
-.ring-fast {
-
-    transform-origin: 250px 250px;
-
-    animation:
-        rotateClockwise 13s linear infinite;
-}
-
-@keyframes rotateClockwise {
-
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes rotateCounter {
-
-    from {
-        transform: rotate(360deg);
-    }
-
-    to {
-        transform: rotate(0deg);
-    }
-}
-
-
-/* ==================================================
-   GYROTURBILLON
-================================================== */
-
-.gyro-main {
-
-    transform-origin: 250px 250px;
-
-    animation:
-        gyroSpin 9s linear infinite;
-}
-
-.gyro-secondary {
-
-    transform-origin: 250px 250px;
-
-    animation:
-        gyroSpinReverse 6.5s linear infinite;
-}
-
-.gyro-core {
-
-    transform-origin: 250px 250px;
-
-    animation:
-        gyroPulse 2.8s ease-in-out infinite;
-}
-
-@keyframes gyroSpin {
-
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes gyroSpinReverse {
-
-    from {
-        transform: rotate(360deg);
-    }
-
-    to {
-        transform: rotate(0deg);
-    }
-}
-
-@keyframes gyroPulse {
-
-    0%,100% {
-        transform: scale(.94);
-        opacity: .82;
-    }
-
-    50% {
-        transform: scale(1.07);
-        opacity: 1;
-    }
-}
-
-
-/* ==================================================
-   LUEURS
-================================================== */
-
-.glow {
-
-    filter:
-        drop-shadow(
-            0 0 4px rgba(0,225,255,.85)
-        );
-}
-
-.glow-strong {
-
-    filter:
-        drop-shadow(
-            0 0 8px rgba(0,225,255,1)
-        );
-}
-
-
-/* ==================================================
-   LABEL CENTRAL
-================================================== */
-
-.core-label {
-
+.panels {
     position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    transform:
-        translate(-50%,-50%);
-
-    z-index: 8;
-
-    text-align: center;
-
-    pointer-events: none;
-
-    text-shadow:
-        0 0 7px rgba(0,225,255,.7);
+    z-index: 30;
+    left: 5.5%;
+    right: 5.5%;
+    bottom: max(95px, env(safe-area-inset-bottom) + 90px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 18px;
 }
-
-.core-label .main {
-
-    font-size: 10px;
-    letter-spacing: 4px;
-
-    color: #dffcff;
-}
-
-.core-label .sub {
-
-    margin-top: 7px;
-
-    font-size: 6px;
-    letter-spacing: 3px;
-
-    color: rgba(140,225,240,.55);
-}
-
-
-/* ==================================================
-   PANNEAUX
-================================================== */
 
 .panel {
-
-    position: absolute;
-
-    width: 145px;
-
-    min-height: 90px;
-
-    padding: 12px 13px;
-
-    border:
-        1px solid rgba(0,210,245,.22);
-
+    min-height: 118px;
+    padding: 20px 20px 17px;
+    border: 1px solid rgba(0, 211, 244, 0.65);
     background:
         linear-gradient(
             135deg,
-            rgba(0,80,110,.11),
-            rgba(0,15,25,.38)
+            rgba(5, 28, 35, 0.73),
+            rgba(1, 11, 15, 0.82)
         );
-
     box-shadow:
-        inset 0 0 18px rgba(0,190,240,.035);
-
-    color: rgba(190,245,255,.75);
-
-    z-index: 10;
+        inset 0 0 25px rgba(0, 170, 210, 0.035),
+        0 0 18px rgba(0, 80, 100, 0.035);
 }
 
-.panel-title {
-
-    font-size: 8px;
-    letter-spacing: 4px;
-
-    color: #66e9ff;
+.panelLabel {
+    color: #65b5c4;
+    font-size: 9px;
+    letter-spacing: 0.42em;
+    margin-bottom: 15px;
 }
 
-.panel-value {
-
-    margin-top: 8px;
-
-    font-size: 21px;
-
-    color: #d9fbff;
-
-    text-shadow:
-        0 0 6px rgba(0,210,255,.3);
+.panelValue {
+    color: #d9faff;
+    font-size: clamp(31px, 8vw, 45px);
+    font-weight: 300;
+    line-height: 0.9;
+    margin-bottom: 13px;
 }
 
-.panel-small {
-
-    margin-top: 4px;
-
-    font-size: 7px;
-    letter-spacing: 1px;
-
-    color: rgba(145,220,235,.5);
+.panelInfo {
+    color: #456c75;
+    font-size: 9px;
+    letter-spacing: 0.25em;
 }
 
-.panel-house {
-    left: 18px;
-    bottom: 145px;
-}
+/* ---------------------------------------------------------
+   CANVAS MOBILE ADJUSTMENTS
+--------------------------------------------------------- */
 
-.panel-weather {
-    right: 18px;
-    bottom: 145px;
-}
+@media (max-width: 430px) {
 
-.panel-system {
-    left: 18px;
-    bottom: 55px;
-}
-
-.panel-activity {
-    right: 18px;
-    bottom: 55px;
-}
-
-
-/* ==================================================
-   BOUTON
-================================================== */
-
-.microphone {
-
-    position: absolute;
-
-    left: 50%;
-    bottom: 42px;
-
-    width: 70px;
-    height: 70px;
-
-    transform:
-        translateX(-50%);
-
-    border-radius: 50%;
-
-    border:
-        1px solid rgba(0,225,255,.7);
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(0,225,255,.25),
-            rgba(0,60,90,.1) 55%,
-            transparent 72%
-        );
-
-    color: #dffcff;
-
-    box-shadow:
-        0 0 25px rgba(0,220,255,.25);
-
-    font-size: 20px;
-
-    z-index: 20;
-}
-
-
-/* ==================================================
-   MODE ACTIF
-================================================== */
-
-body.active .core-area {
-
-    transform:
-        translate(-50%,-50%)
-        translateY(-13px);
-}
-
-body.active .ring-fast {
-
-    animation-duration: 5s;
-}
-
-body.active .ring-medium {
-
-    animation-duration: 15s;
-}
-
-body.active .gyro-main {
-
-    animation-duration: 4s;
-}
-
-body.active .halo {
-
-    filter:
-        blur(22px)
-        brightness(1.45);
-}
-
-
-/* ==================================================
-   PETITS ÉLÉMENTS SVG
-================================================== */
-
-.dim {
-    stroke:
-        rgba(70,215,240,.20);
-}
-
-.tech {
-    stroke:
-        rgba(90,225,245,.52);
-}
-
-.tech-bright {
-    stroke:
-        rgba(135,245,255,.85);
-}
-
-.tick {
-    fill:
-        rgba(100,230,250,.72);
-}
-
-.marker {
-    fill:
-        #dffcff;
-}
-
-
-/* ==================================================
-   PETITS ENGRENAGES
-================================================== */
-
-.gear {
-
-    transform-box: fill-box;
-    transform-origin: center;
-
-    animation:
-        gearSpin 8s linear infinite;
-}
-
-.gear.reverse {
-
-    animation-direction:
-        reverse;
-
-    animation-duration:
-        11s;
-}
-
-@keyframes gearSpin {
-
-    from {
-        transform: rotate(0deg);
+    header {
+        padding-left: 38px;
+        padding-right: 28px;
     }
 
-    to {
-        transform: rotate(360deg);
+    .brand {
+        font-size: 26px;
+    }
+
+    .status {
+        gap: 13px;
+    }
+
+    .statusItem {
+        font-size: 7px;
+        letter-spacing: 0.25em;
+    }
+
+    .statusDot {
+        width: 7px;
+        height: 7px;
+    }
+
+    .subtitle {
+        top: 25.1%;
+        font-size: 8px;
+        letter-spacing: 0.37em;
+    }
+
+    .visual {
+        top: 18.3%;
+        width: 96vw;
+        height: 96vw;
+    }
+
+    .panels {
+        bottom: max(86px, env(safe-area-inset-bottom) + 78px);
+        gap: 10px 18px;
+        left: 5.5%;
+        right: 5.5%;
+    }
+
+    .panel {
+        min-height: 104px;
+        padding: 17px 18px 14px;
+    }
+
+    .panelLabel {
+        font-size: 8px;
+        margin-bottom: 13px;
+    }
+
+    .panelValue {
+        font-size: 35px;
+    }
+
+    .panelInfo {
+        font-size: 7px;
     }
 }
 
+@media (max-height: 750px) {
+
+    .visual {
+        top: 16%;
+    }
+
+    .panels {
+        bottom: 76px;
+    }
+
+    .panel {
+        min-height: 92px;
+        padding: 14px 17px;
+    }
+
+    .panelValue {
+        margin-bottom: 8px;
+    }
+}
 </style>
 </head>
 
-
 <body>
 
-<div class="scene">
+<div id="app">
 
+    <div class="grid"></div>
 
-<header class="header">
+    <header>
+        <div class="brand">JARVIS</div>
 
-    <div class="brand">
-        JARVIS
+        <div class="status">
+
+            <div class="statusItem">
+                <span class="statusDot"></span>
+                ONLINE
+            </div>
+
+            <div class="statusItem">
+                <span class="statusDot"></span>
+                SECURE
+            </div>
+
+            <div class="statusItem">
+                <span class="statusDot"></span>
+                VOICE
+            </div>
+
+        </div>
+    </header>
+
+    <div class="subtitle">
+        GYROTOURBILLON&nbsp;&nbsp;·&nbsp;&nbsp;PRECISION CORE&nbsp;&nbsp;·&nbsp;&nbsp;3 AXIS
     </div>
 
-    <div class="status">
-
-        <span>ONLINE</span>
-        <span>SECURE</span>
-        <span>VOICE</span>
-
-    </div>
-
-</header>
-
-
-<!-- ==================================================
-     CŒUR
-================================================== -->
-
-<div class="core-area" id="core">
-
-<div class="halo"></div>
-
-
-<svg
-class="core-svg"
-viewBox="0 0 500 500"
-aria-hidden="true"
->
-
-
-<!-- =================================================
-     COURONNE EXTÉRIEURE
-================================================== -->
-
-<g class="ring-slow">
-
-    <circle
-        cx="250"
-        cy="250"
-        r="232"
-        fill="none"
-        stroke="rgba(60,210,240,.12)"
-        stroke-width="1"
-        stroke-dasharray="1 8"
-    />
-
-    <circle
-        cx="250"
-        cy="250"
-        r="222"
-        fill="none"
-        stroke="rgba(80,220,245,.35)"
-        stroke-width="2"
-        stroke-dasharray="46 9 3 9"
-    />
-
-    <circle
-        cx="250"
-        cy="250"
-        r="209"
-        fill="none"
-        stroke="rgba(60,210,240,.16)"
-        stroke-width="1"
-        stroke-dasharray="2 12"
-    />
-
-
-    <!-- quatre gros repères -->
-
-    <rect
-        x="247"
-        y="16"
-        width="6"
-        height="19"
-        rx="2"
-        class="tech-bright"
-        fill="none"
-    />
-
-    <rect
-        x="247"
-        y="465"
-        width="6"
-        height="19"
-        rx="2"
-        class="tech-bright"
-        fill="none"
-    />
-
-    <rect
-        x="16"
-        y="247"
-        width="19"
-        height="6"
-        rx="2"
-        class="tech-bright"
-        fill="none"
-    />
-
-    <rect
-        x="465"
-        y="247"
-        width="19"
-        height="6"
-        rx="2"
-        class="tech-bright"
-        fill="none"
-    />
-
-</g>
-
-
-<!-- =================================================
-     COURONNE TECHNIQUE 1
-================================================== -->
-
-<g class="ring-slow-reverse">
-
-    <circle
-        cx="250"
-        cy="250"
-        r="194"
-        fill="none"
-        stroke="rgba(0,200,240,.30)"
-        stroke-width="1"
-    />
-
-    <circle
-        cx="250"
-        cy="250"
-        r="187"
-        fill="none"
-        stroke="rgba(100,235,255,.45)"
-        stroke-width="2"
-        stroke-dasharray="18 8 2 8"
-    />
-
-    <circle
-        cx="250"
-        cy="250"
-        r="177"
-        fill="none"
-        stroke="rgba(70,220,245,.25)"
-        stroke-width="4"
-        stroke-dasharray="2 18"
-    />
-
-
-    <!-- graduations -->
-
-    <g
-        stroke="rgba(110,230,250,.52)"
-        stroke-width="1"
-    >
-
-        <path d="M250 54v12"/>
-        <path d="M250 434v12"/>
-
-        <path d="M54 250h12"/>
-        <path d="M434 250h12"/>
-
-        <path d="M111 111l9 9"/>
-        <path d="M380 380l9 9"/>
-
-        <path d="M389 111l-9 9"/>
-        <path d="M120 380l-9 9"/>
-
-    </g>
-
-</g>
-
-
-<!-- =================================================
-     COURONNE SEGMENTÉE
-================================================== -->
-
-<g class="ring-medium">
-
-    <circle
-        cx="250"
-        cy="250"
-        r="159"
-        fill="none"
-        stroke="rgba(75,225,250,.50)"
-        stroke-width="2"
-        stroke-dasharray="31 7 5 7"
-    />
-
-    <circle
-        cx="250"
-        cy="250"
-        r="150"
-        fill="none"
-        stroke="rgba(80,220,245,.20)"
-        stroke-width="7"
-        stroke-dasharray="2 17"
-    />
-
-
-    <!-- marqueurs -->
-
-    <g class="tick">
-
-        <rect x="247" y="89"
-              width="6" height="13"/>
-
-        <rect x="247" y="398"
-              width="6" height="13"/>
-
-        <rect x="89" y="247"
-              width="13" height="6"/>
-
-        <rect x="398" y="247"
-              width="13" height="6"/>
-
-    </g>
-
-</g>
-
-
-<!-- =================================================
-     COURONNE INTERNE
-================================================== -->
-
-<g class="ring-medium-reverse">
-
-    <circle
-        cx="250"
-        cy="250"
-        r="127"
-        fill="none"
-        stroke="#64eaff"
-        stroke-width="2"
-        stroke-dasharray="22 5 3 5"
-        class="glow"
-    />
-
-    <circle
-        cx="250"
-        cy="250"
-        r="116"
-        fill="none"
-        stroke="rgba(100,235,255,.27)"
-        stroke-width="5"
-        stroke-dasharray="2 14"
-    />
-
-</g>
-
-
-<!-- =================================================
-     MICRO-GRADUATIONS
-================================================== -->
-
-<g
-class="ring-fast"
-stroke="rgba(120,235,250,.52)"
-stroke-width="1"
->
-
-    <path d="M250 104v10"/>
-    <path d="M250 386v10"/>
-
-    <path d="M104 250h10"/>
-    <path d="M386 250h10"/>
-
-    <path d="M147 147l7 7"/>
-    <path d="M346 346l7 7"/>
-
-    <path d="M353 147l-7 7"/>
-    <path d="M154 346l-7 7"/>
-
-</g>
-
-
-<!-- =================================================
-     GYROTURBILLON — AXE PRINCIPAL
-================================================== -->
-
-<g class="gyro-main">
-
-
-    <ellipse
-        cx="250"
-        cy="250"
-        rx="88"
-        ry="39"
-        fill="none"
-        stroke="rgba(125,240,255,.75)"
-        stroke-width="2"
-        class="glow"
-    />
-
-    <ellipse
-        cx="250"
-        cy="250"
-        rx="88"
-        ry="39"
-        transform="rotate(60 250 250)"
-        fill="none"
-        stroke="rgba(85,220,245,.55)"
-        stroke-width="1.5"
-    />
-
-    <ellipse
-        cx="250"
-        cy="250"
-        rx="88"
-        ry="39"
-        transform="rotate(-60 250 250)"
-        fill="none"
-        stroke="rgba(145,245,255,.55)"
-        stroke-width="1.5"
-    />
-
-
-    <!-- anneau mécanique -->
-
-    <circle
-        cx="250"
-        cy="250"
-        r="69"
-        fill="none"
-        stroke="rgba(120,235,255,.65)"
-        stroke-width="2"
-        stroke-dasharray="8 5 2 5"
-    />
-
-    <circle
-        cx="250"
-        cy="250"
-        r="60"
-        fill="none"
-        stroke="rgba(80,215,245,.30)"
-        stroke-width="6"
-        stroke-dasharray="2 11"
-    />
-
-
-    <!-- petits bras -->
-
-    <path
-        d="M250 181 L262 215 L250 228"
-        fill="none"
-        stroke="rgba(185,250,255,.75)"
-        stroke-width="2"
-    />
-
-    <path
-        d="M250 319 L238 285 L250 272"
-        fill="none"
-        stroke="rgba(185,250,255,.75)"
-        stroke-width="2"
-    />
-
-</g>
-
-
-<!-- =================================================
-     GYRO SECONDAIRE
-================================================== -->
-
-<g class="gyro-secondary">
-
-
-    <ellipse
-        cx="250"
-        cy="250"
-        rx="75"
-        ry="27"
-        transform="rotate(25 250 250)"
-        fill="none"
-        stroke="rgba(65,210,240,.65)"
-        stroke-width="2"
-    />
-
-    <ellipse
-        cx="250"
-        cy="250"
-        rx="75"
-        ry="27"
-        transform="rotate(-25 250 250)"
-        fill="none"
-        stroke="rgba(165,245,255,.55)"
-        stroke-width="1.5"
-    />
-
-
-    <!-- axes -->
-
-    <line
-        x1="174"
-        y1="250"
-        x2="326"
-        y2="250"
-        stroke="rgba(170,245,255,.35)"
-        stroke-width="1"
-    />
-
-    <line
-        x1="250"
-        y1="174"
-        x2="250"
-        y2="326"
-        stroke="rgba(170,245,255,.35)"
-        stroke-width="1"
-    />
-
-</g>
-
-
-<!-- =================================================
-     PETITS ENGRENAGES
-================================================== -->
-
-<g
-class="gear"
-transform="translate(205 205)"
->
-
-    <circle
-        cx="0"
-        cy="0"
-        r="19"
-        fill="none"
-        stroke="rgba(120,235,255,.58)"
-        stroke-width="2"
-        stroke-dasharray="4 4"
-    />
-
-    <circle
-        cx="0"
-        cy="0"
-        r="8"
-        fill="none"
-        stroke="rgba(180,250,255,.7)"
-        stroke-width="2"
-    />
-
-    <circle
-        cx="0"
-        cy="0"
-        r="3"
-        fill="#dffcff"
-    />
-
-</g>
-
-
-<g
-class="gear reverse"
-transform="translate(295 205)"
->
-
-    <circle
-        cx="0"
-        cy="0"
-        r="16"
-        fill="none"
-        stroke="rgba(100,225,250,.55)"
-        stroke-width="2"
-        stroke-dasharray="3 5"
-    />
-
-    <circle
-        cx="0"
-        cy="0"
-        r="6"
-        fill="none"
-        stroke="rgba(190,250,255,.7)"
-        stroke-width="2"
-    />
-
-</g>
-
-
-<g
-class="gear"
-transform="translate(208 292)"
->
-
-    <circle
-        cx="0"
-        cy="0"
-        r="15"
-        fill="none"
-        stroke="rgba(100,225,250,.48)"
-        stroke-width="2"
-        stroke-dasharray="3 5"
-    />
-
-</g>
-
-
-<g
-class="gear reverse"
-transform="translate(292 292)"
->
-
-    <circle
-        cx="0"
-        cy="0"
-        r="18"
-        fill="none"
-        stroke="rgba(120,235,255,.58)"
-        stroke-width="2"
-        stroke-dasharray="4 5"
-    />
-
-</g>
-
-
-<!-- =================================================
-     NOYAU CENTRAL
-================================================== -->
-
-<g class="gyro-core">
-
-    <circle
-        cx="250"
-        cy="250"
-        r="42"
-        fill="rgba(0,75,95,.20)"
-        stroke="rgba(150,245,255,.75)"
-        stroke-width="2"
-        class="glow"
-    />
-
-    <circle
-        cx="250"
-        cy="250"
-        r="31"
-        fill="rgba(0,170,205,.12)"
-        stroke="#9cf7ff"
-        stroke-width="2"
-    />
-
-    <circle
-        cx="250"
-        cy="250"
-        r="20"
-        fill="rgba(0,225,255,.17)"
-        stroke="#dfffff"
-        stroke-width="2"
-        class="glow-strong"
-    />
-
-    <circle
-        cx="250"
-        cy="250"
-        r="8"
-        fill="#efffff"
-        class="glow-strong"
-    />
-
-</g>
-
-
-<!-- =================================================
-     REPÈRES FIXES
-================================================== -->
-
-<circle
-    cx="250"
-    cy="18"
-    r="3"
-    class="marker"
-    class="glow"
-/>
-
-<circle
-    cx="482"
-    cy="250"
-    r="3"
-    class="marker"
-/>
-
-<circle
-    cx="250"
-    cy="482"
-    r="3"
-    class="marker"
-/>
-
-<circle
-    cx="18"
-    cy="250"
-    r="3"
-    class="marker"
-/>
-
-
-<!-- petits points orbitaux -->
-
-<g fill="#5beaff">
-
-    <circle cx="83" cy="175" r="2"/>
-    <circle cx="417" cy="175" r="2"/>
-    <circle cx="83" cy="325" r="2"/>
-    <circle cx="417" cy="325" r="2"/>
-
-</g>
-
-</svg>
-
-
-<div class="core-label">
-
-    <div class="main">
-        STANDBY
-    </div>
-
-    <div class="sub">
-        CORE ACTIVE
-    </div>
+    <main class="visual">
+        <canvas id="scene"></canvas>
+    </main>
+
+    <section class="panels">
+
+        <div class="panel">
+            <div class="panelLabel">MAISON</div>
+            <div class="panelValue">03</div>
+            <div class="panelInfo">DISPOSITIFS ACTIFS</div>
+        </div>
+
+        <div class="panel">
+            <div class="panelLabel">MÉTÉO</div>
+            <div class="panelValue">18°</div>
+            <div class="panelInfo">CONDITIONS STABLES</div>
+        </div>
+
+        <div class="panel">
+            <div class="panelLabel">SYSTÈME</div>
+            <div class="panelValue">82%</div>
+            <div class="panelInfo">PERFORMANCE</div>
+        </div>
+
+        <div class="panel">
+            <div class="panelLabel">ACTIVITÉ</div>
+            <div class="panelValue">12</div>
+            <div class="panelInfo">ÉVÉNEMENTS RÉCENTS</div>
+        </div>
+
+    </section>
 
 </div>
-
-</div>
-
-
-<!-- ==================================================
-     PANNEAUX
-================================================== -->
-
-<section class="panel panel-house">
-
-    <div class="panel-title">
-        MAISON
-    </div>
-
-    <div class="panel-value">
-        03
-    </div>
-
-    <div class="panel-small">
-        DISPOSITIFS ACTIFS
-    </div>
-
-</section>
-
-
-<section class="panel panel-weather">
-
-    <div class="panel-title">
-        MÉTÉO
-    </div>
-
-    <div class="panel-value">
-        18°
-    </div>
-
-    <div class="panel-small">
-        CONDITIONS STABLES
-    </div>
-
-</section>
-
-
-<section class="panel panel-system">
-
-    <div class="panel-title">
-        SYSTÈME
-    </div>
-
-    <div class="panel-value">
-        82%
-    </div>
-
-    <div class="panel-small">
-        PERFORMANCE
-    </div>
-
-</section>
-
-
-<section class="panel panel-activity">
-
-    <div class="panel-title">
-        ACTIVITÉ
-    </div>
-
-    <div class="panel-value">
-        12
-    </div>
-
-    <div class="panel-small">
-        ÉVÉNEMENTS RÉCENTS
-    </div>
-
-</section>
-
-
-<button
-class="microphone"
-id="activate"
-aria-label="Activer Jarvis"
->
-◉
-</button>
-
-
-</div>
-
 
 <script>
+"use strict";
 
-/* ==================================================
-   ACTIVATION
-================================================== */
+/* =========================================================
+   JARVIS GYROTOURBILLON
+   ---------------------------------------------------------
+   Rendu autonome Canvas 2D.
+   Aucun modèle externe.
+   Aucun CDN.
+   Trois axes indépendants.
+   Matériaux procéduraux.
+   ========================================================= */
 
-const button =
-document.getElementById("activate");
+const canvas = document.getElementById("scene");
+const ctx = canvas.getContext("2d", {
+    alpha: true
+});
 
-let active = false;
+let W = 0;
+let H = 0;
+let CX = 0;
+let CY = 0;
+let SCALE = 1;
 
-button.addEventListener(
-    "click",
-    () => {
+const TAU = Math.PI * 2;
 
-        active = !active;
+/* ---------------------------------------------------------
+   ÉTAT DU MOUVEMENT
+--------------------------------------------------------- */
 
-        document.body.classList.toggle(
-            "active",
-            active
-        );
+let t = 0;
 
+const axis = {
+    x: 0.25,
+    y: -0.48,
+    z: 0.0
+};
+
+const speed = {
+    x: 0.00072,
+    y: -0.00047,
+    z: 0.00031
+};
+
+/* ---------------------------------------------------------
+   RESIZE
+--------------------------------------------------------- */
+
+function resize() {
+
+    const rect = canvas.getBoundingClientRect();
+
+    const dpr = Math.min(
+        window.devicePixelRatio || 1,
+        2
+    );
+
+    W = rect.width;
+    H = rect.height;
+
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+    CX = W / 2;
+    CY = H / 2;
+
+    SCALE = Math.min(W, H) / 620;
+}
+
+window.addEventListener(
+    "resize",
+    resize,
+    {
+        passive: true
     }
 );
 
+resize();
 
-/* ==================================================
-   BATTEMENT DU NOYAU
-================================================== */
+/* =========================================================
+   UTILITAIRES
+========================================================= */
 
-const core =
-document.getElementById("core");
+function clamp(v, a, b) {
+    return Math.max(a, Math.min(b, v));
+}
 
-function impulseVertical() {
+function lerp(a, b, p) {
+    return a + (b - a) * p;
+}
 
-    core.animate(
+function hash(n) {
 
-        [
-            {
-                transform:
-                "translate(-50%,-50%) translateY(0px)"
-            },
+    const x =
+        Math.sin(n * 12.9898) *
+        43758.5453;
 
-            {
-                transform:
-                "translate(-50%,-50%) translateY(-14px)",
+    return x -
+        Math.floor(x);
+}
 
-                offset: .28
-            },
+function noise(n) {
 
-            {
-                transform:
-                "translate(-50%,-50%) translateY(5px)",
+    const i = Math.floor(n);
+    const f = n - i;
 
-                offset: .58
-            },
+    const a = hash(i);
+    const b = hash(i + 1);
 
-            {
-                transform:
-                "translate(-50%,-50%) translateY(-2px)",
+    const u =
+        f * f *
+        (3 - 2 * f);
 
-                offset: .80
-            },
+    return lerp(a, b, u);
+}
 
-            {
-                transform:
-                "translate(-50%,-50%) translateY(0px)"
-            }
+function rotX(p, a) {
 
-        ],
+    const c = Math.cos(a);
+    const s = Math.sin(a);
 
-        {
-            duration: 1050,
+    return {
+        x: p.x,
+        y: p.y * c - p.z * s,
+        z: p.y * s + p.z * c
+    };
+}
 
-            easing:
-            "cubic-bezier(.18,.82,.25,1)"
+function rotY(p, a) {
+
+    const c = Math.cos(a);
+    const s = Math.sin(a);
+
+    return {
+        x: p.x * c + p.z * s,
+        y: p.y,
+        z: -p.x * s + p.z * c
+    };
+}
+
+function rotZ(p, a) {
+
+    const c = Math.cos(a);
+    const s = Math.sin(a);
+
+    return {
+        x: p.x * c - p.y * s,
+        y: p.x * s + p.y * c,
+        z: p.z
+    };
+}
+
+function project(p) {
+
+    const camera = 950;
+
+    const depth =
+        camera /
+        (camera - p.z);
+
+    return {
+        x: CX + p.x * depth * SCALE,
+        y: CY + p.y * depth * SCALE,
+        z: p.z,
+        scale: depth
+    };
+}
+
+/* =========================================================
+   TRANSFORMATION 3 AXES
+========================================================= */
+
+function transformCore(p) {
+
+    let q = p;
+
+    q = rotX(
+        q,
+        axis.x
+    );
+
+    q = rotY(
+        q,
+        axis.y
+    );
+
+    q = rotZ(
+        q,
+        axis.z
+    );
+
+    return q;
+}
+
+/* =========================================================
+   MATERIALS
+========================================================= */
+
+function steelGradient(
+    x1,
+    y1,
+    x2,
+    y2,
+    phase = 0
+) {
+
+    const g =
+        ctx.createLinearGradient(
+            x1,
+            y1,
+            x2,
+            y2
+        );
+
+    const shimmer =
+        0.5 +
+        0.5 *
+        Math.sin(
+            phase
+        );
+
+    g.addColorStop(
+        0,
+        "#11171a"
+    );
+
+    g.addColorStop(
+        0.14,
+        "#465157"
+    );
+
+    g.addColorStop(
+        0.22,
+        "#aab7bb"
+    );
+
+    g.addColorStop(
+        0.27,
+        "#30383c"
+    );
+
+    g.addColorStop(
+        0.43,
+        "#080d0f"
+    );
+
+    g.addColorStop(
+        0.61,
+        "#7c898d"
+    );
+
+    g.addColorStop(
+        0.68,
+        "#171d20"
+    );
+
+    g.addColorStop(
+        0.86,
+        "#020607"
+    );
+
+    g.addColorStop(
+        1,
+        shimmer > 0.5
+            ? "#68757a"
+            : "#222b2e"
+    );
+
+    return g;
+}
+
+function bronzeGradient(
+    x1,
+    y1,
+    x2,
+    y2
+) {
+
+    const g =
+        ctx.createLinearGradient(
+            x1,
+            y1,
+            x2,
+            y2
+        );
+
+    g.addColorStop(
+        0,
+        "#24140a"
+    );
+
+    g.addColorStop(
+        0.18,
+        "#8d5b20"
+    );
+
+    g.addColorStop(
+        0.31,
+        "#e2b75e"
+    );
+
+    g.addColorStop(
+        0.39,
+        "#6e4214"
+    );
+
+    g.addColorStop(
+        0.58,
+        "#1f1208"
+    );
+
+    g.addColorStop(
+        0.73,
+        "#a8732a"
+    );
+
+    g.addColorStop(
+        0.84,
+        "#493015"
+    );
+
+    g.addColorStop(
+        1,
+        "#100b07"
+    );
+
+    return g;
+}
+
+function darkSteelGradient(
+    x1,
+    y1,
+    x2,
+    y2
+) {
+
+    const g =
+        ctx.createLinearGradient(
+            x1,
+            y1,
+            x2,
+            y2
+        );
+
+    g.addColorStop(
+        0,
+        "#020405"
+    );
+
+    g.addColorStop(
+        0.23,
+        "#263034"
+    );
+
+    g.addColorStop(
+        0.31,
+        "#0a1013"
+    );
+
+    g.addColorStop(
+        0.53,
+        "#4b565b"
+    );
+
+    g.addColorStop(
+        0.58,
+        "#0b1114"
+    );
+
+    g.addColorStop(
+        0.86,
+        "#020405"
+    );
+
+    return g;
+}
+
+/* =========================================================
+   TORUS / COURONNE 3D
+========================================================= */
+
+function drawTorus({
+    radius,
+    tube,
+    rx,
+    ry,
+    rz,
+    material,
+    alpha = 1,
+    detail = 110,
+    phase = 0
+}) {
+
+    const points = [];
+
+    for (
+        let i = 0;
+        i <= detail;
+        i++
+    ) {
+
+        const u =
+            (i / detail) *
+            TAU;
+
+        const radial =
+            radius +
+            tube *
+            Math.cos(
+                u
+            );
+
+        const z =
+            tube *
+            Math.sin(
+                u
+            );
+
+        let p = {
+            x:
+                radial *
+                Math.cos(u),
+
+            y:
+                radial *
+                Math.sin(u),
+
+            z
+        };
+
+        p = rotX(
+            p,
+            rx
+        );
+
+        p = rotY(
+            p,
+            ry
+        );
+
+        p = rotZ(
+            p,
+            rz
+        );
+
+        points.push(
+            project(p)
+        );
+    }
+
+    ctx.save();
+
+    ctx.globalAlpha =
+        alpha;
+
+    ctx.lineCap =
+        "round";
+
+    for (
+        let i = 0;
+        i < points.length - 1;
+        i++
+    ) {
+
+        const a =
+            points[i];
+
+        const b =
+            points[i + 1];
+
+        const light =
+            0.5 +
+            0.5 *
+            Math.sin(
+                i * 0.19 +
+                phase
+            );
+
+        ctx.lineWidth =
+            Math.max(
+                1,
+                tube *
+                SCALE *
+                (
+                    0.7 +
+                    light * 0.75
+                )
+            );
+
+        if (
+            material === "steel"
+        ) {
+
+            ctx.strokeStyle =
+                steelGradient(
+                    a.x,
+                    a.y,
+                    b.x,
+                    b.y,
+                    phase +
+                    i * 0.05
+                );
+
+        } else if (
+            material === "bronze"
+        ) {
+
+            ctx.strokeStyle =
+                bronzeGradient(
+                    a.x,
+                    a.y,
+                    b.x,
+                    b.y
+                );
+
+        } else {
+
+            ctx.strokeStyle =
+                darkSteelGradient(
+                    a.x,
+                    a.y,
+                    b.x,
+                    b.y
+                );
         }
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            a.x,
+            a.y
+        );
+
+        ctx.lineTo(
+            b.x,
+            b.y
+        );
+
+        ctx.stroke();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   COURONNES INTERNES
+========================================================= */
+
+function drawMechanicalRing(
+    radius,
+    thickness,
+    colorMode,
+    rotation,
+    segmented = false
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    ctx.rotate(
+        rotation
+    );
+
+    const segments =
+        segmented
+            ? 160
+            : 240;
+
+    for (
+        let i = 0;
+        i < segments;
+        i++
+    ) {
+
+        const a0 =
+            (i / segments) *
+            TAU;
+
+        const a1 =
+            (
+                (i + 0.72) /
+                segments
+            ) *
+            TAU;
+
+        const irregular =
+            0.65 +
+            noise(
+                i * 0.83 +
+                radius
+            ) *
+            0.75;
+
+        const inner =
+            radius -
+            thickness *
+            0.5;
+
+        const outer =
+            radius +
+            thickness *
+            0.5;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            radius,
+            a0,
+            a1
+        );
+
+        if (
+            colorMode === "bronze"
+        ) {
+
+            ctx.strokeStyle =
+                i % 13 === 0
+                    ? "#d7a64e"
+                    : "#664219";
+
+        } else {
+
+            ctx.strokeStyle =
+                i % 17 === 0
+                    ? "#a9c4c8"
+                    : "#263d42";
+        }
+
+        ctx.lineWidth =
+            Math.max(
+                0.7,
+                thickness *
+                irregular *
+                0.45
+            );
+
+        ctx.stroke();
+
+        if (
+            i % 5 === 0
+        ) {
+
+            const len =
+                thickness *
+                (
+                    0.8 +
+                    noise(
+                        i * 2.3
+                    ) *
+                    2.0
+                );
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                Math.cos(a0) *
+                inner,
+
+                Math.sin(a0) *
+                inner
+            );
+
+            ctx.lineTo(
+                Math.cos(a0) *
+                (
+                    inner -
+                    len
+                ),
+
+                Math.sin(a0) *
+                (
+                    inner -
+                    len
+                )
+            );
+
+            ctx.strokeStyle =
+                i % 17 === 0
+                    ? "#9bb8bd"
+                    : "#285761";
+
+            ctx.lineWidth =
+                i % 19 === 0
+                    ? 2.1
+                    : 0.85;
+
+            ctx.stroke();
+        }
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   GRADUATIONS ORIENTÉES VERS LE CENTRE
+========================================================= */
+
+function drawPrecisionTicks(
+    radius,
+    count,
+    rotation,
+    alpha = 1
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    ctx.rotate(
+        rotation
+    );
+
+    ctx.globalAlpha =
+        alpha;
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        const a =
+            i / count *
+            TAU;
+
+        const major =
+            i % 11 === 0;
+
+        const medium =
+            i % 5 === 0;
+
+        const irregular =
+            0.55 +
+            noise(
+                i * 7.17
+            ) *
+            0.9;
+
+        const length =
+            major
+                ? 16 * irregular
+                : medium
+                    ? 10 * irregular
+                    : 5 * irregular;
+
+        const width =
+            major
+                ? 1.5
+                : medium
+                    ? 1.0
+                    : 0.65;
+
+        const r0 =
+            radius;
+
+        const r1 =
+            radius -
+            length;
+
+        /*
+          Les graduations pointent
+          réellement vers le centre.
+        */
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            Math.cos(a) *
+            r0,
+
+            Math.sin(a) *
+            r0
+        );
+
+        ctx.lineTo(
+            Math.cos(a) *
+            r1,
+
+            Math.sin(a) *
+            r1
+        );
+
+        ctx.strokeStyle =
+            major
+                ? "#b5d5da"
+                : "#36717b";
+
+        ctx.lineWidth =
+            width;
+
+        ctx.stroke();
+
+        if (
+            major
+        ) {
+
+            const rr =
+                r1 -
+                7;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                Math.cos(a) *
+                rr,
+
+                Math.sin(a) *
+                rr,
+
+                1.15,
+
+                0,
+                TAU
+            );
+
+            ctx.fillStyle =
+                "#7fc6d0";
+
+            ctx.fill();
+        }
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   MICRO MARQUES SUR LES COURONNES
+========================================================= */
+
+function drawMicroEngraving(
+    radius,
+    count,
+    rotation
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    ctx.rotate(
+        rotation
+    );
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        const a =
+            i / count *
+            TAU;
+
+        const r =
+            radius +
+            (
+                noise(i * 4.11) -
+                0.5
+            ) *
+            7;
+
+        const len =
+            1.5 +
+            noise(
+                i * 9.2
+            ) *
+            4;
+
+        ctx.save();
+
+        ctx.rotate(a);
+
+        ctx.fillStyle =
+            i % 17 === 0
+                ? "rgba(196,225,228,.62)"
+                : "rgba(33,94,104,.7)";
+
+        ctx.fillRect(
+            r,
+            -0.55,
+            len,
+            1.1
+        );
+
+        ctx.restore();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   PETITS SYMBOLS TECHNIQUES
+========================================================= */
+
+function drawSymbols(
+    radius,
+    count,
+    rotation
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    ctx.rotate(
+        rotation
+    );
+
+    ctx.font =
+        "7px monospace";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+    const symbols =
+        [
+            "·",
+            "+",
+            "□",
+            "×",
+            "•",
+            "—"
+        ];
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        if (
+            i % 3 !== 0
+        ) continue;
+
+        const a =
+            i / count *
+            TAU;
+
+        const rr =
+            radius +
+            8;
+
+        ctx.save();
+
+        ctx.rotate(a);
+
+        ctx.fillStyle =
+            i % 13 === 0
+                ? "#8edce7"
+                : "#376e78";
+
+        ctx.fillText(
+            symbols[
+                i %
+                symbols.length
+            ],
+            rr,
+            0
+        );
+
+        ctx.restore();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   AXES DU GYROTOURBILLON
+========================================================= */
+
+function drawAxisBar(
+    length,
+    width,
+    rotation,
+    material,
+    phase
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    ctx.rotate(
+        rotation
+    );
+
+    const grad =
+        material === "bronze"
+            ? bronzeGradient(
+                -length,
+                -width,
+                length,
+                width
+            )
+            : steelGradient(
+                -length,
+                -width,
+                length,
+                width,
+                phase
+            );
+
+    ctx.shadowBlur =
+        0;
+
+    ctx.fillStyle =
+        grad;
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        -length,
+        -width / 2,
+        length * 2,
+        width,
+        width * 0.28
+    );
+
+    ctx.fill();
+
+    /*
+      Chanfreins.
+    */
+
+    ctx.strokeStyle =
+        "rgba(220,240,242,.65)";
+
+    ctx.lineWidth =
+        Math.max(
+            0.5,
+            width * 0.06
+        );
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -length + 5,
+        -width * 0.25
+    );
+
+    ctx.lineTo(
+        length - 5,
+        -width * 0.25
+    );
+
+    ctx.stroke();
+
+    /*
+      Marques d'usinage.
+    */
+
+    for (
+        let i = 0;
+        i < 11;
+        i++
+    ) {
+
+        const x =
+            -length +
+            12 +
+            i *
+            (
+                (length * 2 - 24) /
+                10
+            );
+
+        ctx.strokeStyle =
+            "rgba(0,0,0,.28)";
+
+        ctx.lineWidth =
+            0.6;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,
+            -width * 0.34
+        );
+
+        ctx.lineTo(
+            x + 3,
+            width * 0.34
+        );
+
+        ctx.stroke();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   ROUAGE CENTRAL
+========================================================= */
+
+function drawGear(
+    radius,
+    teeth,
+    toothDepth,
+    rotation
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    ctx.rotate(
+        rotation
+    );
+
+    const outer =
+        radius +
+        toothDepth;
+
+    const inner =
+        radius -
+        2;
+
+    const step =
+        TAU /
+        teeth;
+
+    ctx.beginPath();
+
+    for (
+        let i = 0;
+        i < teeth;
+        i++
+    ) {
+
+        const a =
+            i * step;
+
+        const a0 =
+            a;
+
+        const a1 =
+            a +
+            step * 0.18;
+
+        const a2 =
+            a +
+            step * 0.31;
+
+        const a3 =
+            a +
+            step * 0.69;
+
+        const a4 =
+            a +
+            step * 0.82;
+
+        const a5 =
+            a +
+            step;
+
+        const pts =
+            [
+                [
+                    inner *
+                    Math.cos(a0),
+                    inner *
+                    Math.sin(a0)
+                ],
+                [
+                    outer *
+                    Math.cos(a1),
+                    outer *
+                    Math.sin(a1)
+                ],
+                [
+                    outer *
+                    Math.cos(a2),
+                    outer *
+                    Math.sin(a2)
+                ],
+                [
+                    inner *
+                    Math.cos(a3),
+                    inner *
+                    Math.sin(a3)
+                ],
+                [
+                    outer *
+                    Math.cos(a4),
+                    outer *
+                    Math.sin(a4)
+                ],
+                [
+                    outer *
+                    Math.cos(a5),
+                    outer *
+                    Math.sin(a5)
+                ]
+            ];
+
+        for (
+            const p of pts
+        ) {
+
+            if (
+                i === 0 &&
+                p === pts[0]
+            ) {
+
+                ctx.moveTo(
+                    p[0],
+                    p[1]
+                );
+
+            } else {
+
+                ctx.lineTo(
+                    p[0],
+                    p[1]
+                );
+            }
+        }
+    }
+
+    ctx.closePath();
+
+    ctx.fillStyle =
+        steelGradient(
+            -radius,
+            -radius,
+            radius,
+            radius,
+            rotation
+        );
+
+    ctx.fill();
+
+    ctx.strokeStyle =
+        "#a3b2b5";
+
+    ctx.lineWidth =
+        0.8;
+
+    ctx.stroke();
+
+    /*
+      Perçages.
+    */
+
+    for (
+        let i = 0;
+        i < 8;
+        i++
+    ) {
+
+        const a =
+            i / 8 *
+            TAU;
+
+        const rr =
+            radius *
+            0.65;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            Math.cos(a) * rr,
+            Math.sin(a) * rr,
+            2.2,
+            0,
+            TAU
+        );
+
+        ctx.fillStyle =
+            "#020506";
+
+        ctx.fill();
+
+        ctx.strokeStyle =
+            "#6f8589";
+
+        ctx.lineWidth =
+            0.5;
+
+        ctx.stroke();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   RUBIS CENTRAL
+========================================================= */
+
+function drawRuby(
+    radius
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    /*
+      Très peu de rouge.
+      Pas de halo rouge massif.
+    */
+
+    const g =
+        ctx.createRadialGradient(
+            -radius * 0.35,
+            -radius * 0.45,
+            radius * 0.1,
+            0,
+            0,
+            radius
+        );
+
+    g.addColorStop(
+        0,
+        "#ffe7e7"
+    );
+
+    g.addColorStop(
+        0.12,
+        "#c86b78"
+    );
+
+    g.addColorStop(
+        0.38,
+        "#681f2d"
+    );
+
+    g.addColorStop(
+        0.73,
+        "#240c13"
+    );
+
+    g.addColorStop(
+        1,
+        "#050305"
+    );
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        0,
+        radius,
+        0,
+        TAU
+    );
+
+    ctx.fillStyle =
+        g;
+
+    ctx.fill();
+
+    ctx.strokeStyle =
+        "rgba(215,126,140,.65)";
+
+    ctx.lineWidth =
+        0.7;
+
+    ctx.stroke();
+
+    /*
+      Reflet interne.
+    */
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        -radius * 0.28,
+        -radius * 0.33,
+        radius * 0.19,
+        radius * 0.11,
+        -0.4,
+        0,
+        TAU
+    );
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.76)";
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+/* =========================================================
+   VIS CENTRAL
+========================================================= */
+
+function drawPivot(
+    radius
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    const g =
+        ctx.createRadialGradient(
+            -radius * 0.4,
+            -radius * 0.4,
+            radius * 0.1,
+            0,
+            0,
+            radius
+        );
+
+    g.addColorStop(
+        0,
+        "#d6e3e4"
+    );
+
+    g.addColorStop(
+        0.2,
+        "#596a6f"
+    );
+
+    g.addColorStop(
+        0.48,
+        "#101619"
+    );
+
+    g.addColorStop(
+        1,
+        "#020405"
+    );
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        0,
+        radius,
+        0,
+        TAU
+    );
+
+    ctx.fillStyle =
+        g;
+
+    ctx.fill();
+
+    ctx.strokeStyle =
+        "#9baeb1";
+
+    ctx.lineWidth =
+        0.8;
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+/* =========================================================
+   PONTS MÉCANIQUES
+========================================================= */
+
+function drawBridge(
+    length,
+    width,
+    rotation,
+    material
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    ctx.rotate(
+        rotation
+    );
+
+    const g =
+        material === "bronze"
+            ? bronzeGradient(
+                -length,
+                0,
+                length,
+                0
+            )
+            : darkSteelGradient(
+                -length,
+                0,
+                length,
+                0
+            );
+
+    ctx.fillStyle =
+        g;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -length,
+        -width * 0.42
+    );
+
+    ctx.lineTo(
+        -length * 0.38,
+        -width
+    );
+
+    ctx.lineTo(
+        length * 0.44,
+        -width * 0.62
+    );
+
+    ctx.lineTo(
+        length,
+        0
+    );
+
+    ctx.lineTo(
+        length * 0.44,
+        width * 0.62
+    );
+
+    ctx.lineTo(
+        -length * 0.38,
+        width
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.strokeStyle =
+        "rgba(190,205,208,.68)";
+
+    ctx.lineWidth =
+        0.75;
+
+    ctx.stroke();
+
+    /*
+      Fraisage interne.
+    */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -length * 0.63,
+        -width * 0.25
+    );
+
+    ctx.lineTo(
+        length * 0.43,
+        -width * 0.25
+    );
+
+    ctx.strokeStyle =
+        "rgba(0,0,0,.58)";
+
+    ctx.lineWidth =
+        1.2;
+
+    ctx.stroke();
+
+    /*
+      Micro-vis.
+    */
+
+    for (
+        let i = 0;
+        i < 3;
+        i++
+    ) {
+
+        const x =
+            -length * 0.52 +
+            i *
+            length * 0.48;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            0,
+            2.5,
+            0,
+            TAU
+        );
+
+        ctx.fillStyle =
+            "#111719";
+
+        ctx.fill();
+
+        ctx.strokeStyle =
+            "#88999d";
+
+        ctx.lineWidth =
+            0.55;
+
+        ctx.stroke();
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x - 1.2,
+            -1.2
+        );
+
+        ctx.lineTo(
+            x + 1.2,
+            1.2
+        );
+
+        ctx.strokeStyle =
+            "#536367";
+
+        ctx.lineWidth =
+            0.55;
+
+        ctx.stroke();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   RESSORT / DÉTAIL CENTRAL
+========================================================= */
+
+function drawSpring(
+    radius,
+    turns,
+    rotation
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    ctx.rotate(
+        rotation
+    );
+
+    ctx.beginPath();
+
+    const total =
+        turns *
+        TAU;
+
+    const points =
+        220;
+
+    for (
+        let i = 0;
+        i <= points;
+        i++
+    ) {
+
+        const p =
+            i / points;
+
+        const a =
+            p *
+            total;
+
+        const r =
+            radius *
+            (
+                0.15 +
+                p * 0.85
+            );
+
+        const x =
+            Math.cos(a) *
+            r;
+
+        const y =
+            Math.sin(a) *
+            r;
+
+        if (
+            i === 0
+        ) {
+
+            ctx.moveTo(
+                x,
+                y
+            );
+
+        } else {
+
+            ctx.lineTo(
+                x,
+                y
+            );
+        }
+    }
+
+    ctx.strokeStyle =
+        "#a27632";
+
+    ctx.lineWidth =
+        1.05;
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+/* =========================================================
+   PATINE ET IMPERFECTIONS
+========================================================= */
+
+function drawPatina(
+    radius,
+    count,
+    rotation
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    ctx.rotate(
+        rotation
+    );
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        const a =
+            hash(i * 5.3) *
+            TAU;
+
+        const rr =
+            radius *
+            (
+                0.68 +
+                hash(i * 3.8) *
+                0.28
+            );
+
+        const size =
+            0.4 +
+            hash(i * 8.1) *
+            1.6;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            Math.cos(a) * rr,
+            Math.sin(a) * rr,
+            size,
+            0,
+            TAU
+        );
+
+        const r =
+            hash(i * 1.2);
+
+        if (
+            r < 0.34
+        ) {
+
+            ctx.fillStyle =
+                "rgba(91,65,31,.40)";
+
+        } else if (
+            r < 0.68
+        ) {
+
+            ctx.fillStyle =
+                "rgba(103,132,119,.20)";
+
+        } else {
+
+            ctx.fillStyle =
+                "rgba(183,190,177,.18)";
+        }
+
+        ctx.fill();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   PARTICULES MÉCANIQUES DISCRÈTES
+========================================================= */
+
+function drawDust(
+    radius,
+    count,
+    rotation
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    ctx.rotate(
+        rotation
+    );
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        const a =
+            hash(i * 2.7) *
+            TAU;
+
+        const rr =
+            radius *
+            (
+                0.25 +
+                hash(i * 9.1) *
+                0.7
+            );
+
+        const x =
+            Math.cos(a) *
+            rr;
+
+        const y =
+            Math.sin(a) *
+            rr;
+
+        const s =
+            0.25 +
+            hash(i * 4.2) *
+            1.0;
+
+        ctx.fillStyle =
+            `rgba(161,185,187,${
+                0.08 +
+                hash(i) * 0.17
+            })`;
+
+        ctx.fillRect(
+            x,
+            y,
+            s,
+            s
+        );
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   HALO DE PROFONDEUR
+========================================================= */
+
+function drawCoreShadow(
+    radius
+) {
+
+    ctx.save();
+
+    const g =
+        ctx.createRadialGradient(
+            CX,
+            CY,
+            radius * 0.05,
+            CX,
+            CY,
+            radius
+        );
+
+    g.addColorStop(
+        0,
+        "rgba(0,0,0,.72)"
+    );
+
+    g.addColorStop(
+        0.65,
+        "rgba(0,0,0,.27)"
+    );
+
+    g.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle =
+        g;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        CX,
+        CY,
+        radius,
+        0,
+        TAU
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+/* =========================================================
+   GYROTOURBILLON COMPLET
+========================================================= */
+
+function drawGyrotourbillon() {
+
+    /*
+      Le mécanisme central représente environ
+      20 % du diamètre de la zone mécanique,
+      tandis que les couronnes remplissent
+      le reste de l'espace.
+
+      Aucun contour rouge dominant.
+    */
+
+    const core =
+        78 * SCALE;
+
+    drawCoreShadow(
+        core * 1.7
+    );
+
+    /*
+      Premier anneau structurel.
+    */
+
+    drawTorus({
+        radius: 54,
+        tube: 4.5,
+        rx: axis.x,
+        ry: axis.y,
+        rz: axis.z,
+        material: "steel",
+        alpha: 1,
+        detail: 150,
+        phase: t * 0.0007
+    });
+
+    /*
+      Deuxième axe.
+    */
+
+    drawTorus({
+        radius: 44,
+        tube: 4.1,
+        rx: axis.x + 1.12,
+        ry: axis.y,
+        rz: axis.z + 0.15,
+        material: "bronze",
+        alpha: 0.96,
+        detail: 140,
+        phase: t * 0.001
+    });
+
+    /*
+      Troisième axe.
+    */
+
+    drawTorus({
+        radius: 35,
+        tube: 3.6,
+        rx: axis.x,
+        ry: axis.y + 1.05,
+        rz: axis.z + 0.5,
+        material: "steel",
+        alpha: 1,
+        detail: 130,
+        phase: t * 0.0014
+    });
+
+    /*
+      Cage intérieure.
+    */
+
+    drawTorus({
+        radius: 27,
+        tube: 2.8,
+        rx: axis.x + 0.7,
+        ry: axis.y - 0.9,
+        rz: axis.z,
+        material: "bronze",
+        alpha: 0.95,
+        detail: 120,
+        phase: t * 0.0019
+    });
+
+    /*
+      Roue centrale.
+    */
+
+    drawGear(
+        20,
+        36,
+        2.6,
+        axis.z * 1.4
+    );
+
+    /*
+      Ponts.
+    */
+
+    drawBridge(
+        38,
+        6.5,
+        axis.x + 0.7,
+        "steel"
+    );
+
+    drawBridge(
+        33,
+        5.2,
+        axis.y + 2.15,
+        "bronze"
+    );
+
+    drawBridge(
+        28,
+        4.2,
+        axis.z + 0.8,
+        "steel"
+    );
+
+    /*
+      Axe X.
+    */
+
+    drawAxisBar(
+        45,
+        3.2,
+        axis.x,
+        "steel",
+        t * 0.001
+    );
+
+    /*
+      Axe Y.
+    */
+
+    drawAxisBar(
+        40,
+        2.8,
+        axis.y + 0.85,
+        "bronze",
+        t * 0.0008
+    );
+
+    /*
+      Axe Z.
+    */
+
+    drawAxisBar(
+        36,
+        2.5,
+        axis.z + 1.4,
+        "steel",
+        t * 0.0012
+    );
+
+    /*
+      Ressort concentrique.
+    */
+
+    drawSpring(
+        25,
+        2.7,
+        axis.z
+    );
+
+    /*
+      Rubis.
+    */
+
+    drawRuby(
+        8.8
+    );
+
+    /*
+      Pivot métallique autour du rubis.
+    */
+
+    drawPivot(
+        13
+    );
+
+    /*
+      Le rubis est replacé par-dessus le pivot.
+    */
+
+    drawRuby(
+        8.5
+    );
+
+    /*
+      Patine très fine.
+    */
+
+    drawPatina(
+        67,
+        90,
+        axis.z
+    );
+
+    /*
+      Micro-poussières métalliques.
+    */
+
+    drawDust(
+        74,
+        100,
+        axis.x
     );
 }
 
+/* =========================================================
+   COURONNES EXTÉRIEURES
+========================================================= */
 
-/* ==================================================
-   BATTEMENT EN MODE ACTIF
-================================================== */
+function drawOuterArchitecture() {
 
-setInterval(
+    const base =
+        Math.min(W, H);
 
-    () => {
+    /*
+      Les couronnes restent dans la zone
+      prévue par la dernière version.
 
-        if (active) {
-            impulseVertical();
+      Elles ne touchent jamais les bords.
+    */
+
+    const radii = [
+        base * 0.255,
+        base * 0.292,
+        base * 0.329,
+        base * 0.366,
+        base * 0.403
+    ];
+
+    for (
+        let i = 0;
+        i < radii.length;
+        i++
+    ) {
+
+        const r =
+            radii[i];
+
+        const thickness =
+            i === 4
+                ? 1.2
+                : 0.85;
+
+        drawMechanicalRing(
+            r,
+            thickness,
+            i === 1 ||
+            i === 3
+                ? "bronze"
+                : "steel",
+            t *
+            (
+                i % 2 === 0
+                    ? 0.000025
+                    : -0.000017
+            ),
+            true
+        );
+
+        drawPrecisionTicks(
+            r,
+            i === 4
+                ? 96
+                : 84,
+            -t *
+            (
+                0.000012 +
+                i * 0.000004
+            ),
+            0.82
+        );
+
+        drawMicroEngraving(
+            r,
+            130,
+            t *
+            0.00001
+        );
+
+        if (
+            i === 0 ||
+            i === 2 ||
+            i === 4
+        ) {
+
+            drawSymbols(
+                r,
+                72,
+                -t *
+                0.000008
+            );
         }
+    }
+
+    /*
+      Couronnes intermédiaires très fines.
+      Elles évitent l'effet "Saturne".
+    */
+
+    const fine =
+        [
+            base * 0.273,
+            base * 0.310,
+            base * 0.347,
+            base * 0.384
+        ];
+
+    for (
+        let i = 0;
+        i < fine.length;
+        i++
+    ) {
+
+        ctx.save();
+
+        ctx.translate(
+            CX,
+            CY
+        );
+
+        ctx.rotate(
+            t *
+            (
+                i % 2
+                    ? -0.000011
+                    : 0.000015
+            )
+        );
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            fine[i],
+            0,
+            TAU
+        );
+
+        ctx.strokeStyle =
+            i % 2
+                ? "rgba(32,103,114,.75)"
+                : "rgba(76,139,148,.55)";
+
+        ctx.lineWidth =
+            0.7;
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+}
+
+/* =========================================================
+   PETITES VIS DE COURONNE
+========================================================= */
+
+function drawOuterScrews() {
+
+    const r =
+        Math.min(W, H) *
+        0.394;
+
+    ctx.save();
+
+    ctx.translate(
+        CX,
+        CY
+    );
+
+    for (
+        let i = 0;
+        i < 16;
+        i++
+    ) {
+
+        const a =
+            i / 16 *
+            TAU +
+            t * 0.000006;
+
+        const x =
+            Math.cos(a) *
+            r;
+
+        const y =
+            Math.sin(a) *
+            r;
+
+        const radius =
+            i % 4 === 0
+                ? 2.4
+                : 1.15;
+
+        const g =
+            ctx.createRadialGradient(
+                x - 0.8,
+                y - 0.8,
+                0.3,
+                x,
+                y,
+                radius * 1.5
+            );
+
+        g.addColorStop(
+            0,
+            "#dce7e8"
+        );
+
+        g.addColorStop(
+            0.35,
+            "#6f7c7f"
+        );
+
+        g.addColorStop(
+            0.72,
+            "#172023"
+        );
+
+        g.addColorStop(
+            1,
+            "#020405"
+        );
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            radius,
+            0,
+            TAU
+        );
+
+        ctx.fillStyle =
+            g;
+
+        ctx.fill();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   ÉCLAIRAGE DE LA SCÈNE
+========================================================= */
+
+function drawSceneLight() {
+
+    /*
+      Halo cyan extrêmement discret.
+      Le mécanisme reste métallique.
+    */
+
+    const g =
+        ctx.createRadialGradient(
+            CX - W * 0.08,
+            CY - H * 0.1,
+            0,
+            CX,
+            CY,
+            Math.min(W, H) * 0.45
+        );
+
+    g.addColorStop(
+        0,
+        "rgba(30,160,190,.055)"
+    );
+
+    g.addColorStop(
+        0.45,
+        "rgba(0,90,110,.022)"
+    );
+
+    g.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle =
+        g;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+}
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+function animate() {
+
+    t += 16.67;
+
+    /*
+      Trois rotations réellement indépendantes.
+
+      X = oscillation / rotation lente
+      Y = rotation secondaire
+      Z = rotation plus lente
+    */
+
+    axis.x +=
+        speed.x;
+
+    axis.y +=
+        speed.y;
+
+    axis.z +=
+        speed.z;
+
+    /*
+      Oscillation très légère pour éviter
+      une rotation artificiellement parfaite.
+    */
+
+    const wobbleX =
+        Math.sin(
+            t * 0.00019
+        ) *
+        0.08;
+
+    const wobbleY =
+        Math.cos(
+            t * 0.00023
+        ) *
+        0.065;
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    drawSceneLight();
+
+    drawOuterArchitecture();
+
+    drawOuterScrews();
+
+    /*
+      Gyrotourbillon par-dessus
+      les structures arrière.
+    */
+
+    ctx.save();
+
+    /*
+      Micro déplacement orbital
+      quasiment imperceptible.
+    */
+
+    const orbitalX =
+        Math.sin(
+            t * 0.00017
+        ) *
+        1.2;
+
+    const orbitalY =
+        Math.cos(
+            t * 0.00021
+        ) *
+        1.0;
+
+    CX += orbitalX * 0;
+    CY += orbitalY * 0;
+
+    drawGyrotourbillon();
+
+    ctx.restore();
+
+    requestAnimationFrame(
+        animate
+    );
+}
+
+/* =========================================================
+   DÉMARRAGE
+========================================================= */
+
+animate();
+
+/* =========================================================
+   INTERACTION TACTILE
+   ---------------------------------------------------------
+   Une légère interaction permet de révéler
+   les volumes sans transformer l'interface
+   en jeu vidéo.
+========================================================= */
+
+let touchX = 0;
+let touchY = 0;
+
+window.addEventListener(
+    "touchmove",
+    function(e) {
+
+        if (
+            !e.touches ||
+            !e.touches.length
+        ) return;
+
+        const touch =
+            e.touches[0];
+
+        const nx =
+            touch.clientX /
+            window.innerWidth -
+            0.5;
+
+        const ny =
+            touch.clientY /
+            window.innerHeight -
+            0.5;
+
+        touchX =
+            clamp(
+                nx,
+                -0.5,
+                0.5
+            );
+
+        touchY =
+            clamp(
+                ny,
+                -0.5,
+                0.5
+            );
 
     },
-
-    3000
-
+    {
+        passive: true
+    }
 );
 
+/* =========================================================
+   FIN
+========================================================= */
 </script>
 
 </body>
