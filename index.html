@@ -1,44 +1,43 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
 
 <meta charset="UTF-8">
 
 <meta
-name="viewport"
-content="width=device-width,
-initial-scale=1,
-maximum-scale=1,
-viewport-fit=cover"
+    name="viewport"
+    content="width=device-width,
+             initial-scale=1,
+             maximum-scale=1,
+             viewport-fit=cover,
+             user-scalable=no"
 >
 
 <meta name="theme-color" content="#02070a">
 
-<title>JARVIS — Geode Interface</title>
+<title>JARVIS — Voice Core</title>
 
 <style>
 
 /* =========================================================
-   JARVIS GEODE CORE
-   MOBILE FIRST / iPHONE
+   JARVIS VOICE CORE
+   SINGLE FILE / NO EXTERNAL DEPENDENCIES
+   iPHONE / GITHUB PAGES
    ========================================================= */
 
 :root{
 
     --bg:#02070a;
 
-    --cyan:#11dfff;
-    --cyanBright:#9cf7ff;
-    --cyanDim:#17677a;
-    --cyanDark:#06313d;
+    --cyan:#11ddff;
+    --cyan2:#73efff;
+    --cyan3:#0b6576;
 
     --white:#dffaff;
 
-    --gold:#b89555;
-    --goldBright:#e4c67c;
+    --gold:#c49a50;
 
-    --panel:rgba(3,18,24,.84);
+    --panel:rgba(3,18,24,.88);
 
 }
 
@@ -48,10 +47,15 @@ viewport-fit=cover"
    ========================================================= */
 
 *{
+
     box-sizing:border-box;
+
     margin:0;
+
     padding:0;
+
     -webkit-tap-highlight-color:transparent;
+
 }
 
 
@@ -59,15 +63,14 @@ html,
 body{
 
     width:100%;
+
     height:100%;
 
     overflow:hidden;
 
-    background:
-        #02070a;
+    background:#02070a;
 
-    color:
-        var(--white);
+    color:var(--white);
 
     font-family:
         -apple-system,
@@ -81,13 +84,17 @@ body{
 
 body{
 
+    position:fixed;
+
+    inset:0;
+
     overscroll-behavior:none;
 
 }
 
 
 /* =========================================================
-   MAIN
+   APPLICATION
    ========================================================= */
 
 #app{
@@ -97,6 +104,7 @@ body{
     inset:0;
 
     width:100%;
+
     height:100%;
 
     overflow:hidden;
@@ -104,15 +112,9 @@ body{
     background:
 
         radial-gradient(
-            ellipse at 50% 42%,
-            rgba(0,94,120,.16),
-            transparent 31%
-        ),
-
-        radial-gradient(
-            ellipse at 50% 45%,
-            rgba(0,35,48,.22),
-            transparent 57%
+            circle at 50% 25%,
+            rgba(0,90,115,.12),
+            transparent 25%
         ),
 
         #02070a;
@@ -121,87 +123,34 @@ body{
 
 
 /* =========================================================
-   BACKGROUND GRID
+   GRID
    ========================================================= */
 
-#backgroundGrid{
+#grid{
 
     position:absolute;
 
     inset:0;
 
-    opacity:.30;
-
     pointer-events:none;
+
+    opacity:.27;
 
     background-image:
 
         linear-gradient(
-            rgba(28,104,119,.17) 1px,
+            rgba(22,92,106,.18) 1px,
             transparent 1px
         ),
 
         linear-gradient(
             90deg,
-            rgba(28,104,119,.17) 1px,
+            rgba(22,92,106,.18) 1px,
             transparent 1px
         );
 
     background-size:
-        44px 44px;
-
-}
-
-
-/* =========================================================
-   VERY SUBTLE DIAGONAL TECH LINES
-   ========================================================= */
-
-.techLine{
-
-    position:absolute;
-
-    height:1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(15,180,210,.18),
-            transparent
-        );
-
-    opacity:.45;
-
-    pointer-events:none;
-
-}
-
-
-.techLine.one{
-
-    width:70%;
-
-    left:-12%;
-
-    top:29%;
-
-    transform:
-        rotate(-13deg);
-
-}
-
-
-.techLine.two{
-
-    width:68%;
-
-    right:-13%;
-
-    top:51%;
-
-    transform:
-        rotate(12deg);
+        36px 36px;
 
 }
 
@@ -214,24 +163,25 @@ body{
 
     position:absolute;
 
-    z-index:50;
+    z-index:100;
 
     top:0;
+
     left:0;
+
     right:0;
 
     height:
         calc(
-            86px +
+            82px +
             env(safe-area-inset-top)
         );
 
     padding:
-
         env(safe-area-inset-top)
-        25px
+        24px
         0
-        25px;
+        24px;
 
     display:flex;
 
@@ -244,14 +194,13 @@ body{
 }
 
 
-.brand{
+.logo{
 
-    font-size:17px;
+    font-size:18px;
 
     font-weight:300;
 
-    letter-spacing:
-        .54em;
+    letter-spacing:.52em;
 
     white-space:nowrap;
 
@@ -262,9 +211,9 @@ body{
 
     display:flex;
 
-    align-items:center;
+    gap:12px;
 
-    gap:14px;
+    align-items:center;
 
 }
 
@@ -275,15 +224,13 @@ body{
 
     align-items:center;
 
-    gap:6px;
+    gap:5px;
 
-    color:#5d858e;
+    color:#537d87;
 
-    font-size:8px;
+    font-size:7px;
 
-    letter-spacing:.27em;
-
-    white-space:nowrap;
+    letter-spacing:.24em;
 
 }
 
@@ -291,94 +238,137 @@ body{
 .statusDot{
 
     width:7px;
+
     height:7px;
 
     border-radius:50%;
 
-    background:
-        #14ddff;
+    background:#12ddff;
 
     box-shadow:
 
-        0 0 7px
-        #14ddff,
+        0 0 7px #12ddff,
 
-        0 0 16px
-        rgba(20,221,255,.55);
+        0 0 17px rgba(18,221,255,.55);
 
 }
 
 
 /* =========================================================
-   TITLE
+   SUBTITLE
    ========================================================= */
 
-#title{
+#subtitle{
 
     position:absolute;
 
-    z-index:30;
+    z-index:80;
 
     top:
         calc(
-            112px +
+            116px +
             env(safe-area-inset-top)
         );
 
     left:0;
+
     right:0;
 
     text-align:center;
 
-    color:#507b86;
+    color:#4e7c87;
 
-    font-size:9px;
+    font-size:8px;
 
-    letter-spacing:.39em;
-
-    white-space:nowrap;
-
-    pointer-events:none;
+    letter-spacing:.34em;
 
 }
 
 
 /* =========================================================
-   CORE STAGE
+   VOICE STATE
    ========================================================= */
 
-#coreStage{
+#voiceState{
 
     position:absolute;
 
-    z-index:10;
+    z-index:90;
+
+    top:
+        calc(
+            139px +
+            env(safe-area-inset-top)
+        );
 
     left:0;
+
+    right:0;
+
+    text-align:center;
+
+    color:#315b66;
+
+    font-size:6px;
+
+    letter-spacing:.32em;
+
+    transition:
+
+        color .25s ease,
+
+        text-shadow .25s ease;
+
+}
+
+
+#voiceState.active{
+
+    color:#8cf5ff;
+
+    text-shadow:
+
+        0 0 10px
+        rgba(15,220,255,.75);
+
+}
+
+
+/* =========================================================
+   CORE AREA
+   IMPORTANT:
+   ORB ≈ 20VH
+   ========================================================= */
+
+#coreArea{
+
+    position:absolute;
+
+    z-index:20;
+
+    left:0;
+
     right:0;
 
     top:
         calc(
-            146px +
+            158px +
             env(safe-area-inset-top)
         );
 
-    height:
-        min(
-            52vh,
-            520px
-        );
+    height:42vh;
 
     display:flex;
 
-    align-items:center;
-
     justify-content:center;
+
+    align-items:flex-start;
 
 }
 
 
 /* =========================================================
-   CORE CONTAINER
+   CORE
    ========================================================= */
 
 #core{
@@ -387,168 +377,149 @@ body{
 
     width:
         min(
-            86vw,
-            420px
+            20vh,
+            220px
         );
 
-    aspect-ratio:1/1;
+    height:
+        min(
+            20vh,
+            220px
+        );
+
+    min-width:150px;
+
+    min-height:150px;
 
 }
 
 
 /* =========================================================
-   HUD SVG
+   CANVAS
    ========================================================= */
 
-#hud{
+#canvas{
 
     position:absolute;
 
     inset:0;
 
     width:100%;
+
     height:100%;
 
-    overflow:visible;
+}
+
+
+/* =========================================================
+   FOUR HUD RINGS
+   ========================================================= */
+
+#rings{
+
+    position:absolute;
+
+    inset:-82%;
+
+    width:264%;
+
+    height:264%;
 
     pointer-events:none;
 
 }
 
 
-/* =========================================================
-   HUD BASE
-   ========================================================= */
-
-.hudRing{
+.ring{
 
     fill:none;
 
-    stroke:
-        rgba(26,191,221,.42);
-
-    stroke-width:1;
+    transform-origin:50% 50%;
 
 }
 
 
-.hudRingBright{
-
-    fill:none;
+.ring1{
 
     stroke:
-        rgba(68,229,255,.82);
+        rgba(20,209,239,.70);
 
-    stroke-width:1.2;
-
-}
-
-
-.hudRingDim{
-
-    fill:none;
-
-    stroke:
-        rgba(13,111,134,.34);
-
-    stroke-width:.8;
-
-}
-
-
-.hudGold{
-
-    fill:none;
-
-    stroke:
-        rgba(197,157,82,.72);
-
-    stroke-width:.8;
-
-}
-
-
-/* =========================================================
-   ORBIT DASHES
-   ========================================================= */
-
-.dashRing{
-
-    fill:none;
-
-    stroke:
-        rgba(30,204,236,.62);
-
-    stroke-width:1;
+    stroke-width:
+        .45;
 
     stroke-dasharray:
-        2 8;
+        1.2 2.8;
+
+    animation:
+        ringClockwise
+        48s
+        linear
+        infinite;
 
 }
 
 
-.dashRingFine{
-
-    fill:none;
+.ring2{
 
     stroke:
-        rgba(74,220,245,.46);
+        rgba(65,221,243,.53);
 
-    stroke-width:.7;
+    stroke-width:
+        .6;
 
     stroke-dasharray:
-        1 5;
-
-}
-
-
-/* =========================================================
-   ROTATING GROUPS
-   ========================================================= */
-
-.rotateSlow{
-
-    transform-origin:
-        50% 50%;
+        8 3 1 4;
 
     animation:
-        rotateSlow
-        42s
+        ringCounter
+        38s
         linear
         infinite;
 
 }
 
 
-.rotateReverse{
+.ring3{
 
-    transform-origin:
-        50% 50%;
+    stroke:
+        rgba(184,229,235,.39);
+
+    stroke-width:
+        .42;
+
+    stroke-dasharray:
+        2 7;
 
     animation:
-        rotateReverse
-        31s
+        ringClockwise
+        64s
         linear
         infinite;
 
 }
 
 
-.rotateFast{
+.ring4{
 
-    transform-origin:
-        50% 50%;
+    stroke:
+        rgba(196,154,79,.56);
+
+    stroke-width:
+        .55;
+
+    stroke-dasharray:
+        16 7 3 8;
 
     animation:
-        rotateFast
-        18s
+        ringCounter
+        72s
         linear
         infinite;
 
 }
 
 
-@keyframes rotateSlow{
+@keyframes ringClockwise{
 
     from{
         transform:rotate(0deg);
@@ -561,7 +532,7 @@ body{
 }
 
 
-@keyframes rotateReverse{
+@keyframes ringCounter{
 
     from{
         transform:rotate(360deg);
@@ -574,78 +545,17 @@ body{
 }
 
 
-@keyframes rotateFast{
-
-    from{
-        transform:rotate(0deg);
-    }
-
-    to{
-        transform:rotate(360deg);
-    }
-
-}
-
-
 /* =========================================================
-   HUD TEXT
-   ========================================================= */
-
-.hudText{
-
-    fill:
-        rgba(117,220,236,.78);
-
-    font-size:4.2px;
-
-    letter-spacing:1.3px;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-}
-
-
-.hudTextBright{
-
-    fill:
-        rgba(211,250,255,.92);
-
-    font-size:4.6px;
-
-    letter-spacing:1px;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-}
-
-
-.hudNumber{
-
-    fill:
-        rgba(106,220,237,.68);
-
-    font-size:4px;
-
-    font-family:
-        monospace;
-
-}
-
-
-/* =========================================================
-   TICK MARKS
+   RING TICKS
    ========================================================= */
 
 .tick{
 
     stroke:
-        rgba(63,211,236,.72);
+        rgba(93,225,242,.64);
 
-    stroke-width:.8;
+    stroke-width:
+        .65;
 
 }
 
@@ -653,9 +563,10 @@ body{
 .tickMajor{
 
     stroke:
-        rgba(151,240,250,.9);
+        rgba(183,244,250,.88);
 
-    stroke-width:1.25;
+    stroke-width:
+        1;
 
 }
 
@@ -663,27 +574,72 @@ body{
 .tickGold{
 
     stroke:
-        rgba(216,176,92,.76);
+        rgba(211,170,91,.70);
 
-    stroke-width:.8;
+    stroke-width:
+        .65;
 
 }
 
 
 /* =========================================================
-   CENTRAL THREE.JS
+   RING NUMBERS
    ========================================================= */
 
-#three{
+.ringNumber{
+
+    fill:
+        rgba(129,222,236,.62);
+
+    font-family:
+        monospace;
+
+    font-size:
+        3.1px;
+
+    letter-spacing:
+        .5px;
+
+}
+
+
+/* =========================================================
+   ORB HALO
+   ========================================================= */
+
+#halo{
 
     position:absolute;
 
-    inset:0;
+    z-index:2;
+
+    left:50%;
+
+    top:50%;
 
     width:100%;
+
     height:100%;
 
-    z-index:5;
+    transform:
+        translate(-50%,-50%);
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(16,218,255,.24),
+            rgba(0,89,115,.09) 44%,
+            transparent 70%
+        );
+
+    filter:
+        blur(12px);
+
+    transition:
+        transform .06s linear;
 
 }
 
@@ -696,9 +652,10 @@ body{
 
     position:absolute;
 
-    z-index:20;
+    z-index:30;
 
     left:50%;
+
     top:50%;
 
     transform:
@@ -709,8 +666,8 @@ body{
     pointer-events:none;
 
     text-shadow:
-        0 0 12px
-        rgba(20,220,255,.48);
+        0 0 10px
+        rgba(20,220,255,.65);
 
 }
 
@@ -719,15 +676,13 @@ body{
 
     display:block;
 
-    color:
-        rgba(220,251,255,.82);
+    color:#d9fbff;
 
-    font-size:8px;
+    font-size:7px;
 
     font-weight:300;
 
-    letter-spacing:
-        .38em;
+    letter-spacing:.42em;
 
 }
 
@@ -738,107 +693,142 @@ body{
 
     margin-top:5px;
 
-    color:
-        rgba(76,157,170,.72);
+    color:#4f9ba9;
 
     font-size:5px;
 
-    letter-spacing:
-        .28em;
+    letter-spacing:.28em;
 
 }
 
 
 /* =========================================================
-   SMALL STATUS ABOVE CORE
+   VOICE TRANSCRIPTION
    ========================================================= */
 
-#coreStatus{
+#transcription{
 
     position:absolute;
 
-    z-index:25;
+    z-index:60;
+
+    left:25px;
+
+    right:25px;
+
+    top:
+        calc(
+            51vh +
+            env(safe-area-inset-top)
+        );
+
+    min-height:46px;
+
+    padding:
+        10px
+        13px;
+
+    border-left:
+        1px solid
+        rgba(22,213,241,.55);
+
+    border-right:
+        1px solid
+        rgba(22,213,241,.22);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,33,42,.55),
+            rgba(0,10,14,.35)
+        );
+
+    color:#79dbe9;
+
+    font-size:10px;
+
+    letter-spacing:.08em;
+
+    text-align:center;
+
+    opacity:.88;
+
+}
+
+
+#transcription.empty{
+
+    color:#345963;
+
+}
+
+
+/* =========================================================
+   VOICE VISUALIZER
+   ========================================================= */
+
+#visualizer{
+
+    position:absolute;
+
+    z-index:70;
 
     left:50%;
-
-    top:-13px;
 
     transform:
         translateX(-50%);
 
-    color:
-        #477783;
+    top:
+        calc(
+            58vh +
+            env(safe-area-inset-top)
+        );
 
-    font-size:6px;
+    width:170px;
 
-    letter-spacing:.35em;
+    height:28px;
 
-    white-space:nowrap;
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:3px;
 
 }
 
 
-/* =========================================================
-   INFORMATION MARKERS
-   ========================================================= */
+.bar{
 
-.marker{
+    width:2px;
 
-    position:absolute;
+    height:4px;
 
-    z-index:25;
-
-    width:6px;
-    height:6px;
-
-    border-radius:50%;
-
-    background:
-        #7befff;
+    background:#18dfff;
 
     box-shadow:
+        0 0 6px
+        rgba(24,223,255,.7);
 
-        0 0 7px
-        #27dfff,
+    transition:
+        height .05s linear;
 
-        0 0 16px
-        rgba(27,220,255,.45);
-
-}
-
-
-.marker.m1{
-    left:20%;
-    top:30%;
-}
-
-.marker.m2{
-    left:76%;
-    top:34%;
-}
-
-.marker.m3{
-    left:22%;
-    top:69%;
-}
-
-.marker.m4{
-    left:79%;
-    top:70%;
 }
 
 
 /* =========================================================
-   INFORMATION PANELS
+   CONTROLS
    ========================================================= */
 
-#panels{
+#controls{
 
     position:absolute;
 
-    z-index:40;
+    z-index:100;
 
     left:20px;
+
     right:20px;
 
     bottom:
@@ -850,171 +840,269 @@ body{
     display:grid;
 
     grid-template-columns:
-        1fr 1fr;
+        repeat(3,1fr);
 
-    gap:10px;
+    gap:8px;
 
 }
 
 
-/* =========================================================
-   PANEL
-   ========================================================= */
+.control{
 
-.panel{
-
-    min-height:88px;
-
-    padding:
-        14px
-        13px
-        11px;
+    min-height:44px;
 
     border:
         1px solid
-        rgba(15,201,232,.46);
+        rgba(16,190,216,.40);
 
     background:
+        rgba(3,18,24,.85);
 
-        linear-gradient(
-            145deg,
-            rgba(7,32,40,.78),
-            rgba(1,10,14,.88)
-        );
-
-    box-shadow:
-
-        inset 0 0 25px
-        rgba(0,170,205,.045);
-
-}
-
-
-.panelTitle{
-
-    color:
-        #58c2d3;
-
-    font-size:8px;
-
-    letter-spacing:
-        .35em;
-
-    margin-bottom:10px;
-
-}
-
-
-.panelValue{
-
-    color:
-        #dcfaff;
-
-    font-size:25px;
-
-    font-weight:300;
-
-    line-height:1;
-
-}
-
-
-.panelSub{
-
-    margin-top:9px;
-
-    color:
-        #4d737c;
+    color:#6dbbc7;
 
     font-size:7px;
 
     letter-spacing:.16em;
 
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    user-select:none;
+
+    -webkit-user-select:none;
+
+}
+
+
+.control:active{
+
+    background:
+        rgba(10,61,73,.9);
+
+    color:#cfffff;
+
+}
+
+
+.control.primary{
+
+    border-color:
+        rgba(24,221,255,.68);
+
+    color:#9bf4ff;
+
 }
 
 
 /* =========================================================
-   RESPONSIVE IPHONE
+   SPEECH OUTPUT PANEL
+   ========================================================= */
+
+#speechPanel{
+
+    position:absolute;
+
+    z-index:110;
+
+    left:20px;
+
+    right:20px;
+
+    bottom:
+        calc(
+            84px +
+            env(safe-area-inset-bottom)
+        );
+
+    display:none;
+
+    padding:12px;
+
+    border:
+        1px solid
+        rgba(16,202,232,.45);
+
+    background:
+        rgba(2,13,18,.95);
+
+}
+
+
+#speechPanel.visible{
+
+    display:block;
+
+}
+
+
+#speechText{
+
+    width:100%;
+
+    min-height:55px;
+
+    resize:none;
+
+    border:none;
+
+    outline:none;
+
+    background:
+        rgba(0,0,0,.22);
+
+    color:#d8fbff;
+
+    padding:9px;
+
+    font-family:inherit;
+
+    font-size:11px;
+
+}
+
+
+.speechButtons{
+
+    margin-top:7px;
+
+    display:flex;
+
+    gap:7px;
+
+}
+
+
+.speechButtons button{
+
+    flex:1;
+
+    height:34px;
+
+    border:
+        1px solid
+        rgba(21,207,235,.45);
+
+    background:
+        rgba(4,31,39,.9);
+
+    color:#8feaf6;
+
+    font-size:7px;
+
+    letter-spacing:.12em;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
    ========================================================= */
 
 @media(
     max-width:390px
 ){
 
-    .brand{
+    .logo{
+
         font-size:15px;
+
     }
+
 
     .status{
-        gap:9px;
+
+        gap:7px;
+
     }
+
 
     .statusItem{
+
+        font-size:6px;
+
+        letter-spacing:.15em;
+
+    }
+
+
+    #subtitle{
+
         font-size:7px;
-        letter-spacing:.19em;
+
+        letter-spacing:.27em;
+
     }
 
-    #title{
-        font-size:7.5px;
-        letter-spacing:.30em;
+
+    #core{
+
+        width:20vh;
+
+        height:20vh;
+
+        min-width:140px;
+
+        min-height:140px;
+
     }
 
-    #coreStage{
-        height:48vh;
-    }
 
-}
+    #transcription{
 
+        left:18px;
 
-@media(
-    max-height:720px
-){
+        right:18px;
 
-    #coreStage{
-        top:
-            calc(
-                133px +
-                env(safe-area-inset-top)
-            );
-
-        height:46vh;
-    }
-
-    #panels{
-        bottom:
-            calc(
-                18px +
-                env(safe-area-inset-bottom)
-            );
     }
 
 }
 
 
 /* =========================================================
-   VERY SMALL DEVICES
+   SMALL HEIGHT
    ========================================================= */
 
 @media(
-    max-width:360px
+    max-height:720px
 ){
 
-    #header{
-        padding-left:18px;
-        padding-right:18px;
+    #coreArea{
+
+        top:
+            calc(
+                143px +
+                env(safe-area-inset-top)
+            );
+
     }
 
-    #panels{
-        left:16px;
-        right:16px;
+
+    #transcription{
+
+        top:
+            calc(
+                48vh +
+                env(safe-area-inset-top)
+            );
+
     }
 
-    .panel{
-        min-height:82px;
-    }
 
-    .panelValue{
-        font-size:22px;
+    #visualizer{
+
+        top:
+            calc(
+                55vh +
+                env(safe-area-inset-top)
+            );
+
     }
 
 }
@@ -1028,12 +1116,7 @@ body{
 
 <div id="app">
 
-
-    <div id="backgroundGrid"></div>
-
-
-    <div class="techLine one"></div>
-    <div class="techLine two"></div>
+    <div id="grid"></div>
 
 
     <!-- =====================================================
@@ -1042,7 +1125,7 @@ body{
 
     <header id="header">
 
-        <div class="brand">
+        <div class="logo">
             J A R V I S
         </div>
 
@@ -1050,18 +1133,29 @@ body{
         <div class="status">
 
             <div class="statusItem">
+
                 <span class="statusDot"></span>
+
                 ONLINE
+
             </div>
 
+
             <div class="statusItem">
+
                 <span class="statusDot"></span>
+
                 SECURE
+
             </div>
 
+
             <div class="statusItem">
+
                 <span class="statusDot"></span>
+
                 VOICE
+
             </div>
 
         </div>
@@ -1073,9 +1167,9 @@ body{
          TITLE
          ===================================================== -->
 
-    <div id="title">
+    <div id="subtitle">
 
-        GEODE CORE
+        VOICE CORE
         ·
         CRYSTALLINE MATRIX
         ·
@@ -1084,224 +1178,128 @@ body{
     </div>
 
 
+    <div id="voiceState">
+
+        VOICE SYSTEM READY
+
+    </div>
+
+
     <!-- =====================================================
          CORE
          ===================================================== -->
 
-    <main id="coreStage">
+    <section id="coreArea">
+
 
         <div id="core">
 
 
-            <div id="coreStatus">
+            <!-- HALO -->
 
-                SYSTEM CORE
-                ·
-                GEOMETRIC ANALYSIS
-
-            </div>
+            <div id="halo"></div>
 
 
-            <!-- =============================================
-                 HUD
-                 ============================================= -->
+            <!-- =================================================
+                 FOUR RINGS
+                 ================================================= -->
 
             <svg
-                id="hud"
+                id="rings"
                 viewBox="0 0 100 100"
                 preserveAspectRatio="xMidYMid meet"
             >
 
 
-                <!-- =========================================
-                     OUTER PRECISION RING
-                     ========================================= -->
+                <!-- RING 1 -->
 
                 <circle
                     cx="50"
                     cy="50"
-                    r="47"
-                    class="hudRingDim"
+                    r="38"
+                    class="ring ring1"
                 />
 
+
+                <!-- RING 2 -->
 
                 <circle
                     cx="50"
                     cy="50"
-                    r="45.2"
-                    class="hudRing"
+                    r="44"
+                    class="ring ring2"
                 />
 
 
-                <!-- =========================================
-                     ROTATING SEGMENT SYSTEM
-                     ========================================= -->
+                <!-- RING 3 -->
 
-                <g class="rotateSlow">
-
-                    <circle
-                        cx="50"
-                        cy="50"
-                        r="43.4"
-                        class="dashRing"
-                    />
-
-                    <path
-                        d="
-                        M50 6.6
-                        A43.4 43.4 0 0 1 81 19
-                        "
-                        class="hudRingBright"
-                    />
-
-                    <path
-                        d="
-                        M50 93.4
-                        A43.4 43.4 0 0 1 20 81
-                        "
-                        class="hudGold"
-                    />
-
-                </g>
+                <circle
+                    cx="50"
+                    cy="50"
+                    r="50"
+                    class="ring ring3"
+                />
 
 
-                <!-- =========================================
-                     MAJOR TICK RING
-                     ========================================= -->
+                <!-- RING 4 -->
+
+                <circle
+                    cx="50"
+                    cy="50"
+                    r="56"
+                    class="ring ring4"
+                />
+
+
+                <!-- TICKS -->
 
                 <g
-                    id="majorTicks"
-                    class="rotateReverse"
+                    id="ticks"
+                    class="ring2"
                 ></g>
 
 
-                <!-- =========================================
-                     NUMERIC RING
-                     ========================================= -->
+                <!-- NUMBERS -->
 
-                <g class="rotateSlow">
-
-                    <circle
-                        cx="50"
-                        cy="50"
-                        r="39.5"
-                        class="hudRingDim"
-                    />
-
-                    <circle
-                        cx="50"
-                        cy="50"
-                        r="37.8"
-                        class="dashRingFine"
-                    />
-
-                </g>
+                <g
+                    id="numbers"
+                    class="ringNumber"
+                ></g>
 
 
-                <!-- =========================================
-                     INNER SEGMENT RING
-                     ========================================= -->
+                <!-- CARDINAL -->
 
-                <g class="rotateFast">
-
-                    <circle
-                        cx="50"
-                        cy="50"
-                        r="35.2"
-                        class="hudRing"
-                        stroke-dasharray="18 3 2 4"
-                    />
-
-                    <circle
-                        cx="50"
-                        cy="50"
-                        r="33.8"
-                        class="hudGold"
-                        stroke-dasharray="3 17"
-                    />
-
-                </g>
-
-
-                <!-- =========================================
-                     INNER TECH RING
-                     ========================================= -->
-
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="31"
-                    class="hudRingDim"
-                />
-
-
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="29.4"
-                    class="hudRing"
-                    stroke-dasharray="1 4"
-                />
-
-
-                <!-- =========================================
-                     CENTRAL CROSSHAIR
-                     ========================================= -->
-
-                <line
-                    x1="8"
-                    y1="50"
-                    x2="92"
-                    y2="50"
-                    stroke="rgba(48,197,221,.25)"
-                    stroke-width=".45"
-                />
-
-
-                <line
-                    x1="50"
-                    y1="8"
-                    x2="50"
-                    y2="92"
-                    stroke="rgba(48,197,221,.25)"
-                    stroke-width=".45"
-                />
-
-
-                <!-- =========================================
-                     CARDINAL MARKERS
-                     ========================================= -->
-
-                <g class="hudTextBright">
+                <g
+                    fill="#c8f8ff"
+                    font-family="Arial"
+                    font-size="4.5"
+                    text-anchor="middle"
+                >
 
                     <text
                         x="50"
-                        y="5.2"
-                        text-anchor="middle"
+                        y="8"
                     >
                         N
                     </text>
 
                     <text
-                        x="95"
+                        x="92"
                         y="51.5"
-                        text-anchor="middle"
                     >
                         E
                     </text>
 
                     <text
                         x="50"
-                        y="96"
-                        text-anchor="middle"
+                        y="94"
                     >
                         S
                     </text>
 
                     <text
-                        x="5"
+                        x="8"
                         y="51.5"
-                        text-anchor="middle"
                     >
                         W
                     </text>
@@ -1309,122 +1307,35 @@ body{
                 </g>
 
 
-                <!-- =========================================
-                     DATA LABELS
-                     ========================================= -->
-
-                <g class="hudText">
-
-                    <text x="16" y="18">
-                        AX-03
-                    </text>
-
-                    <text x="70" y="17">
-                        GEO-82
-                    </text>
-
-                    <text x="77" y="84">
-                        CORE-12
-                    </text>
-
-                    <text x="13" y="82">
-                        MATRIX
-                    </text>
-
-                    <text x="34" y="12">
-                        07.42
-                    </text>
-
-                    <text x="62" y="90">
-                        03:82
-                    </text>
-
-                </g>
-
-
-                <!-- =========================================
-                     NUMBERS
-                     ========================================= -->
+                <!-- SMALL DATA MARKERS -->
 
                 <g
-                    id="numbers"
-                    class="hudNumber rotateSlow"
-                ></g>
+                    fill="#56dff0"
+                    opacity=".8"
+                >
 
-
-                <!-- =========================================
-                     SMALL CORNER BRACKETS
-                     ========================================= -->
-
-                <path
-                    d="
-                    M13 27 L10 27 L10 21
-                    "
-                    class="hudRingBright"
-                />
-
-                <path
-                    d="
-                    M87 27 L90 27 L90 21
-                    "
-                    class="hudRingBright"
-                />
-
-                <path
-                    d="
-                    M13 73 L10 73 L10 79
-                    "
-                    class="hudRingBright"
-                />
-
-                <path
-                    d="
-                    M87 73 L90 73 L90 79
-                    "
-                    class="hudRingBright"
-                />
-
-
-                <!-- =========================================
-                     SMALL ORBIT MARKERS
-                     ========================================= -->
-
-                <g class="rotateFast">
-
-                    <rect
-                        x="48.8"
-                        y="8.8"
-                        width="2.4"
-                        height="1.5"
-                        rx=".3"
-                        fill="#76efff"
+                    <circle
+                        cx="20"
+                        cy="29"
+                        r=".9"
                     />
 
-                    <rect
-                        x="48.8"
-                        y="89.7"
-                        width="2.4"
-                        height="1.5"
-                        rx=".3"
-                        fill="#76efff"
+                    <circle
+                        cx="80"
+                        cy="29"
+                        r=".9"
                     />
 
-                    <rect
-                        x="8.8"
-                        y="48.8"
-                        width="1.5"
-                        height="2.4"
-                        rx=".3"
-                        fill="#76efff"
+                    <circle
+                        cx="20"
+                        cy="71"
+                        r=".9"
                     />
 
-                    <rect
-                        x="89.7"
-                        y="48.8"
-                        width="1.5"
-                        height="2.4"
-                        rx=".3"
-                        fill="#76efff"
+                    <circle
+                        cx="80"
+                        cy="71"
+                        r=".9"
                     />
 
                 </g>
@@ -1433,230 +1344,320 @@ body{
             </svg>
 
 
-            <!-- =============================================
-                 THREE.JS CANVAS
-                 ============================================= -->
+            <!-- =================================================
+                 3D ORB CANVAS
+                 ================================================= -->
 
-            <canvas id="three"></canvas>
+            <canvas id="canvas"></canvas>
 
 
-            <!-- =============================================
-                 LABEL
-                 ============================================= -->
+            <!-- LABEL -->
 
             <div id="coreLabel">
 
                 <strong>CORE</strong>
 
-                <span>
-                    ACTIVE
+                <span id="coreMode">
+                    STANDBY
                 </span>
 
             </div>
 
 
-            <!-- =============================================
-                 MARKERS
-                 ============================================= -->
-
-            <div class="marker m1"></div>
-            <div class="marker m2"></div>
-            <div class="marker m3"></div>
-            <div class="marker m4"></div>
-
-
         </div>
-
-    </main>
-
-
-    <!-- =====================================================
-         PANELS
-         ===================================================== -->
-
-    <section id="panels">
-
-
-        <div class="panel">
-
-            <div class="panelTitle">
-                MAISON
-            </div>
-
-            <div class="panelValue">
-                03
-            </div>
-
-            <div class="panelSub">
-                DISPOSITIFS ACTIFS
-            </div>
-
-        </div>
-
-
-        <div class="panel">
-
-            <div class="panelTitle">
-                MÉTÉO
-            </div>
-
-            <div class="panelValue">
-                18°
-            </div>
-
-            <div class="panelSub">
-                CONDITIONS STABLES
-            </div>
-
-        </div>
-
-
-        <div class="panel">
-
-            <div class="panelTitle">
-                SYSTÈME
-            </div>
-
-            <div class="panelValue">
-                82%
-            </div>
-
-            <div class="panelSub">
-                PERFORMANCE
-            </div>
-
-        </div>
-
-
-        <div class="panel">
-
-            <div class="panelTitle">
-                ACTIVITÉ
-            </div>
-
-            <div class="panelValue">
-                12
-            </div>
-
-            <div class="panelSub">
-                ÉVÉNEMENTS RÉCENTS
-            </div>
-
-        </div>
-
 
     </section>
 
 
+    <!-- =====================================================
+         TRANSCRIPTION
+         ===================================================== -->
+
+    <div
+        id="transcription"
+        class="empty"
+    >
+
+        En attente de commande vocale…
+
+    </div>
+
+
+    <!-- =====================================================
+         VOICE VISUALIZER
+         ===================================================== -->
+
+    <div id="visualizer">
+
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+
+    </div>
+
+
+    <!-- =====================================================
+         SPEECH PANEL
+         ===================================================== -->
+
+    <div id="speechPanel">
+
+        <textarea
+            id="speechText"
+            placeholder="Texte que Jarvis doit prononcer..."
+        ></textarea>
+
+
+        <div class="speechButtons">
+
+            <button id="speakButton">
+                PARLER
+            </button>
+
+            <button id="stopButton">
+                STOP
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CONTROLS
+         ===================================================== -->
+
+    <div id="controls">
+
+        <button
+            id="listenButton"
+            class="control primary"
+        >
+            ACTIVER<br>
+            MICRO
+
+        </button>
+
+
+        <button
+            id="shortcutButton"
+            class="control"
+        >
+            ENVOYER<br>
+            RACCOURCIS
+
+        </button>
+
+
+        <button
+            id="voiceButton"
+            class="control"
+        >
+            VOIX<br>
+            JARVIS
+
+        </button>
+
+    </div>
+
 </div>
 
 
-<!-- =========================================================
-     THREE.JS
-     ========================================================= -->
+<script>
 
-<script type="importmap">
-
-{
-
-    "imports":{
-
-        "three":
-        "https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js"
-
-    }
-
-}
-
-</script>
-
-
-<script type="module">
-
-import * as THREE from "three";
+/* =========================================================
+   JARVIS VOICE CORE
+   PURE JAVASCRIPT
+   ========================================================= */
 
 
 /* =========================================================
-   SVG TICKS
+   ELEMENTS
    ========================================================= */
 
-const majorTicks =
+const canvas =
     document.getElementById(
-        "majorTicks"
+        "canvas"
     );
 
 
-const numbers =
+const core =
     document.getElementById(
-        "numbers"
+        "core"
     );
 
+
+const halo =
+    document.getElementById(
+        "halo"
+    );
+
+
+const coreLabel =
+    document.getElementById(
+        "coreMode"
+    );
+
+
+const voiceState =
+    document.getElementById(
+        "voiceState"
+    );
+
+
+const transcription =
+    document.getElementById(
+        "transcription"
+    );
+
+
+const listenButton =
+    document.getElementById(
+        "listenButton"
+    );
+
+
+const shortcutButton =
+    document.getElementById(
+        "shortcutButton"
+    );
+
+
+const voiceButton =
+    document.getElementById(
+        "voiceButton"
+    );
+
+
+const speechPanel =
+    document.getElementById(
+        "speechPanel"
+    );
+
+
+const speechText =
+    document.getElementById(
+        "speechText"
+    );
+
+
+const speakButton =
+    document.getElementById(
+        "speakButton"
+    );
+
+
+const stopButton =
+    document.getElementById(
+        "stopButton"
+    );
+
+
+const bars =
+    Array.from(
+        document.querySelectorAll(
+            ".bar"
+        )
+    );
+
+
+/* =========================================================
+   SVG RING DATA
+   ========================================================= */
 
 const svgNS =
     "http://www.w3.org/2000/svg";
 
 
+const tickGroup =
+    document.getElementById(
+        "ticks"
+    );
+
+
+const numberGroup =
+    document.getElementById(
+        "numbers"
+    );
+
+
 /* =========================================================
-   GENERATE PRECISION TICKS
+   GENERATE 72 TICKS
    ========================================================= */
 
 for(
-    let i = 0;
-    i < 120;
+    let i=0;
+    i<72;
     i++
 ){
 
     const angle =
-        (i / 120) *
-        Math.PI * 2;
+        (
+            i / 72
+        ) *
+        Math.PI *
+        2;
 
 
     const major =
-        i % 10 === 0;
+        i % 9 === 0;
 
 
     const medium =
-        i % 5 === 0;
+        i % 3 === 0;
 
 
-    const r1 =
+    const radiusOuter =
+        54;
+
+
+    const radiusInner =
         major
-        ? 42.9
+        ? 50.8
         : medium
-        ? 42.5
-        : 42.0;
-
-
-    const r2 =
-        major
-        ? 40.9
-        : medium
-        ? 41.5
-        : 41.5;
+        ? 51.7
+        : 52.3;
 
 
     const x1 =
         50 +
         Math.cos(angle) *
-        r1;
+        radiusOuter;
 
 
     const y1 =
         50 +
         Math.sin(angle) *
-        r1;
+        radiusOuter;
 
 
     const x2 =
         50 +
         Math.cos(angle) *
-        r2;
+        radiusInner;
 
 
     const y2 =
         50 +
         Math.sin(angle) *
-        r2;
+        radiusInner;
 
 
     const line =
@@ -1671,15 +1672,18 @@ for(
         x1
     );
 
+
     line.setAttribute(
         "y1",
         y1
     );
 
+
     line.setAttribute(
         "x2",
         x2
     );
+
 
     line.setAttribute(
         "y2",
@@ -1693,11 +1697,11 @@ for(
         ? "tickMajor"
         : medium
         ? "tick"
-        : "tick"
+        : "tickGold"
     );
 
 
-    majorTicks.appendChild(
+    tickGroup.appendChild(
         line
     );
 
@@ -1705,10 +1709,11 @@ for(
 
 
 /* =========================================================
-   GENERATE NUMERIC MARKERS
+   NUMBERS
    ========================================================= */
 
-const labels = [
+const values = [
+
     "00",
     "15",
     "30",
@@ -1733,34 +1738,39 @@ const labels = [
     "315",
     "330",
     "345"
+
 ];
 
 
 for(
     let i=0;
-    i<labels.length;
+    i<values.length;
     i++
 ){
 
     const angle =
-        (i / labels.length) *
-        Math.PI * 2;
+        (
+            i /
+            values.length
+        ) *
+        Math.PI *
+        2;
 
 
-    const r =
-        39.2;
+    const radius =
+        46.8;
 
 
     const x =
         50 +
         Math.cos(angle) *
-        r;
+        radius;
 
 
     const y =
         50 +
         Math.sin(angle) *
-        r;
+        radius;
 
 
     const text =
@@ -1795,10 +1805,10 @@ for(
 
 
     text.textContent =
-        labels[i];
+        values[i];
 
 
-    numbers.appendChild(
+    numberGroup.appendChild(
         text
     );
 
@@ -1806,803 +1816,24 @@ for(
 
 
 /* =========================================================
-   THREE RENDERER
+   CANVAS
    ========================================================= */
 
-const canvas =
-    document.getElementById(
-        "three"
+const ctx =
+    canvas.getContext(
+        "2d"
     );
 
 
-const renderer =
-    new THREE.WebGLRenderer({
+let width = 0;
 
-        canvas,
+let height = 0;
 
-        antialias:true,
+let cx = 0;
 
-        alpha:true,
+let cy = 0;
 
-        powerPreference:
-            "high-performance"
-
-    });
-
-
-renderer.setPixelRatio(
-    Math.min(
-        window.devicePixelRatio || 1,
-        2
-    )
-);
-
-
-renderer.outputColorSpace =
-    THREE.SRGBColorSpace;
-
-
-renderer.toneMapping =
-    THREE.ACESFilmicToneMapping;
-
-
-renderer.toneMappingExposure =
-    1.25;
-
-
-/* =========================================================
-   SCENE
-   ========================================================= */
-
-const scene =
-    new THREE.Scene();
-
-
-/* =========================================================
-   CAMERA
-   ========================================================= */
-
-const camera =
-    new THREE.PerspectiveCamera(
-        31,
-        1,
-        .1,
-        100
-    );
-
-
-camera.position.set(
-    0,
-    0,
-    7.8
-);
-
-
-camera.lookAt(
-    0,
-    0,
-    0
-);
-
-
-/* =========================================================
-   LIGHTING
-   ========================================================= */
-
-const ambient =
-    new THREE.HemisphereLight(
-        0x80e8ff,
-        0x010203,
-        1.9
-    );
-
-
-scene.add(
-    ambient
-);
-
-
-const key =
-    new THREE.DirectionalLight(
-        0xffffff,
-        4.5
-    );
-
-
-key.position.set(
-    -4,
-    5,
-    6
-);
-
-
-scene.add(
-    key
-);
-
-
-const warm =
-    new THREE.PointLight(
-        0xffb75a,
-        7,
-        7
-    );
-
-
-warm.position.set(
-    -2.5,
-    1.7,
-    3
-);
-
-
-scene.add(
-    warm
-);
-
-
-const cyan =
-    new THREE.PointLight(
-        0x00dfff,
-        13,
-        8
-    );
-
-
-cyan.position.set(
-    3,
-    1,
-    3
-);
-
-
-scene.add(
-    cyan
-);
-
-
-const blue =
-    new THREE.PointLight(
-        0x0077ff,
-        8,
-        7
-    );
-
-
-blue.position.set(
-    -3,
-    -2,
-    2
-);
-
-
-scene.add(
-    blue
-);
-
-
-/* =========================================================
-   GEODE ROOT
-   ========================================================= */
-
-const geode =
-    new THREE.Group();
-
-
-scene.add(
-    geode
-);
-
-
-/* =========================================================
-   OUTER FACETED SHELL
-   ========================================================= */
-
-const outerGeometry =
-    new THREE.IcosahedronGeometry(
-        1.42,
-        4
-    );
-
-
-const outerMaterial =
-    new THREE.MeshPhysicalMaterial({
-
-        color:
-            0x244955,
-
-        metalness:
-            .72,
-
-        roughness:
-            .25,
-
-        clearcoat:
-            .78,
-
-        clearcoatRoughness:
-            .16,
-
-        transparent:
-            true,
-
-        opacity:
-            .82,
-
-        envMapIntensity:
-            2.3
-
-    });
-
-
-const outer =
-    new THREE.Mesh(
-        outerGeometry,
-        outerMaterial
-    );
-
-
-geode.add(
-    outer
-);
-
-
-/* =========================================================
-   OUTER EDGES
-   ========================================================= */
-
-const outerEdges =
-    new THREE.LineSegments(
-
-        new THREE.EdgesGeometry(
-            outerGeometry,
-            10
-        ),
-
-        new THREE.LineBasicMaterial({
-
-            color:
-                0x64e9fa,
-
-            transparent:
-                true,
-
-            opacity:
-                .64
-
-        })
-
-    );
-
-
-geode.add(
-    outerEdges
-);
-
-
-/* =========================================================
-   SECOND FACET SHELL
-   ========================================================= */
-
-const shellGeometry =
-    new THREE.IcosahedronGeometry(
-        1.08,
-        3
-    );
-
-
-const shellMaterial =
-    new THREE.MeshPhysicalMaterial({
-
-        color:
-            0x102f38,
-
-        metalness:
-            .82,
-
-        roughness:
-            .17,
-
-        clearcoat:
-            1,
-
-        clearcoatRoughness:
-            .09,
-
-        transparent:
-            true,
-
-        opacity:
-            .76,
-
-        envMapIntensity:
-            2.8
-
-    });
-
-
-const shell =
-    new THREE.Mesh(
-        shellGeometry,
-        shellMaterial
-    );
-
-
-shell.rotation.set(
-    .35,
-    .24,
-    .18
-);
-
-
-geode.add(
-    shell
-);
-
-
-/* =========================================================
-   SHELL EDGES
-   ========================================================= */
-
-const shellEdges =
-    new THREE.LineSegments(
-
-        new THREE.EdgesGeometry(
-            shellGeometry,
-            8
-        ),
-
-        new THREE.LineBasicMaterial({
-
-            color:
-                0x3edff6,
-
-            transparent:
-                true,
-
-            opacity:
-                .72
-
-        })
-
-    );
-
-
-shellEdges.rotation.copy(
-    shell.rotation
-);
-
-
-geode.add(
-    shellEdges
-);
-
-
-/* =========================================================
-   CENTRAL CRYSTAL
-   ========================================================= */
-
-const crystalGeometry =
-    new THREE.IcosahedronGeometry(
-        .43,
-        2
-    );
-
-
-const crystalMaterial =
-    new THREE.MeshPhysicalMaterial({
-
-        color:
-            0x16a9bd,
-
-        metalness:
-            .38,
-
-        roughness:
-            .08,
-
-        transmission:
-            .25,
-
-        thickness:
-            .7,
-
-        clearcoat:
-            1,
-
-        clearcoatRoughness:
-            .04,
-
-        emissive:
-            0x00505f,
-
-        emissiveIntensity:
-            1.1
-
-    });
-
-
-const crystal =
-    new THREE.Mesh(
-        crystalGeometry,
-        crystalMaterial
-    );
-
-
-geode.add(
-    crystal
-);
-
-
-/* =========================================================
-   CRYSTAL EDGES
-   ========================================================= */
-
-const crystalEdges =
-    new THREE.LineSegments(
-
-        new THREE.EdgesGeometry(
-            crystalGeometry
-        ),
-
-        new THREE.LineBasicMaterial({
-
-            color:
-                0xb9fbff,
-
-            transparent:
-                true,
-
-            opacity:
-                .9
-
-        })
-
-    );
-
-
-geode.add(
-    crystalEdges
-);
-
-
-/* =========================================================
-   INTERNAL CRYSTAL SHARDS
-   ========================================================= */
-
-const shards =
-    new THREE.Group();
-
-
-geode.add(
-    shards
-);
-
-
-const shardMaterial =
-    new THREE.MeshPhysicalMaterial({
-
-        color:
-            0x8bdde4,
-
-        metalness:
-            .55,
-
-        roughness:
-            .16,
-
-        transparent:
-            true,
-
-        opacity:
-            .64,
-
-        emissive:
-            0x003f4a,
-
-        emissiveIntensity:
-            .5
-
-    });
-
-
-for(
-    let i=0;
-    i<26;
-    i++
-){
-
-    const radius =
-        .50 +
-        Math.random()*.54;
-
-
-    const theta =
-        Math.random() *
-        Math.PI*2;
-
-
-    const phi =
-        Math.acos(
-            2*Math.random()-1
-        );
-
-
-    const shard =
-        new THREE.Mesh(
-
-            new THREE.TetrahedronGeometry(
-                .025 +
-                Math.random()*.045,
-                0
-            ),
-
-            shardMaterial
-
-        );
-
-
-    shard.position.set(
-
-        radius *
-        Math.sin(phi) *
-        Math.cos(theta),
-
-        radius *
-        Math.sin(phi) *
-        Math.sin(theta),
-
-        radius *
-        Math.cos(phi)
-
-    );
-
-
-    shard.rotation.set(
-
-        Math.random()*Math.PI,
-
-        Math.random()*Math.PI,
-
-        Math.random()*Math.PI
-
-    );
-
-
-    shards.add(
-        shard
-    );
-
-}
-
-
-/* =========================================================
-   PARTICLE FIELD
-   ========================================================= */
-
-const particleGeometry =
-    new THREE.BufferGeometry();
-
-
-const particlePositions =
-    new Float32Array(
-        260 * 3
-    );
-
-
-for(
-    let i=0;
-    i<260;
-    i++
-){
-
-    const radius =
-        .35 +
-        Math.random()*1.10;
-
-
-    const theta =
-        Math.random() *
-        Math.PI*2;
-
-
-    const phi =
-        Math.acos(
-            2*Math.random()-1
-        );
-
-
-    particlePositions[
-        i*3
-    ] =
-        radius *
-        Math.sin(phi) *
-        Math.cos(theta);
-
-
-    particlePositions[
-        i*3+1
-    ] =
-        radius *
-        Math.sin(phi) *
-        Math.sin(theta);
-
-
-    particlePositions[
-        i*3+2
-    ] =
-        radius *
-        Math.cos(phi);
-
-}
-
-
-particleGeometry.setAttribute(
-
-    "position",
-
-    new THREE.BufferAttribute(
-        particlePositions,
-        3
-    )
-
-);
-
-
-const particleMaterial =
-    new THREE.PointsMaterial({
-
-        color:
-            0x9ef8ff,
-
-        size:
-            .014,
-
-        transparent:
-            true,
-
-        opacity:
-            .65,
-
-        blending:
-            THREE.AdditiveBlending
-
-    });
-
-
-const particles =
-    new THREE.Points(
-
-        particleGeometry,
-
-        particleMaterial
-
-    );
-
-
-geode.add(
-    particles
-);
-
-
-/* =========================================================
-   SMALL INTERNAL ORBIT
-   ========================================================= */
-
-const orbitGeometry =
-    new THREE.TorusGeometry(
-        .62,
-        .008,
-        8,
-        96
-    );
-
-
-const orbitMaterial =
-    new THREE.MeshPhysicalMaterial({
-
-        color:
-            0xc9fbff,
-
-        metalness:
-            .82,
-
-        roughness:
-            .12,
-
-        emissive:
-            0x006678,
-
-        emissiveIntensity:
-            .5
-
-    });
-
-
-const orbit =
-    new THREE.Mesh(
-        orbitGeometry,
-        orbitMaterial
-    );
-
-
-orbit.rotation.x =
-    Math.PI/2;
-
-
-geode.add(
-    orbit
-);
-
-
-/* =========================================================
-   GOLD INNER ORBIT
-   ========================================================= */
-
-const goldOrbit =
-    new THREE.Mesh(
-
-        new THREE.TorusGeometry(
-            .73,
-            .009,
-            8,
-            128
-        ),
-
-        new THREE.MeshPhysicalMaterial({
-
-            color:
-                0xc49b54,
-
-            metalness:
-                .92,
-
-            roughness:
-                .18,
-
-            envMapIntensity:
-                2
-
-        })
-
-    );
-
-
-goldOrbit.rotation.x =
-    Math.PI/3;
-
-
-goldOrbit.rotation.z =
-    .35;
-
-
-geode.add(
-    goldOrbit
-);
-
-
-/* =========================================================
-   CORE LIGHT
-   ========================================================= */
-
-const coreLight =
-    new THREE.PointLight(
-        0x16e8ff,
-        15,
-        3.5
-    );
-
-
-coreLight.position.set(
-    0,
-    0,
-    1
-);
-
-
-geode.add(
-    coreLight
-);
+let radius = 0;
 
 
 /* =========================================================
@@ -2612,43 +1843,70 @@ geode.add(
 function resize(){
 
     const rect =
-        canvas.getBoundingClientRect();
+        core.getBoundingClientRect();
 
 
-    const width =
-        Math.max(
-            1,
-            rect.width
+    width =
+        rect.width;
+
+
+    height =
+        rect.height;
+
+
+    const dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
         );
 
 
-    const height =
-        Math.max(
-            1,
-            rect.height
-        );
+    canvas.width =
+        width * dpr;
 
 
-    renderer.setSize(
-        width,
-        height,
-        false
+    canvas.height =
+        height * dpr;
+
+
+    canvas.style.width =
+        width + "px";
+
+
+    canvas.style.height =
+        height + "px";
+
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
     );
 
 
-    camera.aspect =
-        width/height;
+    cx =
+        width / 2;
 
 
-    camera.updateProjectionMatrix();
+    cy =
+        height / 2;
+
+
+    radius =
+        Math.min(
+            width,
+            height
+        ) / 2;
 
 }
 
 
 window.addEventListener(
     "resize",
-    resize,
-    {passive:true}
+    resize
 );
 
 
@@ -2656,150 +1914,807 @@ resize();
 
 
 /* =========================================================
+   ORB PARTICLES
+   ========================================================= */
+
+const particles = [];
+
+
+for(
+    let i=0;
+    i<95;
+    i++
+){
+
+    particles.push({
+
+        angle:
+            Math.random() *
+            Math.PI *
+            2,
+
+        distance:
+            .15 +
+            Math.random() *
+            .75,
+
+        size:
+            .5 +
+            Math.random() *
+            1.7,
+
+        speed:
+            (
+                .0005 +
+                Math.random() *
+                .001
+            ),
+
+        brightness:
+            .3 +
+            Math.random() *
+            .7
+
+    });
+
+}
+
+
+/* =========================================================
+   ORB STATE
+   ========================================================= */
+
+let audioLevel = 0;
+
+let smoothAudio = 0;
+
+let voiceActive = false;
+
+let recognition = null;
+
+
+/* =========================================================
+   DRAW ORB
+   ========================================================= */
+
+function drawOrb(time){
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    smoothAudio +=
+        (
+            audioLevel -
+            smoothAudio
+        ) *
+        .18;
+
+
+    const pulse =
+        smoothAudio *
+        radius *
+        .18;
+
+
+    /* =====================================================
+       OUTER ATMOSPHERE
+       ===================================================== */
+
+    const atmosphere =
+        ctx.createRadialGradient(
+
+            cx,
+            cy,
+            radius*.12,
+
+            cx,
+            cy,
+            radius*1.02 + pulse
+
+        );
+
+
+    atmosphere.addColorStop(
+        0,
+        "rgba(72,238,255,.20)"
+    );
+
+
+    atmosphere.addColorStop(
+        .42,
+        "rgba(4,102,127,.13)"
+    );
+
+
+    atmosphere.addColorStop(
+        .78,
+        "rgba(0,38,51,.18)"
+    );
+
+
+    atmosphere.addColorStop(
+        1,
+        "rgba(0,10,14,0)"
+    );
+
+
+    ctx.fillStyle =
+        atmosphere;
+
+
+    ctx.beginPath();
+
+
+    ctx.arc(
+        cx,
+        cy,
+        radius*.98 + pulse,
+        0,
+        Math.PI*2
+    );
+
+
+    ctx.fill();
+
+
+    /* =====================================================
+       CORE BODY
+       ===================================================== */
+
+    const body =
+        ctx.createRadialGradient(
+
+            cx -
+            radius*.25,
+
+            cy -
+            radius*.27,
+
+            radius*.05,
+
+            cx,
+
+            cy,
+
+            radius*.86
+
+        );
+
+
+    body.addColorStop(
+        0,
+        "#5cecf7"
+    );
+
+
+    body.addColorStop(
+        .12,
+        "#1b8d9e"
+    );
+
+
+    body.addColorStop(
+        .38,
+        "#063b4a"
+    );
+
+
+    body.addColorStop(
+        .70,
+        "#031b25"
+    );
+
+
+    body.addColorStop(
+        1,
+        "#01090d"
+    );
+
+
+    ctx.fillStyle =
+        body;
+
+
+    ctx.beginPath();
+
+
+    ctx.arc(
+        cx,
+        cy,
+        radius*.75 + pulse,
+        0,
+        Math.PI*2
+    );
+
+
+    ctx.fill();
+
+
+    /* =====================================================
+       GEODE FACETS
+       ===================================================== */
+
+    ctx.save();
+
+
+    ctx.translate(
+        cx,
+        cy
+    );
+
+
+    ctx.rotate(
+        time*.00015
+    );
+
+
+    const facetCount =
+        18;
+
+
+    for(
+        let i=0;
+        i<facetCount;
+        i++
+    ){
+
+        const a1 =
+            (
+                i /
+                facetCount
+            ) *
+            Math.PI *
+            2;
+
+
+        const a2 =
+            (
+                (i+1) /
+                facetCount
+            ) *
+            Math.PI *
+            2;
+
+
+        const r1 =
+            radius *
+            (
+                .32 +
+                Math.sin(
+                    i*2.7
+                )*.12
+            );
+
+
+        const r2 =
+            radius *
+            (
+                .67 +
+                Math.cos(
+                    i*1.9
+                )*.08
+            );
+
+
+        const rr =
+            radius *
+            (
+                .74 +
+                Math.sin(
+                    i*1.3
+                )*.04
+            );
+
+
+        const gradient =
+            ctx.createLinearGradient(
+                0,
+                -radius,
+                radius,
+                radius
+            );
+
+
+        if(
+            i % 3 === 0
+        ){
+
+            gradient.addColorStop(
+                0,
+                "rgba(92,236,247,.18)"
+            );
+
+            gradient.addColorStop(
+                1,
+                "rgba(0,35,45,.02)"
+            );
+
+        }
+
+        else if(
+            i % 3 === 1
+        ){
+
+            gradient.addColorStop(
+                0,
+                "rgba(10,133,151,.13)"
+            );
+
+            gradient.addColorStop(
+                1,
+                "rgba(0,18,26,.03)"
+            );
+
+        }
+
+        else{
+
+            gradient.addColorStop(
+                0,
+                "rgba(255,255,255,.055)"
+            );
+
+            gradient.addColorStop(
+                1,
+                "rgba(0,0,0,.02)"
+            );
+
+        }
+
+
+        ctx.fillStyle =
+            gradient;
+
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(
+            0,
+            0
+        );
+
+
+        ctx.lineTo(
+            Math.cos(a1)*r1,
+            Math.sin(a1)*r1
+        );
+
+
+        ctx.lineTo(
+            Math.cos(
+                (a1+a2)/2
+            )*rr,
+
+            Math.sin(
+                (a1+a2)/2
+            )*rr
+        );
+
+
+        ctx.lineTo(
+            Math.cos(a2)*r2,
+            Math.sin(a2)*r2
+        );
+
+
+        ctx.closePath();
+
+
+        ctx.fill();
+
+
+        /* FACET EDGE */
+
+        ctx.strokeStyle =
+            "rgba(112,237,246,.12)";
+
+
+        ctx.lineWidth =
+            .45;
+
+
+        ctx.stroke();
+
+    }
+
+
+    ctx.restore();
+
+
+    /* =====================================================
+       CRYSTALLINE CORE
+       ===================================================== */
+
+    const crystalRadius =
+        radius *
+        (
+            .18 +
+            smoothAudio*.035
+        );
+
+
+    ctx.save();
+
+
+    ctx.translate(
+        cx,
+        cy
+    );
+
+
+    ctx.rotate(
+        time*.00045
+    );
+
+
+    ctx.beginPath();
+
+
+    for(
+        let i=0;
+        i<12;
+        i++
+    ){
+
+        const angle =
+            (
+                i /
+                12
+            ) *
+            Math.PI *
+            2;
+
+
+        const r =
+            i%2===0
+            ? crystalRadius
+            : crystalRadius*.68;
+
+
+        const x =
+            Math.cos(angle)*r;
+
+
+        const y =
+            Math.sin(angle)*r;
+
+
+        if(
+            i===0
+        ){
+
+            ctx.moveTo(
+                x,
+                y
+            );
+
+        }
+
+        else{
+
+            ctx.lineTo(
+                x,
+                y
+            );
+
+        }
+
+    }
+
+
+    ctx.closePath();
+
+
+    const crystal =
+        ctx.createRadialGradient(
+            -crystalRadius*.25,
+            -crystalRadius*.35,
+            0,
+            0,
+            0,
+            crystalRadius
+        );
+
+
+    crystal.addColorStop(
+        0,
+        "rgba(229,255,255,.95)"
+    );
+
+
+    crystal.addColorStop(
+        .20,
+        "rgba(70,231,244,.76)"
+    );
+
+
+    crystal.addColorStop(
+        .60,
+        "rgba(5,104,125,.48)"
+    );
+
+
+    crystal.addColorStop(
+        1,
+        "rgba(0,26,36,.16)"
+    );
+
+
+    ctx.fillStyle =
+        crystal;
+
+
+    ctx.fill();
+
+
+    ctx.strokeStyle =
+        "rgba(179,248,255,.52)";
+
+
+    ctx.lineWidth =
+        .8;
+
+
+    ctx.stroke();
+
+
+    ctx.restore();
+
+
+    /* =====================================================
+       INTERNAL ORBITS
+       ===================================================== */
+
+    ctx.save();
+
+
+    ctx.translate(
+        cx,
+        cy
+    );
+
+
+    for(
+        let i=0;
+        i<3;
+        i++
+    ){
+
+        ctx.save();
+
+
+        ctx.rotate(
+            time*.00025 *
+            (
+                i%2===0
+                ? 1
+                : -1
+            )
+            +
+            i*.9
+        );
+
+
+        ctx.scale(
+            1,
+            .32 +
+            i*.18
+        );
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            0,
+            0,
+            radius*
+            (
+                .27 +
+                i*.11
+            ),
+            0,
+            Math.PI*2
+        );
+
+
+        ctx.strokeStyle =
+            i===1
+            ? "rgba(200,162,83,.55)"
+            : "rgba(99,232,245,.35)";
+
+
+        ctx.lineWidth =
+            .65;
+
+
+        ctx.stroke();
+
+
+        ctx.restore();
+
+    }
+
+
+    ctx.restore();
+
+
+    /* =====================================================
+       PARTICLES
+       ===================================================== */
+
+    for(
+        const p of particles
+    ){
+
+        p.angle +=
+            p.speed *
+            (
+                1 +
+                smoothAudio*4
+            );
+
+
+        const px =
+            cx +
+            Math.cos(
+                p.angle
+            ) *
+            radius *
+            p.distance;
+
+
+        const py =
+            cy +
+            Math.sin(
+                p.angle
+            ) *
+            radius *
+            p.distance;
+
+
+        const alpha =
+            p.brightness *
+            (
+                .35 +
+                smoothAudio*.8
+            );
+
+
+        ctx.fillStyle =
+            `rgba(175,248,255,${alpha})`;
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            px,
+            py,
+            p.size,
+            0,
+            Math.PI*2
+        );
+
+
+        ctx.fill();
+
+    }
+
+
+    /* =====================================================
+       VOICE ENERGY GLOW
+       ===================================================== */
+
+    if(
+        smoothAudio > .02
+    ){
+
+        const glow =
+            ctx.createRadialGradient(
+                cx,
+                cy,
+                radius*.35,
+
+                cx,
+                cy,
+                radius*
+                (
+                    .65 +
+                    smoothAudio*.8
+                )
+            );
+
+
+        glow.addColorStop(
+            0,
+            `rgba(
+                25,
+                232,
+                255,
+                ${smoothAudio*.18}
+            )`
+        );
+
+
+        glow.addColorStop(
+            1,
+            "rgba(0,80,100,0)"
+        );
+
+
+        ctx.fillStyle =
+            glow;
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            cx,
+            cy,
+            radius,
+            0,
+            Math.PI*2
+        );
+
+
+        ctx.fill();
+
+    }
+
+
+    /* =====================================================
+       CORE PULSE
+       ===================================================== */
+
+    const scale =
+        1 +
+        smoothAudio*.075;
+
+
+    core.style.transform =
+        `scale(${scale})`;
+
+
+    halo.style.transform =
+        `translate(-50%,-50%)
+         scale(${1 + smoothAudio*.22})`;
+
+}
+
+
+/* =========================================================
    ANIMATION
    ========================================================= */
 
-const clock =
-    new THREE.Clock();
+let animationStart =
+    performance.now();
 
 
 function animate(){
 
+    const now =
+        performance.now();
+
+
+    drawOrb(
+        now -
+        animationStart
+    );
+
+
+    updateVisualizer();
+
+
     requestAnimationFrame(
         animate
-    );
-
-
-    const t =
-        clock.getElapsedTime();
-
-
-    /* ---------------------------------------------
-       MAIN GEODE
-       --------------------------------------------- */
-
-    geode.rotation.y =
-        t*.075;
-
-
-    geode.rotation.x =
-        Math.sin(t*.21)*.045;
-
-
-    /* ---------------------------------------------
-       OUTER FACETS
-       --------------------------------------------- */
-
-    outerEdges.rotation.y =
-        -t*.025;
-
-
-    /* ---------------------------------------------
-       INNER SHELL
-       --------------------------------------------- */
-
-    shell.rotation.y =
-        t*-.13;
-
-
-    shell.rotation.z =
-        Math.sin(t*.28)*.08;
-
-
-    shellEdges.rotation.y =
-        shell.rotation.y;
-
-
-    shellEdges.rotation.z =
-        shell.rotation.z;
-
-
-    /* ---------------------------------------------
-       CRYSTAL
-       --------------------------------------------- */
-
-    crystal.rotation.x =
-        t*.16;
-
-
-    crystal.rotation.y =
-        t*.23;
-
-
-    crystalEdges.rotation.x =
-        crystal.rotation.x;
-
-
-    crystalEdges.rotation.y =
-        crystal.rotation.y;
-
-
-    /* ---------------------------------------------
-       SHARDS
-       --------------------------------------------- */
-
-    shards.rotation.y =
-        -t*.16;
-
-
-    shards.rotation.x =
-        Math.sin(t*.17)*.06;
-
-
-    /* ---------------------------------------------
-       PARTICLES
-       --------------------------------------------- */
-
-    particles.rotation.y =
-        -t*.045;
-
-
-    particles.rotation.x =
-        Math.sin(t*.13)*.03;
-
-
-    /* ---------------------------------------------
-       ORBITS
-       --------------------------------------------- */
-
-    orbit.rotation.z =
-        t*.28;
-
-
-    orbit.rotation.y =
-        t*.19;
-
-
-    goldOrbit.rotation.z =
-        -t*.17;
-
-
-    goldOrbit.rotation.y =
-        t*.11;
-
-
-    /* ---------------------------------------------
-       CORE PULSE
-       --------------------------------------------- */
-
-    const pulse =
-        1 +
-        Math.sin(t*1.7)*.025;
-
-
-    crystal.scale.setScalar(
-        pulse
-    );
-
-
-    coreLight.intensity =
-        14 +
-        Math.sin(t*1.7)*2.5;
-
-
-    renderer.render(
-        scene,
-        camera
     );
 
 }
@@ -2809,77 +2724,804 @@ animate();
 
 
 /* =========================================================
-   POINTER PARALLAX
+   MICROPHONE
    ========================================================= */
 
-let targetX = 0;
-let targetY = 0;
+let audioContext = null;
 
-let currentX = 0;
-let currentY = 0;
+let analyser = null;
+
+let microphoneStream = null;
+
+let microphoneSource = null;
+
+let audioData = null;
 
 
-window.addEventListener(
+/* =========================================================
+   START AUDIO ANALYSIS
+   ========================================================= */
 
-    "pointermove",
+async function startMicrophone(){
 
-    event => {
+    try{
 
-        targetX =
+        microphoneStream =
+            await navigator.mediaDevices.getUserMedia({
+
+                audio:true
+
+            });
+
+
+        audioContext =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+
+        microphoneSource =
+            audioContext.createMediaStreamSource(
+                microphoneStream
+            );
+
+
+        analyser =
+            audioContext.createAnalyser();
+
+
+        analyser.fftSize =
+            256;
+
+
+        analyser.smoothingTimeConstant =
+            .78;
+
+
+        audioData =
+            new Uint8Array(
+                analyser.fftSize
+            );
+
+
+        microphoneSource.connect(
+            analyser
+        );
+
+
+        voiceActive =
+            true;
+
+
+        voiceState.textContent =
+            "MICROPHONE ACTIF";
+
+
+        voiceState.classList.add(
+            "active"
+        );
+
+
+        coreLabel.textContent =
+            "LISTENING";
+
+
+        listenButton.innerHTML =
+            "MICRO<br>ACTIF";
+
+
+    }
+
+    catch(error){
+
+        console.error(
+            error
+        );
+
+
+        voiceState.textContent =
+            "ACCÈS MICROPHONE REFUSÉ";
+
+
+        transcription.textContent =
+            "Autorise le microphone dans Safari pour utiliser la voix.";
+
+    }
+
+}
+
+
+/* =========================================================
+   AUDIO LEVEL
+   ========================================================= */
+
+function updateAudioLevel(){
+
+    if(
+        !analyser ||
+        !audioData
+    ){
+
+        audioLevel *= .92;
+
+        return;
+
+    }
+
+
+    analyser.getByteTimeDomainData(
+        audioData
+    );
+
+
+    let sum = 0;
+
+
+    for(
+        let i=0;
+        i<audioData.length;
+        i++
+    ){
+
+        const value =
             (
-                event.clientX /
-                window.innerWidth -
-                .5
-            )*.16;
+                audioData[i] -
+                128
+            ) / 128;
 
 
-        targetY =
-            (
-                event.clientY /
-                window.innerHeight -
-                .5
-            )*.12;
+        sum +=
+            value *
+            value;
 
-    },
-
-    {passive:true}
-
-);
+    }
 
 
-function parallax(){
+    const rms =
+        Math.sqrt(
+            sum /
+            audioData.length
+        );
 
-    currentX +=
+
+    audioLevel =
+        Math.min(
+            1,
+            rms * 5.5
+        );
+
+}
+
+
+/* =========================================================
+   VISUALIZER
+   ========================================================= */
+
+function updateVisualizer(){
+
+    updateAudioLevel();
+
+
+    bars.forEach(
         (
-            targetX -
-            currentX
-        )*.035;
+            bar,
+            index
+        ) => {
+
+            const wave =
+                Math.sin(
+                    performance.now()*.006 +
+                    index*.65
+                );
 
 
-    currentY +=
-        (
-            targetY -
-            currentY
-        )*.035;
+            const height =
+                4 +
+                audioLevel *
+                (
+                    18 +
+                    wave*4
+                );
 
 
-    geode.rotation.z =
-        currentX;
+            bar.style.height =
+                `${Math.max(
+                    3,
+                    height
+                )}px`;
 
-
-    requestAnimationFrame(
-        parallax
+        }
     );
 
 }
 
 
-parallax();
+/* =========================================================
+   SPEECH RECOGNITION
+   ========================================================= */
 
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+if(
+    SpeechRecognition
+){
+
+    recognition =
+        new SpeechRecognition();
+
+
+    recognition.lang =
+        "fr-FR";
+
+
+    recognition.continuous =
+        true;
+
+
+    recognition.interimResults =
+        true;
+
+
+    recognition.maxAlternatives =
+        1;
+
+
+    recognition.onstart =
+        () => {
+
+            voiceActive =
+                true;
+
+
+            voiceState.textContent =
+                "ÉCOUTE EN COURS";
+
+
+            voiceState.classList.add(
+                "active"
+            );
+
+
+            coreLabel.textContent =
+                "LISTENING";
+
+        };
+
+
+    recognition.onresult =
+        event => {
+
+            let finalText =
+                "";
+
+
+            let interimText =
+                "";
+
+
+            for(
+                let i =
+                    event.resultIndex;
+
+                i <
+                    event.results.length;
+
+                i++
+            ){
+
+                const result =
+                    event.results[i];
+
+
+                if(
+                    result.isFinal
+                ){
+
+                    finalText +=
+                        result[0].transcript;
+
+                }
+
+                else{
+
+                    interimText +=
+                        result[0].transcript;
+
+                }
+
+            }
+
+
+            const text =
+                (
+                    finalText +
+                    interimText
+                ).trim();
+
+
+            if(
+                text
+            ){
+
+                transcription.textContent =
+                    text;
+
+
+                transcription.classList.remove(
+                    "empty"
+                );
+
+            }
+
+        };
+
+
+    recognition.onerror =
+        event => {
+
+            console.log(
+                "Speech error:",
+                event.error
+            );
+
+
+            voiceState.textContent =
+                "VOICE SYSTEM READY";
+
+        };
+
+
+    recognition.onend =
+        () => {
+
+            if(
+                voiceActive
+            ){
+
+                try{
+
+                    recognition.start();
+
+                }
+
+                catch(
+                    error
+                ){
+
+                    console.log(
+                        error
+                    );
+
+                }
+
+            }
+
+        };
+
+}
+
+
+/* =========================================================
+   START VOICE
+   ========================================================= */
+
+async function startVoice(){
+
+    await startMicrophone();
+
+
+    if(
+        !recognition
+    ){
+
+        transcription.textContent =
+            "La reconnaissance vocale Web n'est pas disponible dans ce navigateur.";
+
+        return;
+
+    }
+
+
+    try{
+
+        recognition.start();
+
+    }
+
+    catch(
+        error
+    ){
+
+        console.log(
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   STOP VOICE
+   ========================================================= */
+
+function stopVoice(){
+
+    voiceActive =
+        false;
+
+
+    if(
+        recognition
+    ){
+
+        try{
+
+            recognition.stop();
+
+        }
+
+        catch(
+            error
+        ){
+
+            console.log(
+                error
+            );
+
+        }
+
+    }
+
+
+    if(
+        microphoneStream
+    ){
+
+        microphoneStream
+            .getTracks()
+            .forEach(
+                track =>
+                    track.stop()
+            );
+
+    }
+
+
+    voiceState.textContent =
+        "VOICE SYSTEM READY";
+
+
+    voiceState.classList.remove(
+        "active"
+    );
+
+
+    coreLabel.textContent =
+        "STANDBY";
+
+
+    listenButton.innerHTML =
+        "ACTIVER<br>MICRO";
+
+}
+
+
+/* =========================================================
+   MICROPHONE BUTTON
+   ========================================================= */
+
+listenButton.addEventListener(
+    "click",
+    async () => {
+
+        if(
+            voiceActive
+        ){
+
+            stopVoice();
+
+        }
+
+        else{
+
+            await startVoice();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SHORTCUT CONFIGURATION
+   =========================================================
+
+   IMPORTANT:
+
+   Remplace cette valeur par le nom
+   EXACT de ton raccourci Apple.
+
+   Exemple:
+
+   "Jarvis"
+
+   ========================================================= */
+
+const SHORTCUT_NAME =
+    "Jarvis";
+
+
+/* =========================================================
+   SEND TO SHORTCUTS
+   ========================================================= */
+
+function sendToShortcuts(){
+
+    const text =
+        transcription.textContent.trim();
+
+
+    if(
+        !text ||
+        text ===
+        "En attente de commande vocale…"
+    ){
+
+        return;
+
+    }
+
+
+    const encoded =
+        encodeURIComponent(
+            text
+        );
+
+
+    const url =
+        "shortcuts://run-shortcut" +
+        "?name=" +
+        encodeURIComponent(
+            SHORTCUT_NAME
+        ) +
+        "&input=" +
+        encoded;
+
+
+    window.location.href =
+        url;
+
+}
+
+
+/* =========================================================
+   SHORTCUT BUTTON
+   ========================================================= */
+
+shortcutButton.addEventListener(
+    "click",
+    sendToShortcuts
+);
+
+
+/* =========================================================
+   SPEECH PANEL
+   ========================================================= */
+
+voiceButton.addEventListener(
+    "click",
+    () => {
+
+        speechPanel.classList.toggle(
+            "visible"
+        );
+
+
+        if(
+            speechPanel.classList.contains(
+                "visible"
+            )
+        ){
+
+            speechText.focus();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   TEXT TO SPEECH
+   ========================================================= */
+
+function speakText(){
+
+    const text =
+        speechText.value.trim();
+
+
+    if(
+        !text
+    ){
+
+        return;
+
+    }
+
+
+    if(
+        !("speechSynthesis" in window)
+    ){
+
+        alert(
+            "La synthèse vocale n'est pas disponible dans ce navigateur."
+        );
+
+        return;
+
+    }
+
+
+    window.speechSynthesis.cancel();
+
+
+    const utterance =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+
+    utterance.lang =
+        "fr-FR";
+
+
+    utterance.rate =
+        .94;
+
+
+    utterance.pitch =
+        .92;
+
+
+    utterance.volume =
+        1;
+
+
+    utterance.onstart =
+        () => {
+
+            voiceState.textContent =
+                "JARVIS PARLE";
+
+
+            voiceState.classList.add(
+                "active"
+            );
+
+
+            coreLabel.textContent =
+                "SPEAKING";
+
+        };
+
+
+    utterance.onend =
+        () => {
+
+            voiceState.textContent =
+                "VOICE SYSTEM READY";
+
+
+            voiceState.classList.remove(
+                "active"
+            );
+
+
+            coreLabel.textContent =
+                "STANDBY";
+
+        };
+
+
+    window.speechSynthesis.speak(
+        utterance
+    );
+
+}
+
+
+/* =========================================================
+   SPEAK BUTTON
+   ========================================================= */
+
+speakButton.addEventListener(
+    "click",
+    speakText
+);
+
+
+/* =========================================================
+   STOP SPEECH
+   ========================================================= */
+
+stopButton.addEventListener(
+    "click",
+    () => {
+
+        window.speechSynthesis.cancel();
+
+
+        voiceState.textContent =
+            "VOICE SYSTEM READY";
+
+
+        voiceState.classList.remove(
+            "active"
+        );
+
+
+        coreLabel.textContent =
+            "STANDBY";
+
+    }
+);
+
+
+/* =========================================================
+   AUTOMATIC KEYBOARD / DESKTOP TEST
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.code ===
+            "Space"
+        ){
+
+            event.preventDefault();
+
+
+            if(
+                voiceActive
+            ){
+
+                stopVoice();
+
+            }
+
+            else{
+
+                startVoice();
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIAL STATE
+   ========================================================= */
+
+transcription.textContent =
+    "En attente de commande vocale…";
+
+
+transcription.classList.add(
+    "empty"
+);
 
 </script>
 
-
 </body>
-
 </html>
