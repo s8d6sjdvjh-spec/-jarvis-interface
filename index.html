@@ -3,230 +3,650 @@
 <head>
 <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width,
-           initial-scale=1,
-           maximum-scale=1,
-           viewport-fit=cover"
->
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1,
+maximum-scale=1,
+user-scalable=no">
 
-<title>JARVIS — Precision Core</title>
+<title>JARVIS — Visual Core</title>
 
 <style>
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
+/* ==================================================
+   BASE
+================================================== */
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html,
-body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#010608;
-  color:#dffaff;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Helvetica Neue",
-    Arial,
-    sans-serif;
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    background: #020609;
+    color: #d9faff;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        Arial,
+        sans-serif;
 }
 
-body{
-  position:fixed;
-  inset:0;
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#app{
-  position:fixed;
-  inset:0;
-  overflow:hidden;
 
-  background:
-    radial-gradient(
-      circle at 50% 42%,
-      rgba(0,38,50,.28),
-      transparent 43%
-    ),
-    #010608;
+/* ==================================================
+   SCÈNE
+================================================== */
+
+.scene {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(0, 205, 255, .10),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(0, 120, 180, .055),
+            transparent 48%
+        ),
+        #020609;
 }
 
-#app::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
 
-  background:
-    linear-gradient(
-      rgba(40,150,165,.075) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(40,150,165,.075) 1px,
-      transparent 1px
-    );
+/* grille technique */
 
-  background-size:64px 64px;
-  opacity:.35;
+.scene::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(50, 210, 240, .026) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(50, 210, 240, .026) 1px,
+            transparent 1px
+        );
+
+    background-size: 27px 27px;
+
+    mask-image:
+        radial-gradient(
+            circle at 50% 35%,
+            black 0%,
+            transparent 73%
+        );
 }
 
-.header{
-  position:absolute;
-  z-index:50;
 
-  top:max(
-    22px,
-    env(safe-area-inset-top)
-  );
+/* ==================================================
+   ENTÊTE
+================================================== */
 
-  left:5.8vw;
-  right:5.8vw;
+.header {
+    position: absolute;
 
-  height:60px;
+    top: 18px;
+    left: 22px;
+    right: 22px;
 
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    z-index: 20;
 }
 
-.logo{
-  font-size:27px;
-  font-weight:300;
-  letter-spacing:.38em;
+.brand {
+    font-size: 13px;
+    letter-spacing: 6px;
+
+    color: #c8f8ff;
+
+    text-shadow:
+        0 0 9px rgba(0,220,255,.45);
 }
 
-.status{
-  display:flex;
-  gap:21px;
+.status {
+    display: flex;
+    gap: 13px;
 
-  font-size:8px;
-  letter-spacing:.30em;
+    font-size: 8px;
+    letter-spacing: 3px;
 
-  color:rgba(157,207,216,.62);
+    color: rgba(160,235,250,.65);
 }
 
-.statusItem{
-  display:flex;
-  align-items:center;
-  gap:7px;
+.status span::before {
+    content: "●";
+
+    margin-right: 5px;
+
+    color: #00e4ff;
+
+    text-shadow:
+        0 0 7px #00e4ff;
 }
 
-.dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
 
-  background:#00dfff;
+/* ==================================================
+   ZONE CENTRALE
+================================================== */
 
-  box-shadow:
-    0 0 6px #00dfff,
-    0 0 17px rgba(0,223,255,.65);
+.core-area {
+
+    position: absolute;
+
+    left: 50%;
+    top: 35%;
+
+    width: min(96vw, 570px);
+    aspect-ratio: 1;
+
+    transform:
+        translate(-50%, -50%);
+
+    transition:
+        transform .7s cubic-bezier(.2,.8,.2,1);
+
+    z-index: 5;
 }
 
-.subtitle{
-  position:absolute;
-  z-index:40;
 
-  top:19.2vh;
-  left:0;
-  right:0;
+/* halo principal */
 
-  text-align:center;
+.halo {
 
-  font-size:8px;
-  letter-spacing:.43em;
+    position: absolute;
 
-  color:rgba(80,169,185,.62);
+    inset: 9%;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0,225,255,.17),
+            rgba(0,130,180,.06) 38%,
+            transparent 70%
+        );
+
+    filter: blur(18px);
+
+    animation:
+        haloPulse 4s ease-in-out infinite;
 }
 
-#scene{
-  position:absolute;
-  inset:0;
+@keyframes haloPulse {
 
-  width:100%;
-  height:100%;
+    0%,100% {
+        transform: scale(.95);
+        opacity: .55;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: .95;
+    }
 }
 
-.panels{
-  position:absolute;
-  z-index:60;
 
-  left:5.5vw;
-  right:5.5vw;
+/* ==================================================
+   SVG PRINCIPAL
+================================================== */
 
-  bottom:
-    max(
-      58px,
-      calc(env(safe-area-inset-bottom) + 42px)
-    );
+.core-svg {
 
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
 }
 
-.panel{
-  min-height:101px;
 
-  padding:17px 15px 14px;
+/* ==================================================
+   ROTATIONS DES COURONNES
+================================================== */
 
-  border:
-    1px solid
-    rgba(0,187,215,.48);
+.ring-slow {
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(0,30,39,.34),
-      rgba(0,8,12,.60)
-    );
+    transform-origin: 250px 250px;
 
-  backdrop-filter:blur(5px);
+    animation:
+        rotateClockwise 55s linear infinite;
 }
 
-.label{
-  font-size:8px;
-  letter-spacing:.42em;
+.ring-slow-reverse {
 
-  color:rgba(99,198,216,.72);
+    transform-origin: 250px 250px;
 
-  margin-bottom:10px;
+    animation:
+        rotateCounter 72s linear infinite;
 }
 
-.value{
-  font-size:31px;
-  font-weight:300;
+.ring-medium {
+
+    transform-origin: 250px 250px;
+
+    animation:
+        rotateClockwise 30s linear infinite;
 }
 
-.info{
-  margin-top:7px;
+.ring-medium-reverse {
 
-  font-size:7px;
-  letter-spacing:.23em;
+    transform-origin: 250px 250px;
 
-  color:rgba(132,187,199,.43);
+    animation:
+        rotateCounter 37s linear infinite;
 }
 
-@media(max-width:600px){
+.ring-fast {
 
-  .logo{
-    font-size:25px;
-  }
+    transform-origin: 250px 250px;
 
-  .status{
-    gap:12px;
-    font-size:7px;
-  }
+    animation:
+        rotateClockwise 13s linear infinite;
+}
 
-  .subtitle{
-    top:19.2vh;
-  }
+@keyframes rotateClockwise {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotateCounter {
+
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+
+/* ==================================================
+   GYROTURBILLON
+================================================== */
+
+.gyro-main {
+
+    transform-origin: 250px 250px;
+
+    animation:
+        gyroSpin 9s linear infinite;
+}
+
+.gyro-secondary {
+
+    transform-origin: 250px 250px;
+
+    animation:
+        gyroSpinReverse 6.5s linear infinite;
+}
+
+.gyro-core {
+
+    transform-origin: 250px 250px;
+
+    animation:
+        gyroPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes gyroSpin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes gyroSpinReverse {
+
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes gyroPulse {
+
+    0%,100% {
+        transform: scale(.94);
+        opacity: .82;
+    }
+
+    50% {
+        transform: scale(1.07);
+        opacity: 1;
+    }
+}
+
+
+/* ==================================================
+   LUEURS
+================================================== */
+
+.glow {
+
+    filter:
+        drop-shadow(
+            0 0 4px rgba(0,225,255,.85)
+        );
+}
+
+.glow-strong {
+
+    filter:
+        drop-shadow(
+            0 0 8px rgba(0,225,255,1)
+        );
+}
+
+
+/* ==================================================
+   LABEL CENTRAL
+================================================== */
+
+.core-label {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%,-50%);
+
+    z-index: 8;
+
+    text-align: center;
+
+    pointer-events: none;
+
+    text-shadow:
+        0 0 7px rgba(0,225,255,.7);
+}
+
+.core-label .main {
+
+    font-size: 10px;
+    letter-spacing: 4px;
+
+    color: #dffcff;
+}
+
+.core-label .sub {
+
+    margin-top: 7px;
+
+    font-size: 6px;
+    letter-spacing: 3px;
+
+    color: rgba(140,225,240,.55);
+}
+
+
+/* ==================================================
+   PANNEAUX
+================================================== */
+
+.panel {
+
+    position: absolute;
+
+    width: 145px;
+
+    min-height: 90px;
+
+    padding: 12px 13px;
+
+    border:
+        1px solid rgba(0,210,245,.22);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,80,110,.11),
+            rgba(0,15,25,.38)
+        );
+
+    box-shadow:
+        inset 0 0 18px rgba(0,190,240,.035);
+
+    color: rgba(190,245,255,.75);
+
+    z-index: 10;
+}
+
+.panel-title {
+
+    font-size: 8px;
+    letter-spacing: 4px;
+
+    color: #66e9ff;
+}
+
+.panel-value {
+
+    margin-top: 8px;
+
+    font-size: 21px;
+
+    color: #d9fbff;
+
+    text-shadow:
+        0 0 6px rgba(0,210,255,.3);
+}
+
+.panel-small {
+
+    margin-top: 4px;
+
+    font-size: 7px;
+    letter-spacing: 1px;
+
+    color: rgba(145,220,235,.5);
+}
+
+.panel-house {
+    left: 18px;
+    bottom: 145px;
+}
+
+.panel-weather {
+    right: 18px;
+    bottom: 145px;
+}
+
+.panel-system {
+    left: 18px;
+    bottom: 55px;
+}
+
+.panel-activity {
+    right: 18px;
+    bottom: 55px;
+}
+
+
+/* ==================================================
+   BOUTON
+================================================== */
+
+.microphone {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 42px;
+
+    width: 70px;
+    height: 70px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(0,225,255,.7);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0,225,255,.25),
+            rgba(0,60,90,.1) 55%,
+            transparent 72%
+        );
+
+    color: #dffcff;
+
+    box-shadow:
+        0 0 25px rgba(0,220,255,.25);
+
+    font-size: 20px;
+
+    z-index: 20;
+}
+
+
+/* ==================================================
+   MODE ACTIF
+================================================== */
+
+body.active .core-area {
+
+    transform:
+        translate(-50%,-50%)
+        translateY(-13px);
+}
+
+body.active .ring-fast {
+
+    animation-duration: 5s;
+}
+
+body.active .ring-medium {
+
+    animation-duration: 15s;
+}
+
+body.active .gyro-main {
+
+    animation-duration: 4s;
+}
+
+body.active .halo {
+
+    filter:
+        blur(22px)
+        brightness(1.45);
+}
+
+
+/* ==================================================
+   PETITS ÉLÉMENTS SVG
+================================================== */
+
+.dim {
+    stroke:
+        rgba(70,215,240,.20);
+}
+
+.tech {
+    stroke:
+        rgba(90,225,245,.52);
+}
+
+.tech-bright {
+    stroke:
+        rgba(135,245,255,.85);
+}
+
+.tick {
+    fill:
+        rgba(100,230,250,.72);
+}
+
+.marker {
+    fill:
+        #dffcff;
+}
+
+
+/* ==================================================
+   PETITS ENGRENAGES
+================================================== */
+
+.gear {
+
+    transform-box: fill-box;
+    transform-origin: center;
+
+    animation:
+        gearSpin 8s linear infinite;
+}
+
+.gear.reverse {
+
+    animation-direction:
+        reverse;
+
+    animation-duration:
+        11s;
+}
+
+@keyframes gearSpin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 </style>
@@ -235,1746 +655,814 @@ body{
 
 <body>
 
-<div id="app">
+<div class="scene">
 
-  <div class="header">
 
-    <div class="logo">
-      JARVIS
+<header class="header">
+
+    <div class="brand">
+        JARVIS
     </div>
 
     <div class="status">
 
-      <div class="statusItem">
-        <span class="dot"></span>
-        ONLINE
-      </div>
-
-      <div class="statusItem">
-        <span class="dot"></span>
-        SECURE
-      </div>
-
-      <div class="statusItem">
-        <span class="dot"></span>
-        VOICE
-      </div>
+        <span>ONLINE</span>
+        <span>SECURE</span>
+        <span>VOICE</span>
 
     </div>
 
-  </div>
+</header>
 
 
-  <div class="subtitle">
-    GYROTOURBILLON
-    &nbsp;·&nbsp;
-    PRECISION CORE
-    &nbsp;·&nbsp;
-    3 AXIS
-  </div>
+<!-- ==================================================
+     CŒUR
+================================================== -->
+
+<div class="core-area" id="core">
+
+<div class="halo"></div>
 
 
-  <canvas id="scene"></canvas>
+<svg
+class="core-svg"
+viewBox="0 0 500 500"
+aria-hidden="true"
+>
 
 
-  <div class="panels">
+<!-- =================================================
+     COURONNE EXTÉRIEURE
+================================================== -->
 
-    <div class="panel">
-      <div class="label">MAISON</div>
-      <div class="value">03</div>
-      <div class="info">
-        DISPOSITIFS ACTIFS
-      </div>
+<g class="ring-slow">
+
+    <circle
+        cx="250"
+        cy="250"
+        r="232"
+        fill="none"
+        stroke="rgba(60,210,240,.12)"
+        stroke-width="1"
+        stroke-dasharray="1 8"
+    />
+
+    <circle
+        cx="250"
+        cy="250"
+        r="222"
+        fill="none"
+        stroke="rgba(80,220,245,.35)"
+        stroke-width="2"
+        stroke-dasharray="46 9 3 9"
+    />
+
+    <circle
+        cx="250"
+        cy="250"
+        r="209"
+        fill="none"
+        stroke="rgba(60,210,240,.16)"
+        stroke-width="1"
+        stroke-dasharray="2 12"
+    />
+
+
+    <!-- quatre gros repères -->
+
+    <rect
+        x="247"
+        y="16"
+        width="6"
+        height="19"
+        rx="2"
+        class="tech-bright"
+        fill="none"
+    />
+
+    <rect
+        x="247"
+        y="465"
+        width="6"
+        height="19"
+        rx="2"
+        class="tech-bright"
+        fill="none"
+    />
+
+    <rect
+        x="16"
+        y="247"
+        width="19"
+        height="6"
+        rx="2"
+        class="tech-bright"
+        fill="none"
+    />
+
+    <rect
+        x="465"
+        y="247"
+        width="19"
+        height="6"
+        rx="2"
+        class="tech-bright"
+        fill="none"
+    />
+
+</g>
+
+
+<!-- =================================================
+     COURONNE TECHNIQUE 1
+================================================== -->
+
+<g class="ring-slow-reverse">
+
+    <circle
+        cx="250"
+        cy="250"
+        r="194"
+        fill="none"
+        stroke="rgba(0,200,240,.30)"
+        stroke-width="1"
+    />
+
+    <circle
+        cx="250"
+        cy="250"
+        r="187"
+        fill="none"
+        stroke="rgba(100,235,255,.45)"
+        stroke-width="2"
+        stroke-dasharray="18 8 2 8"
+    />
+
+    <circle
+        cx="250"
+        cy="250"
+        r="177"
+        fill="none"
+        stroke="rgba(70,220,245,.25)"
+        stroke-width="4"
+        stroke-dasharray="2 18"
+    />
+
+
+    <!-- graduations -->
+
+    <g
+        stroke="rgba(110,230,250,.52)"
+        stroke-width="1"
+    >
+
+        <path d="M250 54v12"/>
+        <path d="M250 434v12"/>
+
+        <path d="M54 250h12"/>
+        <path d="M434 250h12"/>
+
+        <path d="M111 111l9 9"/>
+        <path d="M380 380l9 9"/>
+
+        <path d="M389 111l-9 9"/>
+        <path d="M120 380l-9 9"/>
+
+    </g>
+
+</g>
+
+
+<!-- =================================================
+     COURONNE SEGMENTÉE
+================================================== -->
+
+<g class="ring-medium">
+
+    <circle
+        cx="250"
+        cy="250"
+        r="159"
+        fill="none"
+        stroke="rgba(75,225,250,.50)"
+        stroke-width="2"
+        stroke-dasharray="31 7 5 7"
+    />
+
+    <circle
+        cx="250"
+        cy="250"
+        r="150"
+        fill="none"
+        stroke="rgba(80,220,245,.20)"
+        stroke-width="7"
+        stroke-dasharray="2 17"
+    />
+
+
+    <!-- marqueurs -->
+
+    <g class="tick">
+
+        <rect x="247" y="89"
+              width="6" height="13"/>
+
+        <rect x="247" y="398"
+              width="6" height="13"/>
+
+        <rect x="89" y="247"
+              width="13" height="6"/>
+
+        <rect x="398" y="247"
+              width="13" height="6"/>
+
+    </g>
+
+</g>
+
+
+<!-- =================================================
+     COURONNE INTERNE
+================================================== -->
+
+<g class="ring-medium-reverse">
+
+    <circle
+        cx="250"
+        cy="250"
+        r="127"
+        fill="none"
+        stroke="#64eaff"
+        stroke-width="2"
+        stroke-dasharray="22 5 3 5"
+        class="glow"
+    />
+
+    <circle
+        cx="250"
+        cy="250"
+        r="116"
+        fill="none"
+        stroke="rgba(100,235,255,.27)"
+        stroke-width="5"
+        stroke-dasharray="2 14"
+    />
+
+</g>
+
+
+<!-- =================================================
+     MICRO-GRADUATIONS
+================================================== -->
+
+<g
+class="ring-fast"
+stroke="rgba(120,235,250,.52)"
+stroke-width="1"
+>
+
+    <path d="M250 104v10"/>
+    <path d="M250 386v10"/>
+
+    <path d="M104 250h10"/>
+    <path d="M386 250h10"/>
+
+    <path d="M147 147l7 7"/>
+    <path d="M346 346l7 7"/>
+
+    <path d="M353 147l-7 7"/>
+    <path d="M154 346l-7 7"/>
+
+</g>
+
+
+<!-- =================================================
+     GYROTURBILLON — AXE PRINCIPAL
+================================================== -->
+
+<g class="gyro-main">
+
+
+    <ellipse
+        cx="250"
+        cy="250"
+        rx="88"
+        ry="39"
+        fill="none"
+        stroke="rgba(125,240,255,.75)"
+        stroke-width="2"
+        class="glow"
+    />
+
+    <ellipse
+        cx="250"
+        cy="250"
+        rx="88"
+        ry="39"
+        transform="rotate(60 250 250)"
+        fill="none"
+        stroke="rgba(85,220,245,.55)"
+        stroke-width="1.5"
+    />
+
+    <ellipse
+        cx="250"
+        cy="250"
+        rx="88"
+        ry="39"
+        transform="rotate(-60 250 250)"
+        fill="none"
+        stroke="rgba(145,245,255,.55)"
+        stroke-width="1.5"
+    />
+
+
+    <!-- anneau mécanique -->
+
+    <circle
+        cx="250"
+        cy="250"
+        r="69"
+        fill="none"
+        stroke="rgba(120,235,255,.65)"
+        stroke-width="2"
+        stroke-dasharray="8 5 2 5"
+    />
+
+    <circle
+        cx="250"
+        cy="250"
+        r="60"
+        fill="none"
+        stroke="rgba(80,215,245,.30)"
+        stroke-width="6"
+        stroke-dasharray="2 11"
+    />
+
+
+    <!-- petits bras -->
+
+    <path
+        d="M250 181 L262 215 L250 228"
+        fill="none"
+        stroke="rgba(185,250,255,.75)"
+        stroke-width="2"
+    />
+
+    <path
+        d="M250 319 L238 285 L250 272"
+        fill="none"
+        stroke="rgba(185,250,255,.75)"
+        stroke-width="2"
+    />
+
+</g>
+
+
+<!-- =================================================
+     GYRO SECONDAIRE
+================================================== -->
+
+<g class="gyro-secondary">
+
+
+    <ellipse
+        cx="250"
+        cy="250"
+        rx="75"
+        ry="27"
+        transform="rotate(25 250 250)"
+        fill="none"
+        stroke="rgba(65,210,240,.65)"
+        stroke-width="2"
+    />
+
+    <ellipse
+        cx="250"
+        cy="250"
+        rx="75"
+        ry="27"
+        transform="rotate(-25 250 250)"
+        fill="none"
+        stroke="rgba(165,245,255,.55)"
+        stroke-width="1.5"
+    />
+
+
+    <!-- axes -->
+
+    <line
+        x1="174"
+        y1="250"
+        x2="326"
+        y2="250"
+        stroke="rgba(170,245,255,.35)"
+        stroke-width="1"
+    />
+
+    <line
+        x1="250"
+        y1="174"
+        x2="250"
+        y2="326"
+        stroke="rgba(170,245,255,.35)"
+        stroke-width="1"
+    />
+
+</g>
+
+
+<!-- =================================================
+     PETITS ENGRENAGES
+================================================== -->
+
+<g
+class="gear"
+transform="translate(205 205)"
+>
+
+    <circle
+        cx="0"
+        cy="0"
+        r="19"
+        fill="none"
+        stroke="rgba(120,235,255,.58)"
+        stroke-width="2"
+        stroke-dasharray="4 4"
+    />
+
+    <circle
+        cx="0"
+        cy="0"
+        r="8"
+        fill="none"
+        stroke="rgba(180,250,255,.7)"
+        stroke-width="2"
+    />
+
+    <circle
+        cx="0"
+        cy="0"
+        r="3"
+        fill="#dffcff"
+    />
+
+</g>
+
+
+<g
+class="gear reverse"
+transform="translate(295 205)"
+>
+
+    <circle
+        cx="0"
+        cy="0"
+        r="16"
+        fill="none"
+        stroke="rgba(100,225,250,.55)"
+        stroke-width="2"
+        stroke-dasharray="3 5"
+    />
+
+    <circle
+        cx="0"
+        cy="0"
+        r="6"
+        fill="none"
+        stroke="rgba(190,250,255,.7)"
+        stroke-width="2"
+    />
+
+</g>
+
+
+<g
+class="gear"
+transform="translate(208 292)"
+>
+
+    <circle
+        cx="0"
+        cy="0"
+        r="15"
+        fill="none"
+        stroke="rgba(100,225,250,.48)"
+        stroke-width="2"
+        stroke-dasharray="3 5"
+    />
+
+</g>
+
+
+<g
+class="gear reverse"
+transform="translate(292 292)"
+>
+
+    <circle
+        cx="0"
+        cy="0"
+        r="18"
+        fill="none"
+        stroke="rgba(120,235,255,.58)"
+        stroke-width="2"
+        stroke-dasharray="4 5"
+    />
+
+</g>
+
+
+<!-- =================================================
+     NOYAU CENTRAL
+================================================== -->
+
+<g class="gyro-core">
+
+    <circle
+        cx="250"
+        cy="250"
+        r="42"
+        fill="rgba(0,75,95,.20)"
+        stroke="rgba(150,245,255,.75)"
+        stroke-width="2"
+        class="glow"
+    />
+
+    <circle
+        cx="250"
+        cy="250"
+        r="31"
+        fill="rgba(0,170,205,.12)"
+        stroke="#9cf7ff"
+        stroke-width="2"
+    />
+
+    <circle
+        cx="250"
+        cy="250"
+        r="20"
+        fill="rgba(0,225,255,.17)"
+        stroke="#dfffff"
+        stroke-width="2"
+        class="glow-strong"
+    />
+
+    <circle
+        cx="250"
+        cy="250"
+        r="8"
+        fill="#efffff"
+        class="glow-strong"
+    />
+
+</g>
+
+
+<!-- =================================================
+     REPÈRES FIXES
+================================================== -->
+
+<circle
+    cx="250"
+    cy="18"
+    r="3"
+    class="marker"
+    class="glow"
+/>
+
+<circle
+    cx="482"
+    cy="250"
+    r="3"
+    class="marker"
+/>
+
+<circle
+    cx="250"
+    cy="482"
+    r="3"
+    class="marker"
+/>
+
+<circle
+    cx="18"
+    cy="250"
+    r="3"
+    class="marker"
+/>
+
+
+<!-- petits points orbitaux -->
+
+<g fill="#5beaff">
+
+    <circle cx="83" cy="175" r="2"/>
+    <circle cx="417" cy="175" r="2"/>
+    <circle cx="83" cy="325" r="2"/>
+    <circle cx="417" cy="325" r="2"/>
+
+</g>
+
+</svg>
+
+
+<div class="core-label">
+
+    <div class="main">
+        STANDBY
     </div>
 
-    <div class="panel">
-      <div class="label">MÉTÉO</div>
-      <div class="value">18°</div>
-      <div class="info">
-        CONDITIONS STABLES
-      </div>
+    <div class="sub">
+        CORE ACTIVE
     </div>
 
-    <div class="panel">
-      <div class="label">SYSTÈME</div>
-      <div class="value">82%</div>
-      <div class="info">
-        PERFORMANCE
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="label">ACTIVITÉ</div>
-      <div class="value">12</div>
-      <div class="info">
-        ÉVÉNEMENTS RÉCENTS
-      </div>
-    </div>
-
-  </div>
+</div>
 
 </div>
 
 
-<script type="importmap">
-{
-  "imports":{
-    "three":
-      "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
-  }
-}
-</script>
+<!-- ==================================================
+     PANNEAUX
+================================================== -->
 
+<section class="panel panel-house">
 
-<script type="module">
+    <div class="panel-title">
+        MAISON
+    </div>
 
-import * as THREE from "three";
+    <div class="panel-value">
+        03
+    </div>
 
+    <div class="panel-small">
+        DISPOSITIFS ACTIFS
+    </div>
 
-/* =========================================================
-   JARVIS — SPHERICAL HOROLOGICAL ARCHITECTURE
-   ========================================================= */
+</section>
 
 
-const canvas =
-  document.getElementById("scene");
+<section class="panel panel-weather">
 
+    <div class="panel-title">
+        MÉTÉO
+    </div>
 
-const renderer =
-  new THREE.WebGLRenderer({
+    <div class="panel-value">
+        18°
+    </div>
 
-    canvas,
+    <div class="panel-small">
+        CONDITIONS STABLES
+    </div>
 
-    antialias:true,
+</section>
 
-    alpha:true,
 
-    powerPreference:
-      "high-performance"
-  });
+<section class="panel panel-system">
 
+    <div class="panel-title">
+        SYSTÈME
+    </div>
 
-renderer.setPixelRatio(
-  Math.min(
-    window.devicePixelRatio,
-    2
-  )
-);
+    <div class="panel-value">
+        82%
+    </div>
 
-renderer.setSize(
-  innerWidth,
-  innerHeight
-);
+    <div class="panel-small">
+        PERFORMANCE
+    </div>
 
-renderer.outputColorSpace =
-  THREE.SRGBColorSpace;
+</section>
 
-renderer.toneMapping =
-  THREE.ACESFilmicToneMapping;
 
-renderer.toneMappingExposure =
-  1.08;
+<section class="panel panel-activity">
 
+    <div class="panel-title">
+        ACTIVITÉ
+    </div>
 
-const scene =
-  new THREE.Scene();
+    <div class="panel-value">
+        12
+    </div>
 
+    <div class="panel-small">
+        ÉVÉNEMENTS RÉCENTS
+    </div>
 
-const camera =
-  new THREE.PerspectiveCamera(
-    32,
-    innerWidth / innerHeight,
-    .1,
-    100
-  );
+</section>
 
 
-camera.position.set(
-  0,
-  0,
-  10
-);
+<button
+class="microphone"
+id="activate"
+aria-label="Activer Jarvis"
+>
+◉
+</button>
 
 
-/* =========================================================
-   LIGHT
-   ========================================================= */
+</div>
 
-scene.add(
-  new THREE.AmbientLight(
-    0x14272c,
-    1.45
-  )
-);
 
+<script>
 
-const cyanLight =
-  new THREE.PointLight(
-    0x51e9ff,
-    10,
-    14
-  );
+/* ==================================================
+   ACTIVATION
+================================================== */
 
-cyanLight.position.set(
-  -3.8,
-  3.2,
-  4.8
-);
+const button =
+document.getElementById("activate");
 
-scene.add(cyanLight);
+let active = false;
 
+button.addEventListener(
+    "click",
+    () => {
 
-const whiteLight =
-  new THREE.PointLight(
-    0xffffff,
-    9,
-    12
-  );
+        active = !active;
 
-whiteLight.position.set(
-  3.2,
-  2.2,
-  4.5
-);
-
-scene.add(whiteLight);
-
-
-const warmLight =
-  new THREE.PointLight(
-    0xffb54a,
-    3.8,
-    9
-  );
-
-warmLight.position.set(
-  -2.5,
-  -3,
-  3.8
-);
-
-scene.add(warmLight);
-
-
-/* =========================================================
-   MATIÈRES
-   ========================================================= */
-
-
-const steelDark =
-  new THREE.MeshStandardMaterial({
-
-    color:0x11191b,
-
-    metalness:.97,
-
-    roughness:.39
-  });
-
-
-const steel =
-  new THREE.MeshStandardMaterial({
-
-    color:0x68767a,
-
-    metalness:.98,
-
-    roughness:.25
-  });
-
-
-const polished =
-  new THREE.MeshStandardMaterial({
-
-    color:0xc6d0d2,
-
-    metalness:1,
-
-    roughness:.12
-  });
-
-
-const darkUsed =
-  new THREE.MeshStandardMaterial({
-
-    color:0x343d3f,
-
-    metalness:.96,
-
-    roughness:.47
-  });
-
-
-const brass =
-  new THREE.MeshStandardMaterial({
-
-    color:0x8b5d1e,
-
-    metalness:.96,
-
-    roughness:.29
-  });
-
-
-const brassLight =
-  new THREE.MeshStandardMaterial({
-
-    color:0xc08b35,
-
-    metalness:.98,
-
-    roughness:.21
-  });
-
-
-/* =========================================================
-   RUBIS
-   ========================================================= */
-
-const rubyMaterial =
-  new THREE.MeshPhysicalMaterial({
-
-    color:0x560714,
-
-    metalness:.02,
-
-    roughness:.08,
-
-    transmission:.82,
-
-    thickness:.72,
-
-    ior:1.77,
-
-    clearcoat:1,
-
-    clearcoatRoughness:.04
-  });
-
-
-/* =========================================================
-   ARCHITECTURE
-   ========================================================= */
-
-const gyro =
-  new THREE.Group();
-
-scene.add(gyro);
-
-
-/*
-   Le gyrotourbillon reste volontairement compact.
-*/
-
-gyro.userData.scalePortrait =
-  1.24;
-
-
-/* =========================================================
-   BANDE SPHÉRIQUE
-   =========================================================
-
-   IMPORTANT :
-
-   Ce ne sont PAS des tores.
-
-   Chaque élément est une bande plate
-   qui suit la courbure d'une sphère.
-
-   Cela permet d'obtenir :
-   - relief
-   - passages avant/arrière
-   - courbures
-   - intersections
-   - architecture sphérique
-*/
-
-
-function sphericalBand({
-
-  radius = 1,
-
-  tiltX = 0,
-
-  tiltY = 0,
-
-  tiltZ = 0,
-
-  width = .055,
-
-  depth = .045,
-
-  material = steel,
-
-  segments = 128
-
-}){
-
-  const positions=[];
-  const normals=[];
-  const indices=[];
-
-
-  for(
-    let i=0;
-    i<=segments;
-    i++
-  ){
-
-    const a =
-      i / segments *
-      Math.PI * 2;
-
-
-    /*
-       Cercle fondamental.
-    */
-
-    const p =
-      new THREE.Vector3(
-        Math.cos(a)*radius,
-        Math.sin(a)*radius,
-        0
-      );
-
-
-    /*
-       Direction radiale dans le plan.
-    */
-
-    const radial =
-      new THREE.Vector3(
-        Math.cos(a),
-        Math.sin(a),
-        0
-      );
-
-
-    /*
-       Épaisseur de la bande.
-    */
-
-    const p1 =
-      p.clone().add(
-        radial.clone()
-          .multiplyScalar(width/2)
-      );
-
-    const p2 =
-      p.clone().add(
-        radial.clone()
-          .multiplyScalar(-width/2)
-      );
-
-
-    /*
-       Face avant.
-    */
-
-    positions.push(
-      p1.x,p1.y,depth/2,
-      p2.x,p2.y,depth/2
-    );
-
-
-    /*
-       Face arrière.
-    */
-
-    positions.push(
-      p2.x,p2.y,-depth/2,
-      p1.x,p1.y,-depth/2
-    );
-
-
-    normals.push(
-      0,0,1,
-      0,0,1,
-      0,0,-1,
-      0,0,-1
-    );
-
-
-    if(i<segments){
-
-      const b=i*4;
-      const n=(i+1)*4;
-
-
-      /* avant */
-
-      indices.push(
-        b,
-        b+1,
-        n+1,
-
-        b,
-        n+1,
-        n
-      );
-
-
-      /* arrière */
-
-      indices.push(
-        b+2,
-        n+3,
-        n+2,
-
-        b+2,
-        b+3,
-        n+3
-      );
-
-
-      /* bord intérieur */
-
-      indices.push(
-        b+1,
-        b+2,
-        n+2,
-
-        b+1,
-        n+2,
-        n+1
-      );
-
-
-      /* bord extérieur */
-
-      indices.push(
-        b,
-        n,
-        n+3,
-
-        b,
-        n+3,
-        b+3
-      );
+        document.body.classList.toggle(
+            "active",
+            active
+        );
 
     }
-  }
-
-
-  const geometry =
-    new THREE.BufferGeometry();
-
-
-  geometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(
-      positions,
-      3
-    )
-  );
-
-
-  geometry.setAttribute(
-    "normal",
-    new THREE.Float32BufferAttribute(
-      normals,
-      3
-    )
-  );
-
-
-  geometry.setIndex(indices);
-
-  geometry.computeVertexNormals();
-
-
-  const mesh =
-    new THREE.Mesh(
-      geometry,
-      material
-    );
-
-
-  mesh.rotation.set(
-    tiltX,
-    tiltY,
-    tiltZ
-  );
-
-
-  return mesh;
-}
-
-
-/* =========================================================
-   BANDES PRINCIPALES
-   ========================================================= */
-
-
-const sphereArchitecture =
-  new THREE.Group();
-
-gyro.add(
-  sphereArchitecture
 );
 
 
-/*
-   Trois grandes orientations.
-
-   Elles donnent l'impression
-   d'une sphère mécanique.
-*/
-
-
-const bandA =
-  sphericalBand({
-
-    radius:1.03,
-
-    width:.072,
-
-    depth:.065,
-
-    material:polished
-  });
-
-
-const bandB =
-  sphericalBand({
-
-    radius:.94,
-
-    width:.062,
-
-    depth:.058,
-
-    tiltX:Math.PI/2,
-
-    material:steel
-  });
-
-
-const bandC =
-  sphericalBand({
-
-    radius:.84,
-
-    width:.052,
-
-    depth:.052,
-
-    tiltY:Math.PI/2,
-
-    material:brass
-  });
-
-
-const bandD =
-  sphericalBand({
-
-    radius:.73,
-
-    width:.045,
-
-    depth:.045,
-
-    tiltX:.66,
-
-    tiltY:.55,
-
-    material:darkUsed
-  });
-
-
-const bandE =
-  sphericalBand({
-
-    radius:.62,
-
-    width:.040,
-
-    depth:.041,
-
-    tiltX:-.88,
-
-    tiltZ:.42,
-
-    material:brassLight
-  });
-
-
-sphereArchitecture.add(
-  bandA,
-  bandB,
-  bandC,
-  bandD,
-  bandE
-);
-
-
-/* =========================================================
-   CHANFREINS DES BANDES
-   ========================================================= */
-
-
-function bandEdge(
-  radius,
-  tiltX,
-  tiltY,
-  tiltZ,
-  offset
-){
-
-  const edge =
-    sphericalBand({
-
-      radius,
-
-      width:.010,
-
-      depth:.010,
-
-      tiltX,
-      tiltY,
-      tiltZ,
-
-      material:polished,
-
-      segments:128
-    });
-
-
-  edge.position.z =
-    offset;
-
-  return edge;
-}
-
-
-sphereArchitecture.add(
-
-  bandEdge(
-    1.03,
-    0,
-    0,
-    0,
-    .038
-  ),
-
-  bandEdge(
-    .94,
-    Math.PI/2,
-    0,
-    0,
-    .034
-  ),
-
-  bandEdge(
-    .84,
-    0,
-    Math.PI/2,
-    0,
-    .030
-  )
-);
-
-
-/* =========================================================
-   MICRO-GRADUATIONS SUR BANDES
-   ========================================================= */
-
-
-function bandMarkers(
-  parent,
-  radius,
-  count,
-  tiltX,
-  tiltY,
-  tiltZ
-){
-
-  const group =
-    new THREE.Group();
-
-
-  for(
-    let i=0;
-    i<count;
-    i++
-  ){
-
-    const a =
-      i/count *
-      Math.PI*2;
-
-
-    const major =
-      i%13===0;
-
-
-    const marker =
-      new THREE.Mesh(
-
-        new THREE.BoxGeometry(
-          major ? .048 : .025,
-          major ? .010 : .007,
-          .010
-        ),
-
-        major
-          ? polished
-          : steel
-      );
-
-
-    marker.position.set(
-      Math.cos(a)*radius,
-      Math.sin(a)*radius,
-      .055
-    );
-
-
-    marker.rotation.z =
-      a;
-
-
-    group.add(marker);
-  }
-
-
-  group.rotation.set(
-    tiltX,
-    tiltY,
-    tiltZ
-  );
-
-
-  parent.add(group);
-}
-
-
-bandMarkers(
-  sphereArchitecture,
-  1.035,
-  96,
-  0,
-  0,
-  0
-);
-
-
-bandMarkers(
-  sphereArchitecture,
-  .945,
-  84,
-  Math.PI/2,
-  0,
-  0
-);
-
-
-bandMarkers(
-  sphereArchitecture,
-  .845,
-  72,
-  0,
-  Math.PI/2,
-  0
-);
-
-
-/* =========================================================
-   MICRO-PERFORATIONS
-   ========================================================= */
-
-
-function perforations(
-  parent,
-  radius,
-  count,
-  tiltX,
-  tiltY
-){
-
-  const group =
-    new THREE.Group();
-
-
-  for(
-    let i=0;
-    i<count;
-    i++
-  ){
-
-    const a =
-      i/count*Math.PI*2;
-
-
-    const hole =
-      new THREE.Mesh(
-
-        new THREE.CylinderGeometry(
-          .010,
-          .010,
-          .020,
-          10
-        ),
-
-        steelDark
-      );
-
-
-    hole.rotation.x =
-      Math.PI/2;
-
-
-    hole.position.set(
-      Math.cos(a)*radius,
-      Math.sin(a)*radius,
-      .060
-    );
-
-
-    group.add(hole);
-  }
-
-
-  group.rotation.x =
-    tiltX;
-
-  group.rotation.y =
-    tiltY;
-
-
-  parent.add(group);
-}
-
-
-perforations(
-  sphereArchitecture,
-  .98,
-  48,
-  0,
-  0
-);
-
-
-perforations(
-  sphereArchitecture,
-  .79,
-  36,
-  Math.PI/2,
-  0
-);
-
-
-/* =========================================================
-   PONTS COURBES
-   =========================================================
-
-   Petites pièces qui traversent
-   les différentes couches.
-*/
-
-
-function curvedBridge(
-  radius,
-  start,
-  end,
-  material
-){
-
-  const points=[];
-
-
-  const count=32;
-
-
-  for(
-    let i=0;
-    i<=count;
-    i++
-  ){
-
-    const t=i/count;
-
-    const a =
-      start+
-      (end-start)*t;
-
-
-    const r =
-      radius+
-      Math.sin(
-        t*Math.PI
-      )*.13;
-
-
-    points.push(
-      new THREE.Vector3(
-        Math.cos(a)*r,
-        Math.sin(a)*r,
-        Math.sin(t*Math.PI)*.12
-      )
-    );
-  }
-
-
-  const curve =
-    new THREE.CatmullRomCurve3(
-      points
-    );
-
-
-  /*
-     Petit rayon uniquement pour
-     les ponts : pas pour les cages.
-  */
-
-  const geometry =
-    new THREE.TubeGeometry(
-      curve,
-      32,
-      .018,
-      6,
-      false
-    );
-
-
-  const mesh =
-    new THREE.Mesh(
-      geometry,
-      material
-    );
-
-
-  return mesh;
-}
-
-
-sphereArchitecture.add(
-
-  curvedBridge(
-    .76,
-    -.8,
-    .95,
-    polished
-  ),
-
-  curvedBridge(
-    .69,
-    2.0,
-    4.2,
-    brass
-  ),
-
-  curvedBridge(
-    .55,
-    3.5,
-    5.5,
-    steel
-  )
-);
-
-
-/* =========================================================
-   CENTRE MÉCANIQUE
-   ========================================================= */
-
+/* ==================================================
+   BATTEMENT DU NOYAU
+================================================== */
 
 const core =
-  new THREE.Group();
+document.getElementById("core");
 
-gyro.add(core);
+function impulseVertical() {
 
+    core.animate(
 
-/* plateau central */
+        [
+            {
+                transform:
+                "translate(-50%,-50%) translateY(0px)"
+            },
 
+            {
+                transform:
+                "translate(-50%,-50%) translateY(-14px)",
 
-const corePlate =
-  new THREE.Mesh(
+                offset: .28
+            },
 
-    new THREE.CylinderGeometry(
-      .34,
-      .34,
-      .055,
-      64
-    ),
+            {
+                transform:
+                "translate(-50%,-50%) translateY(5px)",
 
-    steelDark
-  );
+                offset: .58
+            },
 
+            {
+                transform:
+                "translate(-50%,-50%) translateY(-2px)",
 
-corePlate.rotation.x =
-  Math.PI/2;
+                offset: .80
+            },
 
+            {
+                transform:
+                "translate(-50%,-50%) translateY(0px)"
+            }
 
-core.add(corePlate);
+        ],
 
+        {
+            duration: 1050,
 
-/* couronne dentée miniature */
-
-
-function gear(
-  radius,
-  teeth,
-  material
-){
-
-  const group =
-    new THREE.Group();
-
-
-  const disc =
-    new THREE.Mesh(
-
-      new THREE.CylinderGeometry(
-        radius,
-        radius,
-        .045,
-        48
-      ),
-
-      material
+            easing:
+            "cubic-bezier(.18,.82,.25,1)"
+        }
     );
-
-
-  disc.rotation.x =
-    Math.PI/2;
-
-
-  group.add(disc);
-
-
-  for(
-    let i=0;
-    i<teeth;
-    i++
-  ){
-
-    const a =
-      i/teeth*Math.PI*2;
-
-
-    const tooth =
-      new THREE.Mesh(
-
-        new THREE.BoxGeometry(
-          .055,
-          .018,
-          .055
-        ),
-
-        material
-      );
-
-
-    tooth.position.set(
-      Math.cos(a)*radius*1.08,
-      Math.sin(a)*radius*1.08,
-      0
-    );
-
-
-    tooth.rotation.z=a;
-
-
-    group.add(tooth);
-  }
-
-
-  return group;
 }
 
 
-const gearA =
-  gear(
-    .23,
-    36,
-    polished
-  );
+/* ==================================================
+   BATTEMENT EN MODE ACTIF
+================================================== */
 
+setInterval(
 
-core.add(gearA);
+    () => {
 
+        if (active) {
+            impulseVertical();
+        }
 
-const gearB =
-  gear(
-    .15,
-    25,
-    brass
-  );
+    },
 
+    3000
 
-gearB.position.z=.07;
-
-core.add(gearB);
-
-
-/* =========================================================
-   BALANCIER SPHÉRIQUE
-   ========================================================= */
-
-
-const balance =
-  new THREE.Group();
-
-core.add(balance);
-
-
-const balanceRing =
-  new THREE.Mesh(
-
-    new THREE.TorusGeometry(
-      .24,
-      .017,
-      8,
-      96
-    ),
-
-    polished
-  );
-
-
-balance.add(
-  balanceRing
-);
-
-
-const balanceRing2 =
-  new THREE.Mesh(
-
-    new THREE.TorusGeometry(
-      .16,
-      .011,
-      7,
-      80
-    ),
-
-    brass
-  );
-
-
-balanceRing2.rotation.x=.42;
-
-balance.add(
-  balanceRing2
-);
-
-
-/* Bras du balancier */
-
-
-for(
-  let i=0;
-  i<6;
-  i++
-){
-
-  const a =
-    i/6*Math.PI*2;
-
-
-  const arm =
-    new THREE.Mesh(
-
-      new THREE.BoxGeometry(
-        .40,
-        .014,
-        .018
-      ),
-
-      i%2
-        ? steel
-        : brassLight
-    );
-
-
-  arm.position.set(
-    Math.cos(a)*.11,
-    Math.sin(a)*.11,
-    .025
-  );
-
-
-  arm.rotation.z=a;
-
-
-  balance.add(arm);
-}
-
-
-/* =========================================================
-   RUBIS
-   ========================================================= */
-
-
-const ruby =
-  new THREE.Mesh(
-
-    new THREE.SphereGeometry(
-      .115,
-      48,
-      32
-    ),
-
-    rubyMaterial
-  );
-
-
-ruby.position.z=.16;
-
-core.add(ruby);
-
-
-/*
-   petite inclusion interne
-   pour casser l'aspect boule rouge.
-*/
-
-
-const rubyCore =
-  new THREE.Mesh(
-
-    new THREE.SphereGeometry(
-      .047,
-      24,
-      18
-    ),
-
-    new THREE.MeshPhysicalMaterial({
-
-      color:0x220007,
-
-      roughness:.015,
-
-      transmission:.95,
-
-      thickness:.25,
-
-      ior:1.80
-    })
-  );
-
-
-ruby.add(
-  rubyCore
-);
-
-
-/* =========================================================
-   AXES
-   ========================================================= */
-
-
-function precisionAxis(
-  length,
-  material
-){
-
-  return new THREE.Mesh(
-
-    new THREE.CylinderGeometry(
-      .009,
-      .009,
-      length,
-      16
-    ),
-
-    material
-  );
-}
-
-
-const axisX =
-  precisionAxis(
-    1.65,
-    polished
-  );
-
-axisX.rotation.z =
-  Math.PI/2;
-
-core.add(axisX);
-
-
-const axisY =
-  precisionAxis(
-    1.45,
-    steel
-  );
-
-axisY.rotation.x =
-  Math.PI/2;
-
-core.add(axisY);
-
-
-const axisZ =
-  precisionAxis(
-    1.55,
-    brass
-  );
-
-core.add(axisZ);
-
-
-/* =========================================================
-   VIS DE FIXATION
-   ========================================================= */
-
-
-function screw(
-  parent,
-  x,
-  y,
-  z=.10
-){
-
-  const screw =
-    new THREE.Mesh(
-
-      new THREE.CylinderGeometry(
-        .021,
-        .021,
-        .028,
-        16
-      ),
-
-      polished
-    );
-
-
-  screw.rotation.x =
-    Math.PI/2;
-
-
-  screw.position.set(
-    x,
-    y,
-    z
-  );
-
-
-  parent.add(screw);
-
-
-  const slot =
-    new THREE.Mesh(
-
-      new THREE.BoxGeometry(
-        .028,
-        .006,
-        .008
-      ),
-
-      steelDark
-    );
-
-
-  slot.position.z=.018;
-
-
-  screw.add(slot);
-}
-
-
-[
-  [ .34, .0],
-  [-.34, .0],
-  [ .0, .34],
-  [ .0,-.34],
-  [.24,.24],
-  [-.24,.24],
-  [.24,-.24],
-  [-.24,-.24]
-]
-.forEach(
-  p =>
-    screw(
-      core,
-      p[0],
-      p[1]
-    )
-);
-
-
-/* =========================================================
-   MICRO-PARTS
-   ========================================================= */
-
-
-for(
-  let i=0;
-  i<18;
-  i++
-){
-
-  const a =
-    i/18*Math.PI*2;
-
-
-  const r =
-    .40+
-    Math.sin(i*2.31)*.035;
-
-
-  const part =
-    new THREE.Mesh(
-
-      new THREE.BoxGeometry(
-        .045+
-        (i%3)*.012,
-        .012,
-        .018
-      ),
-
-      i%4===0
-        ? brass
-        : steel
-    );
-
-
-  part.position.set(
-    Math.cos(a)*r,
-    Math.sin(a)*r,
-    .09+
-    Math.sin(i)*.025
-  );
-
-
-  part.rotation.z=a;
-
-
-  core.add(part);
-}
-
-
-/* =========================================================
-   ROTATIONS
-   ========================================================= */
-
-
-/*
-   Chaque couche possède son propre mouvement.
-
-   Le but est de créer une impression
-   de sphère mécanique vivante.
-*/
-
-
-let last =
-  performance.now();
-
-
-function animate(now){
-
-  requestAnimationFrame(
-    animate
-  );
-
-
-  const dt =
-    Math.min(
-      (now-last)/1000,
-      .05
-    );
-
-
-  last=now;
-
-
-  /*
-     Architecture sphérique.
-  */
-
-  bandA.rotation.z +=
-    dt*.23;
-
-  bandB.rotation.x +=
-    dt*.37;
-
-  bandC.rotation.y -=
-    dt*.51;
-
-  bandD.rotation.z +=
-    dt*.68;
-
-  bandE.rotation.x -=
-    dt*.86;
-
-
-  /*
-     Ponts et mécanisme.
-  */
-
-  gearA.rotation.z +=
-    dt*1.15;
-
-  gearB.rotation.z -=
-    dt*1.82;
-
-  balance.rotation.z +=
-    dt*2.25;
-
-
-  /*
-     Le cœur tourne
-     indépendamment.
-  */
-
-  core.rotation.x +=
-    dt*.31;
-
-  core.rotation.y -=
-    dt*.44;
-
-
-  /*
-     Respiration extrêmement légère.
-  */
-
-  const breathe =
-    1+
-    Math.sin(
-      now*.00045
-    )*.006;
-
-
-  gyro.scale.setScalar(
-    gyro.userData.scalePortrait*
-    breathe
-  );
-
-
-  renderer.render(
-    scene,
-    camera
-  );
-}
-
-
-/* =========================================================
-   POSITIONNEMENT PORTRAIT
-   ========================================================= */
-
-
-function layout(){
-
-  const w =
-    innerWidth;
-
-  const h =
-    innerHeight;
-
-  const portrait =
-    h>=w;
-
-
-  camera.aspect =
-    w/h;
-
-  camera.updateProjectionMatrix();
-
-
-  /*
-     Le gyro est volontairement
-     centré dans la zone supérieure.
-  */
-
-  gyro.position.set(
-    0,
-    portrait
-      ? .28
-      : .05,
-    0
-  );
-
-
-  gyro.userData.scalePortrait =
-    portrait
-      ? 1.24
-      : 1.42;
-}
-
-
-window.addEventListener(
-  "resize",
-  ()=>{
-
-    renderer.setSize(
-      innerWidth,
-      innerHeight
-    );
-
-    layout();
-
-  },
-  {
-    passive:true
-  }
-);
-
-
-layout();
-
-
-animate(
-  performance.now()
-);
-
-
-/* =========================================================
-   INTERACTION TACTILE
-   ========================================================= */
-
-
-let lastX=0;
-let lastY=0;
-
-
-window.addEventListener(
-  "touchstart",
-  event=>{
-
-    const t =
-      event.touches[0];
-
-    lastX=t.clientX;
-    lastY=t.clientY;
-
-  },
-  {
-    passive:true
-  }
-);
-
-
-window.addEventListener(
-  "touchmove",
-  event=>{
-
-    const t =
-      event.touches[0];
-
-
-    const dx =
-      t.clientX-lastX;
-
-    const dy =
-      t.clientY-lastY;
-
-
-    gyro.rotation.y +=
-      dx*.0007;
-
-    gyro.rotation.x +=
-      dy*.0007;
-
-
-    lastX=t.clientX;
-    lastY=t.clientY;
-
-  },
-  {
-    passive:true
-  }
 );
 
 </script>
