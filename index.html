@@ -1,1161 +1,937 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#02080c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<meta
-    name="viewport"
-    content="width=device-width,
-             initial-scale=1,
-             maximum-scale=1,
-             viewport-fit=cover,
-             user-scalable=no"
->
-
-<meta name="theme-color" content="#02070a">
-
-<title>JARVIS — Voice Core</title>
+<title>JARVIS — Neural Interface</title>
 
 <style>
-
-/* =========================================================
-   JARVIS VOICE CORE
-   SINGLE FILE / NO EXTERNAL DEPENDENCIES
-   iPHONE / GITHUB PAGES
-   ========================================================= */
-
 :root{
-
-    --bg:#02070a;
-
-    --cyan:#11ddff;
-    --cyan2:#73efff;
-    --cyan3:#0b6576;
-
+    --bg:#02080c;
+    --cyan:#11dfff;
+    --cyan-soft:#68efff;
+    --cyan-dim:#126b7a;
+    --cyan-faint:#07343f;
     --white:#dffaff;
-
-    --gold:#c49a50;
-
-    --panel:rgba(3,18,24,.88);
-
+    --red:#ff4054;
+    --gold:#b88b3a;
+    --grid:rgba(42,137,155,.075);
 }
-
-
-/* =========================================================
-   RESET
-   ========================================================= */
 
 *{
-
     box-sizing:border-box;
-
-    margin:0;
-
-    padding:0;
-
     -webkit-tap-highlight-color:transparent;
-
 }
-
 
 html,
 body{
-
+    margin:0;
     width:100%;
-
-    height:100%;
-
-    overflow:hidden;
-
-    background:#02070a;
-
+    min-height:100%;
+    background:var(--bg);
     color:var(--white);
-
     font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Helvetica Neue",
         Arial,
         sans-serif;
-
+    overflow-x:hidden;
 }
-
 
 body{
-
-    position:fixed;
-
-    inset:0;
-
-    overscroll-behavior:none;
-
+    min-height:100svh;
+    position:relative;
 }
 
-
 /* =========================================================
-   APPLICATION
+   BACKGROUND
    ========================================================= */
 
-#app{
-
+body::before{
+    content:"";
     position:fixed;
-
     inset:0;
-
-    width:100%;
-
-    height:100%;
-
-    overflow:hidden;
-
-    background:
-
-        radial-gradient(
-            circle at 50% 25%,
-            rgba(0,90,115,.12),
-            transparent 25%
-        ),
-
-        #02070a;
-
-}
-
-
-/* =========================================================
-   GRID
-   ========================================================= */
-
-#grid{
-
-    position:absolute;
-
-    inset:0;
-
     pointer-events:none;
 
-    opacity:.27;
-
     background-image:
-
-        linear-gradient(
-            rgba(22,92,106,.18) 1px,
-            transparent 1px
-        ),
-
-        linear-gradient(
-            90deg,
-            rgba(22,92,106,.18) 1px,
-            transparent 1px
-        );
+        linear-gradient(var(--grid) 1px,transparent 1px),
+        linear-gradient(90deg,var(--grid) 1px,transparent 1px);
 
     background-size:
-        36px 36px;
+        72px 72px,
+        72px 72px;
 
+    opacity:.75;
 }
 
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            circle at 50% 42%,
+            rgba(0,111,135,.10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 50% 42%,
+            transparent 48%,
+            rgba(0,0,0,.35) 100%
+        );
+}
+
+/* =========================================================
+   MAIN INTERFACE
+   ========================================================= */
+
+.interface{
+    position:relative;
+    width:100%;
+    min-height:100svh;
+    padding:
+        max(24px,env(safe-area-inset-top))
+        18px
+        max(24px,env(safe-area-inset-bottom));
+
+    display:flex;
+    flex-direction:column;
+}
 
 /* =========================================================
    HEADER
    ========================================================= */
 
-#header{
-
-    position:absolute;
-
-    z-index:100;
-
-    top:0;
-
-    left:0;
-
-    right:0;
-
-    height:
-        calc(
-            82px +
-            env(safe-area-inset-top)
-        );
-
-    padding:
-        env(safe-area-inset-top)
-        24px
-        0
-        24px;
+.header{
+    width:100%;
+    height:76px;
 
     display:flex;
-
     align-items:center;
-
     justify-content:space-between;
 
-    pointer-events:none;
-
+    position:relative;
+    z-index:10;
 }
-
 
 .logo{
-
-    font-size:18px;
-
+    font-size:27px;
     font-weight:300;
-
-    letter-spacing:.52em;
-
+    letter-spacing:.36em;
     white-space:nowrap;
-
 }
-
 
 .status{
-
     display:flex;
-
-    gap:12px;
-
     align-items:center;
+    gap:18px;
 
+    font-size:10px;
+    letter-spacing:.30em;
+    color:#54727b;
 }
 
-
-.statusItem{
-
+.status-item{
     display:flex;
-
     align-items:center;
-
-    gap:5px;
-
-    color:#537d87;
-
-    font-size:7px;
-
-    letter-spacing:.24em;
-
+    gap:7px;
+    white-space:nowrap;
 }
 
-
-.statusDot{
-
-    width:7px;
-
-    height:7px;
-
+.status-dot{
+    width:8px;
+    height:8px;
     border-radius:50%;
-
-    background:#12ddff;
+    background:var(--cyan);
 
     box-shadow:
+        0 0 7px var(--cyan),
+        0 0 16px rgba(0,221,255,.55);
 
-        0 0 7px #12ddff,
-
-        0 0 17px rgba(18,221,255,.55);
-
+    animation:statusPulse 2.5s ease-in-out infinite;
 }
 
+.status-item:nth-child(2) .status-dot{
+    animation-delay:.4s;
+}
+
+.status-item:nth-child(3) .status-dot{
+    animation-delay:.8s;
+}
+
+@keyframes statusPulse{
+    0%,100%{opacity:.55;transform:scale(.8)}
+    50%{opacity:1;transform:scale(1)}
+}
 
 /* =========================================================
-   SUBTITLE
+   TITLE
    ========================================================= */
 
-#subtitle{
-
-    position:absolute;
-
-    z-index:80;
-
-    top:
-        calc(
-            116px +
-            env(safe-area-inset-top)
-        );
-
-    left:0;
-
-    right:0;
-
+.system-title{
     text-align:center;
+    margin-top:18px;
 
-    color:#4e7c87;
+    font-size:11px;
+    letter-spacing:.46em;
+    color:#477681;
+
+    white-space:nowrap;
+}
+
+.system-subtitle{
+    text-align:center;
+    margin-top:17px;
 
     font-size:8px;
-
-    letter-spacing:.34em;
-
+    letter-spacing:.42em;
+    color:#315760;
 }
-
-
-/* =========================================================
-   VOICE STATE
-   ========================================================= */
-
-#voiceState{
-
-    position:absolute;
-
-    z-index:90;
-
-    top:
-        calc(
-            139px +
-            env(safe-area-inset-top)
-        );
-
-    left:0;
-
-    right:0;
-
-    text-align:center;
-
-    color:#315b66;
-
-    font-size:6px;
-
-    letter-spacing:.32em;
-
-    transition:
-
-        color .25s ease,
-
-        text-shadow .25s ease;
-
-}
-
-
-#voiceState.active{
-
-    color:#8cf5ff;
-
-    text-shadow:
-
-        0 0 10px
-        rgba(15,220,255,.75);
-
-}
-
 
 /* =========================================================
    CORE AREA
-   IMPORTANT:
-   ORB ≈ 20VH
    ========================================================= */
 
-#coreArea{
-
-    position:absolute;
-
-    z-index:20;
-
-    left:0;
-
-    right:0;
-
-    top:
-        calc(
-            158px +
-            env(safe-area-inset-top)
-        );
-
-    height:42vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:flex-start;
-
-}
-
-
-/* =========================================================
-   CORE
-   ========================================================= */
-
-#core{
-
+.core-area{
     position:relative;
 
-    width:
-        min(
-            20vh,
-            220px
-        );
-
-    height:
-        min(
-            20vh,
-            220px
-        );
-
-    min-width:150px;
-
-    min-height:150px;
-
-}
-
-
-/* =========================================================
-   CANVAS
-   ========================================================= */
-
-#canvas{
-
-    position:absolute;
-
-    inset:0;
-
     width:100%;
+    height:min(57vh,650px);
 
-    height:100%;
+    min-height:430px;
 
+    margin-top:8px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
 }
 
+/*
+   IMPORTANT:
+   Les quatre couronnes sont dimensionnées à partir
+   de la largeur réellement disponible.
 
-/* =========================================================
-   FOUR HUD RINGS
-   ========================================================= */
+   Elles ne peuvent donc pas sortir horizontalement
+   de l'écran de l'iPhone.
+*/
 
-#rings{
-
+.ring-system{
     position:absolute;
 
-    inset:-82%;
-
-    width:264%;
-
-    height:264%;
-
-    pointer-events:none;
-
-}
-
-
-.ring{
-
-    fill:none;
-
-    transform-origin:50% 50%;
-
-}
-
-
-.ring1{
-
-    stroke:
-        rgba(20,209,239,.70);
-
-    stroke-width:
-        .45;
-
-    stroke-dasharray:
-        1.2 2.8;
-
-    animation:
-        ringClockwise
-        48s
-        linear
-        infinite;
-
-}
-
-
-.ring2{
-
-    stroke:
-        rgba(65,221,243,.53);
-
-    stroke-width:
-        .6;
-
-    stroke-dasharray:
-        8 3 1 4;
-
-    animation:
-        ringCounter
-        38s
-        linear
-        infinite;
-
-}
-
-
-.ring3{
-
-    stroke:
-        rgba(184,229,235,.39);
-
-    stroke-width:
-        .42;
-
-    stroke-dasharray:
-        2 7;
-
-    animation:
-        ringClockwise
-        64s
-        linear
-        infinite;
-
-}
-
-
-.ring4{
-
-    stroke:
-        rgba(196,154,79,.56);
-
-    stroke-width:
-        .55;
-
-    stroke-dasharray:
-        16 7 3 8;
-
-    animation:
-        ringCounter
-        72s
-        linear
-        infinite;
-
-}
-
-
-@keyframes ringClockwise{
-
-    from{
-        transform:rotate(0deg);
-    }
-
-    to{
-        transform:rotate(360deg);
-    }
-
-}
-
-
-@keyframes ringCounter{
-
-    from{
-        transform:rotate(360deg);
-    }
-
-    to{
-        transform:rotate(0deg);
-    }
-
-}
-
-
-/* =========================================================
-   RING TICKS
-   ========================================================= */
-
-.tick{
-
-    stroke:
-        rgba(93,225,242,.64);
-
-    stroke-width:
-        .65;
-
-}
-
-
-.tickMajor{
-
-    stroke:
-        rgba(183,244,250,.88);
-
-    stroke-width:
-        1;
-
-}
-
-
-.tickGold{
-
-    stroke:
-        rgba(211,170,91,.70);
-
-    stroke-width:
-        .65;
-
-}
-
-
-/* =========================================================
-   RING NUMBERS
-   ========================================================= */
-
-.ringNumber{
-
-    fill:
-        rgba(129,222,236,.62);
-
-    font-family:
-        monospace;
-
-    font-size:
-        3.1px;
-
-    letter-spacing:
-        .5px;
-
-}
-
-
-/* =========================================================
-   ORB HALO
-   ========================================================= */
-
-#halo{
-
-    position:absolute;
-
-    z-index:2;
+    width:min(94vw,680px);
+    aspect-ratio:1/1;
 
     left:50%;
-
     top:50%;
 
-    width:100%;
-
-    height:100%;
-
     transform:
-        translate(-50%,-50%);
+        translate(-50%,-50%)
+        rotate(var(--system-rotation,0deg));
+
+    filter:
+        drop-shadow(0 0 5px rgba(0,211,255,.08));
+}
+
+/* =========================================================
+   SVG RINGS
+   ========================================================= */
+
+.ring{
+    fill:none;
+    vector-effect:non-scaling-stroke;
+}
+
+.ring-outer{
+    stroke:rgba(37,160,181,.43);
+    stroke-width:1;
+}
+
+.ring-outer-bright{
+    stroke:rgba(66,221,241,.72);
+    stroke-width:1.4;
+}
+
+.ring-mid{
+    stroke:rgba(42,139,159,.50);
+    stroke-width:1;
+}
+
+.ring-fine{
+    stroke:rgba(72,182,198,.32);
+    stroke-width:.8;
+}
+
+.ring-red{
+    stroke:var(--red);
+    stroke-width:3;
+    stroke-linecap:round;
+    opacity:.9;
+    filter:drop-shadow(0 0 5px rgba(255,64,84,.65));
+}
+
+.ring-gold{
+    stroke:var(--gold);
+    stroke-width:2;
+    opacity:.75;
+}
+
+/* =========================================================
+   ROTATION
+   ========================================================= */
+
+.rotate-a{
+    animation:
+        ringRotationA 32s linear infinite;
+}
+
+.rotate-b{
+    animation:
+        ringRotationB 47s linear infinite reverse;
+}
+
+.rotate-c{
+    animation:
+        ringRotationA 70s linear infinite;
+}
+
+.rotate-d{
+    animation:
+        ringRotationB 91s linear infinite reverse;
+}
+
+@keyframes ringRotationA{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+@keyframes ringRotationB{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+/* =========================================================
+   CENTRAL ORB
+   ========================================================= */
+
+.orb{
+    position:absolute;
+
+    /*
+      environ 20 % de la hauteur de l'écran,
+      avec une limite pour les petits appareils.
+    */
+
+    width:min(20svh,180px);
+    height:min(20svh,180px);
+
+    min-width:112px;
+    min-height:112px;
 
     border-radius:50%;
 
-    background:
-
-        radial-gradient(
-            circle,
-            rgba(16,218,255,.24),
-            rgba(0,89,115,.09) 44%,
-            transparent 70%
-        );
-
-    filter:
-        blur(12px);
-
-    transition:
-        transform .06s linear;
-
-}
-
-
-/* =========================================================
-   CORE LABEL
-   ========================================================= */
-
-#coreLabel{
-
-    position:absolute;
-
-    z-index:30;
-
     left:50%;
-
     top:50%;
 
-    transform:
-        translate(-50%,-50%);
+    transform:translate(-50%,-50%);
+
+    z-index:5;
+
+    background:
+        radial-gradient(
+            circle at 38% 32%,
+            rgba(103,243,255,.95) 0%,
+            rgba(18,125,151,.60) 8%,
+            rgba(4,44,60,.85) 25%,
+            rgba(1,17,25,.98) 62%,
+            rgba(0,7,11,1) 100%
+        );
+
+    box-shadow:
+        inset -18px -18px 35px rgba(0,0,0,.72),
+        inset 10px 8px 24px rgba(75,218,239,.20),
+        0 0 18px rgba(0,208,255,.25),
+        0 0 65px rgba(0,130,170,.18);
+
+    overflow:hidden;
+
+    transition:
+        transform .18s ease,
+        box-shadow .2s ease;
+}
+
+/* crystalline shell */
+
+.orb::before{
+    content:"";
+
+    position:absolute;
+    inset:7%;
+
+    border-radius:50%;
+
+    border:
+        1px solid rgba(109,231,247,.55);
+
+    background:
+        conic-gradient(
+            from 15deg,
+            transparent 0deg,
+            rgba(34,194,220,.18) 20deg,
+            transparent 42deg,
+            rgba(255,255,255,.06) 61deg,
+            transparent 90deg,
+            rgba(20,183,214,.16) 125deg,
+            transparent 160deg,
+            rgba(255,255,255,.05) 210deg,
+            transparent 250deg,
+            rgba(35,211,236,.13) 310deg,
+            transparent 360deg
+        );
+
+    opacity:.8;
+
+    animation:
+        orbShell 22s linear infinite;
+}
+
+@keyframes orbShell{
+    from{transform:rotate(0)}
+    to{transform:rotate(360deg)}
+}
+
+/* crystalline facets */
+
+.orb::after{
+    content:"";
+
+    position:absolute;
+    inset:15%;
+
+    border-radius:45% 55% 52% 48%;
+
+    background:
+        linear-gradient(
+            38deg,
+            transparent 0 30%,
+            rgba(93,224,241,.13) 31% 33%,
+            transparent 34% 100%
+        ),
+        linear-gradient(
+            138deg,
+            transparent 0 45%,
+            rgba(121,238,255,.09) 46% 49%,
+            transparent 50% 100%
+        );
+
+    transform:rotate(-12deg);
+}
+
+/* =========================================================
+   ORB PARTICLES
+   ========================================================= */
+
+.orb-particles{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
+
+.particle{
+    position:absolute;
+
+    width:3px;
+    height:3px;
+
+    border-radius:50%;
+
+    background:#bffaff;
+
+    box-shadow:
+        0 0 5px #53eaff,
+        0 0 10px rgba(43,221,255,.6);
+
+    animation:
+        particleFloat var(--duration) ease-in-out infinite;
+}
+
+@keyframes particleFloat{
+    0%,100%{
+        transform:translate3d(0,0,0);
+        opacity:.35;
+    }
+
+    50%{
+        transform:
+            translate3d(
+                var(--x),
+                var(--y),
+                0
+            );
+        opacity:1;
+    }
+}
+
+/* =========================================================
+   CORE TEXT
+   ========================================================= */
+
+.core-label{
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    z-index:8;
 
     text-align:center;
 
     pointer-events:none;
-
-    text-shadow:
-        0 0 10px
-        rgba(20,220,255,.65);
-
 }
 
+.core-label-main{
+    font-size:10px;
+    letter-spacing:.48em;
 
-#coreLabel strong{
+    margin-left:.48em;
 
-    display:block;
+    color:#c8faff;
+}
 
-    color:#d9fbff;
+.core-label-sub{
+    margin-top:8px;
 
     font-size:7px;
-
-    font-weight:300;
-
     letter-spacing:.42em;
 
+    color:#46727b;
+
+    margin-left:.42em;
 }
-
-
-#coreLabel span{
-
-    display:block;
-
-    margin-top:5px;
-
-    color:#4f9ba9;
-
-    font-size:5px;
-
-    letter-spacing:.28em;
-
-}
-
 
 /* =========================================================
-   VOICE TRANSCRIPTION
+   RING DATA
    ========================================================= */
 
-#transcription{
+.ring-number{
+    fill:#83bdc7;
+    font-size:11px;
+    letter-spacing:1px;
+}
 
+.ring-number-bright{
+    fill:#d8fbff;
+    font-size:12px;
+}
+
+.ring-small{
+    fill:#3d7680;
+    font-size:7px;
+    letter-spacing:1px;
+}
+
+.direction{
+    fill:#d9fbff;
+    font-size:18px;
+    letter-spacing:1px;
+}
+
+.corner-mark{
+    stroke:#3dd9ed;
+    stroke-width:1.4;
+    fill:none;
+    opacity:.75;
+}
+
+/* =========================================================
+   VOICE PANEL
+   ========================================================= */
+
+.voice-panel{
     position:absolute;
 
-    z-index:60;
+    left:50%;
+    bottom:3%;
 
-    left:25px;
+    transform:translateX(-50%);
 
-    right:25px;
+    width:min(88%,520px);
 
-    top:
-        calc(
-            51vh +
-            env(safe-area-inset-top)
-        );
+    height:52px;
 
-    min-height:46px;
-
-    padding:
-        10px
-        13px;
-
-    border-left:
-        1px solid
-        rgba(22,213,241,.55);
-
-    border-right:
-        1px solid
-        rgba(22,213,241,.22);
+    border:
+        1px solid rgba(22,170,191,.45);
 
     background:
         linear-gradient(
             90deg,
-            rgba(0,33,42,.55),
-            rgba(0,10,14,.35)
+            rgba(0,18,24,.88),
+            rgba(0,29,37,.48),
+            rgba(0,18,24,.88)
         );
-
-    color:#79dbe9;
-
-    font-size:10px;
-
-    letter-spacing:.08em;
-
-    text-align:center;
-
-    opacity:.88;
-
-}
-
-
-#transcription.empty{
-
-    color:#345963;
-
-}
-
-
-/* =========================================================
-   VOICE VISUALIZER
-   ========================================================= */
-
-#visualizer{
-
-    position:absolute;
-
-    z-index:70;
-
-    left:50%;
-
-    transform:
-        translateX(-50%);
-
-    top:
-        calc(
-            58vh +
-            env(safe-area-inset-top)
-        );
-
-    width:170px;
-
-    height:28px;
 
     display:flex;
-
+    align-items:center;
     justify-content:center;
 
-    align-items:center;
+    z-index:20;
+
+    overflow:hidden;
+}
+
+.voice-status{
+    font-size:8px;
+    letter-spacing:.42em;
+    color:#527a82;
+
+    transition:.2s;
+}
+
+.voice-panel.listening .voice-status{
+    color:#7cefff;
+
+    text-shadow:
+        0 0 8px rgba(41,226,255,.7);
+}
+
+.voice-wave{
+    position:absolute;
+
+    left:50%;
+    bottom:5px;
+
+    transform:translateX(-50%);
+
+    display:flex;
+    align-items:end;
 
     gap:3px;
 
+    height:18px;
+
+    opacity:.4;
 }
 
-
-.bar{
-
+.voice-wave span{
     width:2px;
-
     height:4px;
 
-    background:#18dfff;
+    background:var(--cyan);
 
     box-shadow:
-        0 0 6px
-        rgba(24,223,255,.7);
+        0 0 5px var(--cyan);
 
-    transition:
-        height .05s linear;
-
+    animation:
+        wave 1s ease-in-out infinite;
 }
 
+.voice-wave span:nth-child(2){animation-delay:.05s}
+.voice-wave span:nth-child(3){animation-delay:.1s}
+.voice-wave span:nth-child(4){animation-delay:.15s}
+.voice-wave span:nth-child(5){animation-delay:.2s}
+.voice-wave span:nth-child(6){animation-delay:.25s}
+.voice-wave span:nth-child(7){animation-delay:.3s}
+.voice-wave span:nth-child(8){animation-delay:.35s}
+.voice-wave span:nth-child(9){animation-delay:.4s}
+.voice-wave span:nth-child(10){animation-delay:.45s}
+.voice-wave span:nth-child(11){animation-delay:.5s}
+.voice-wave span:nth-child(12){animation-delay:.55s}
+.voice-wave span:nth-child(13){animation-delay:.6s}
+
+@keyframes wave{
+    0%,100%{height:3px}
+    50%{height:15px}
+}
 
 /* =========================================================
-   CONTROLS
+   DATA CARDS
    ========================================================= */
 
-#controls{
+.dashboard{
+    width:100%;
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+
+    margin-top:6px;
+
+    position:relative;
+    z-index:30;
+}
+
+.card{
+    min-height:112px;
+
+    border:
+        1px solid rgba(18,180,205,.58);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(3,25,32,.92),
+            rgba(2,12,17,.72)
+        );
+
+    padding:20px 18px;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.card::after{
+    content:"";
 
     position:absolute;
 
-    z-index:100;
+    left:12%;
+    right:12%;
+    bottom:10px;
 
-    left:20px;
-
-    right:20px;
-
-    bottom:
-        calc(
-            25px +
-            env(safe-area-inset-bottom)
-        );
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:8px;
-
-}
-
-
-.control{
-
-    min-height:44px;
-
-    border:
-        1px solid
-        rgba(16,190,216,.40);
+    height:2px;
 
     background:
-        rgba(3,18,24,.85);
+        linear-gradient(
+            90deg,
+            rgba(20,206,233,.65),
+            rgba(20,206,233,.12)
+        );
+}
 
-    color:#6dbbc7;
+.card-label{
+    font-size:9px;
+    letter-spacing:.36em;
 
-    font-size:7px;
+    color:#62bdc9;
 
-    letter-spacing:.16em;
+    margin-bottom:12px;
+}
 
+.card-value{
+    font-size:32px;
+    font-weight:300;
+
+    color:#d9fbff;
+
+    line-height:1;
+}
+
+.card-description{
+    margin-top:11px;
+
+    font-size:8px;
+    letter-spacing:.27em;
+
+    color:#456b73;
+}
+
+/* =========================================================
+   MICRO BUTTONS
+   ========================================================= */
+
+.controls{
     display:flex;
+    gap:10px;
 
-    justify-content:center;
+    margin-top:14px;
 
-    align-items:center;
+    position:relative;
+    z-index:50;
+}
 
-    text-align:center;
+.control{
+    flex:1;
+
+    min-height:48px;
+
+    background:rgba(2,18,24,.85);
+
+    border:
+        1px solid rgba(17,178,201,.48);
+
+    color:#8edce7;
+
+    font-size:8px;
+    letter-spacing:.25em;
+
+    text-transform:uppercase;
 
     cursor:pointer;
 
-    user-select:none;
-
-    -webkit-user-select:none;
-
+    transition:.18s;
 }
-
 
 .control:active{
+    transform:scale(.97);
+}
+
+.control.active{
+    border-color:#19dcf8;
 
     background:
-        rgba(10,61,73,.9);
+        rgba(0,89,108,.22);
 
-    color:#cfffff;
-
+    box-shadow:
+        0 0 18px rgba(0,211,255,.16);
 }
-
-
-.control.primary{
-
-    border-color:
-        rgba(24,221,255,.68);
-
-    color:#9bf4ff;
-
-}
-
-
-/* =========================================================
-   SPEECH OUTPUT PANEL
-   ========================================================= */
-
-#speechPanel{
-
-    position:absolute;
-
-    z-index:110;
-
-    left:20px;
-
-    right:20px;
-
-    bottom:
-        calc(
-            84px +
-            env(safe-area-inset-bottom)
-        );
-
-    display:none;
-
-    padding:12px;
-
-    border:
-        1px solid
-        rgba(16,202,232,.45);
-
-    background:
-        rgba(2,13,18,.95);
-
-}
-
-
-#speechPanel.visible{
-
-    display:block;
-
-}
-
-
-#speechText{
-
-    width:100%;
-
-    min-height:55px;
-
-    resize:none;
-
-    border:none;
-
-    outline:none;
-
-    background:
-        rgba(0,0,0,.22);
-
-    color:#d8fbff;
-
-    padding:9px;
-
-    font-family:inherit;
-
-    font-size:11px;
-
-}
-
-
-.speechButtons{
-
-    margin-top:7px;
-
-    display:flex;
-
-    gap:7px;
-
-}
-
-
-.speechButtons button{
-
-    flex:1;
-
-    height:34px;
-
-    border:
-        1px solid
-        rgba(21,207,235,.45);
-
-    background:
-        rgba(4,31,39,.9);
-
-    color:#8feaf6;
-
-    font-size:7px;
-
-    letter-spacing:.12em;
-
-}
-
 
 /* =========================================================
    RESPONSIVE
    ========================================================= */
 
-@media(
-    max-width:390px
-){
+@media(max-width:430px){
+
+    .interface{
+        padding-left:14px;
+        padding-right:14px;
+    }
+
+    .header{
+        height:68px;
+    }
 
     .logo{
-
-        font-size:15px;
-
+        font-size:24px;
     }
-
 
     .status{
-
-        gap:7px;
-
+        gap:9px;
+        font-size:8px;
+        letter-spacing:.20em;
     }
 
-
-    .statusItem{
-
-        font-size:6px;
-
-        letter-spacing:.15em;
-
+    .status-dot{
+        width:6px;
+        height:6px;
     }
 
+    .system-title{
+        font-size:9px;
+        letter-spacing:.34em;
+    }
 
-    #subtitle{
-
+    .system-subtitle{
         font-size:7px;
-
-        letter-spacing:.27em;
-
     }
 
-
-    #core{
-
-        width:20vh;
-
-        height:20vh;
-
-        min-width:140px;
-
-        min-height:140px;
-
+    .core-area{
+        height:56vh;
+        min-height:420px;
     }
 
-
-    #transcription{
-
-        left:18px;
-
-        right:18px;
-
+    .dashboard{
+        gap:9px;
     }
 
+    .card{
+        min-height:104px;
+        padding:17px 15px;
+    }
+
+    .card-value{
+        font-size:29px;
+    }
+
+    .controls{
+        gap:7px;
+    }
+
+    .control{
+        font-size:7px;
+        letter-spacing:.15em;
+    }
 }
 
+@media(max-width:370px){
+
+    .status-item span{
+        display:none;
+    }
+
+    .logo{
+        font-size:22px;
+    }
+
+    .core-area{
+        min-height:390px;
+    }
+
+    .card{
+        min-height:98px;
+    }
+
+    .card-value{
+        font-size:26px;
+    }
+}
 
 /* =========================================================
-   SMALL HEIGHT
+   REDUCED MOTION
    ========================================================= */
 
-@media(
-    max-height:720px
-){
+@media(prefers-reduced-motion:reduce){
 
-    #coreArea{
-
-        top:
-            calc(
-                143px +
-                env(safe-area-inset-top)
-            );
-
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
     }
-
-
-    #transcription{
-
-        top:
-            calc(
-                48vh +
-                env(safe-area-inset-top)
-            );
-
-    }
-
-
-    #visualizer{
-
-        top:
-            calc(
-                55vh +
-                env(safe-area-inset-top)
-            );
-
-    }
-
 }
-
 </style>
-
 </head>
-
 
 <body>
 
-<div id="app">
-
-    <div id="grid"></div>
-
+<div class="interface">
 
     <!-- =====================================================
          HEADER
          ===================================================== -->
 
-    <header id="header">
+    <header class="header">
 
         <div class="logo">
-            J A R V I S
+            JARVIS
         </div>
-
 
         <div class="status">
 
-            <div class="statusItem">
-
-                <span class="statusDot"></span>
-
-                ONLINE
-
+            <div class="status-item">
+                <i class="status-dot"></i>
+                <span>ONLINE</span>
             </div>
 
-
-            <div class="statusItem">
-
-                <span class="statusDot"></span>
-
-                SECURE
-
+            <div class="status-item">
+                <i class="status-dot"></i>
+                <span>SECURE</span>
             </div>
 
-
-            <div class="statusItem">
-
-                <span class="statusDot"></span>
-
-                VOICE
-
+            <div class="status-item">
+                <i class="status-dot"></i>
+                <span>VOICE</span>
             </div>
 
         </div>
@@ -1164,205 +940,477 @@ body{
 
 
     <!-- =====================================================
-         TITLE
+         SYSTEM TITLES
          ===================================================== -->
 
-    <div id="subtitle">
-
-        VOICE CORE
-        ·
-        CRYSTALLINE MATRIX
-        ·
-        3 AXIS
-
+    <div class="system-title">
+        VOICE CORE · CRYSTALLINE MATRIX · 3 AXIS
     </div>
 
-
-    <div id="voiceState">
-
-        VOICE SYSTEM READY
-
+    <div class="system-subtitle">
+        NEURAL INTERFACE · AUDIO LINK · READY
     </div>
 
 
     <!-- =====================================================
-         CORE
+         CORE / FOUR RINGS / ORB
          ===================================================== -->
 
-    <section id="coreArea">
+    <section class="core-area">
 
-
-        <div id="core">
-
-
-            <!-- HALO -->
-
-            <div id="halo"></div>
-
-
-            <!-- =================================================
-                 FOUR RINGS
-                 ================================================= -->
+        <div class="ring-system">
 
             <svg
-                id="rings"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="xMidYMid meet"
-            >
+                viewBox="0 0 1000 1000"
+                width="100%"
+                height="100%"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-label="JARVIS neural ring interface">
+
+                <defs>
+
+                    <filter id="glow">
+                        <feGaussianBlur
+                            stdDeviation="2.5"
+                            result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+
+                    <filter id="strongGlow">
+                        <feGaussianBlur
+                            stdDeviation="5"
+                            result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+
+                </defs>
 
 
-                <!-- RING 1 -->
+                <!-- =================================================
+                     COURONNE 1 — EXTERIEURE
+                     ================================================= -->
 
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="38"
-                    class="ring ring1"
-                />
+                <g class="rotate-a">
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="462"
+                        class="ring ring-outer"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="448"
+                        class="ring ring-fine"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="430"
+                        class="ring ring-outer-bright"
+                        stroke-dasharray="150 16 8 14 40 18"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="416"
+                        class="ring ring-fine"
+                        stroke-dasharray="2 10"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="397"
+                        class="ring ring-mid"/>
+
+                    <!-- red status segment -->
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="430"
+                        class="ring ring-red"
+                        stroke-dasharray="78 2000"
+                        transform="rotate(-48 500 500)"/>
+
+                    <!-- gold status segment -->
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="430"
+                        class="ring ring-gold"
+                        stroke-dasharray="42 2200"
+                        transform="rotate(134 500 500)"/>
+
+                </g>
 
 
-                <!-- RING 2 -->
+                <!-- =================================================
+                     COURONNE 2
+                     ================================================= -->
 
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="44"
-                    class="ring ring2"
-                />
+                <g class="rotate-b">
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="368"
+                        class="ring ring-outer-bright"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="354"
+                        class="ring ring-fine"
+                        stroke-dasharray="2 13"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="338"
+                        class="ring ring-mid"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="321"
+                        class="ring ring-fine"
+                        stroke-dasharray="34 8 3 8"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="305"
+                        class="ring ring-mid"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="338"
+                        class="ring ring-red"
+                        stroke-dasharray="95 2400"
+                        transform="rotate(40 500 500)"/>
+
+                </g>
 
 
-                <!-- RING 3 -->
+                <!-- =================================================
+                     COURONNE 3
+                     ================================================= -->
 
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="50"
-                    class="ring ring3"
-                />
+                <g class="rotate-c">
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="279"
+                        class="ring ring-outer-bright"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="266"
+                        class="ring ring-fine"
+                        stroke-dasharray="3 12"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="249"
+                        class="ring ring-mid"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="232"
+                        class="ring ring-fine"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="218"
+                        class="ring ring-mid"
+                        stroke-dasharray="2 9"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="249"
+                        class="ring ring-gold"
+                        stroke-dasharray="40 2000"
+                        transform="rotate(230 500 500)"/>
+
+                </g>
 
 
-                <!-- RING 4 -->
+                <!-- =================================================
+                     COURONNE 4 — INTERIEURE
+                     ================================================= -->
 
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="56"
-                    class="ring ring4"
-                />
+                <g class="rotate-d">
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="194"
+                        class="ring ring-outer-bright"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="181"
+                        class="ring ring-fine"
+                        stroke-dasharray="2 11"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="165"
+                        class="ring ring-mid"/>
+
+                    <circle
+                        cx="500"
+                        cy="500"
+                        r="149"
+                        class="ring ring-fine"/>
+
+                </g>
 
 
-                <!-- TICKS -->
+                <!-- =================================================
+                     CARDINAL DIRECTIONS
+                     ================================================= -->
 
-                <g
-                    id="ticks"
-                    class="ring2"
-                ></g>
-
-
-                <!-- NUMBERS -->
-
-                <g
-                    id="numbers"
-                    class="ringNumber"
-                ></g>
-
-
-                <!-- CARDINAL -->
-
-                <g
-                    fill="#c8f8ff"
-                    font-family="Arial"
-                    font-size="4.5"
-                    text-anchor="middle"
-                >
+                <g class="direction">
 
                     <text
-                        x="50"
-                        y="8"
-                    >
+                        x="500"
+                        y="76"
+                        text-anchor="middle">
                         N
                     </text>
 
                     <text
-                        x="92"
-                        y="51.5"
-                    >
+                        x="924"
+                        y="507"
+                        text-anchor="middle">
                         E
                     </text>
 
                     <text
-                        x="50"
-                        y="94"
-                    >
+                        x="500"
+                        y="940"
+                        text-anchor="middle">
                         S
                     </text>
 
                     <text
-                        x="8"
-                        y="51.5"
-                    >
+                        x="76"
+                        y="507"
+                        text-anchor="middle">
                         W
                     </text>
 
                 </g>
 
 
-                <!-- SMALL DATA MARKERS -->
+                <!-- =================================================
+                     NUMERICAL DATA
+                     ================================================= -->
 
-                <g
-                    fill="#56dff0"
-                    opacity=".8"
-                >
+                <g class="ring-number">
 
-                    <circle
-                        cx="20"
-                        cy="29"
-                        r=".9"
-                    />
+                    <text x="500" y="116" text-anchor="middle">270</text>
+                    <text x="620" y="132">285</text>
+                    <text x="735" y="176">300</text>
+                    <text x="830" y="245">315</text>
+                    <text x="884" y="342">330</text>
+                    <text x="906" y="456">345</text>
 
-                    <circle
-                        cx="80"
-                        cy="29"
-                        r=".9"
-                    />
+                    <text x="884" y="650">015</text>
+                    <text x="830" y="756">030</text>
+                    <text x="735" y="824">045</text>
+                    <text x="620" y="868">060</text>
+                    <text x="500" y="884"
+                          text-anchor="middle">090</text>
 
-                    <circle
-                        cx="20"
-                        cy="71"
-                        r=".9"
-                    />
+                    <text x="380" y="868">105</text>
+                    <text x="265" y="824">120</text>
+                    <text x="170" y="756">135</text>
+                    <text x="116" y="650">150</text>
+                    <text x="94" y="456">165</text>
 
-                    <circle
-                        cx="80"
-                        cy="71"
-                        r=".9"
-                    />
+                    <text x="116" y="342">180</text>
+                    <text x="170" y="245">195</text>
+                    <text x="265" y="176">210</text>
+                    <text x="380" y="132">240</text>
 
                 </g>
 
 
+                <!-- =================================================
+                     INNER NUMBERS
+                     ================================================= -->
+
+                <g class="ring-small">
+
+                    <text x="500" y="178"
+                          text-anchor="middle">04</text>
+
+                    <text x="610" y="195">05</text>
+                    <text x="704" y="245">06</text>
+                    <text x="770" y="315">07</text>
+                    <text x="810" y="410">08</text>
+
+                    <text x="810" y="610">09</text>
+                    <text x="770" y="700">10</text>
+                    <text x="704" y="760">11</text>
+                    <text x="610" y="802">12</text>
+
+                    <text x="390" y="802">01</text>
+                    <text x="296" y="760">02</text>
+                    <text x="230" y="700">03</text>
+                    <text x="190" y="610">04</text>
+
+                    <text x="190" y="410">05</text>
+                    <text x="230" y="315">06</text>
+                    <text x="296" y="245">07</text>
+                    <text x="390" y="195">08</text>
+
+                </g>
+
+
+                <!-- =================================================
+                     TICK MARKS
+                     ================================================= -->
+
+                <g
+                    id="ticks"
+                    stroke="#6bd8e5"
+                    stroke-linecap="round"
+                    opacity=".72">
+                </g>
+
+
+                <!-- =================================================
+                     ORBITAL LIGHTS
+                     ================================================= -->
+
+                <g filter="url(#strongGlow)">
+
+                    <circle
+                        cx="165"
+                        cy="252"
+                        r="6"
+                        fill="#72efff"/>
+
+                    <circle
+                        cx="836"
+                        cy="246"
+                        r="6"
+                        fill="#72efff"/>
+
+                    <circle
+                        cx="878"
+                        cy="714"
+                        r="5"
+                        fill="#ff4054"/>
+
+                    <circle
+                        cx="178"
+                        cy="745"
+                        r="5"
+                        fill="#72efff"/>
+
+                </g>
+
+
+                <!-- =================================================
+                     CORNER BRACKETS
+                     ================================================= -->
+
+                <g class="corner-mark">
+
+                    <path d="M155 240 L155 210 L185 210"/>
+                    <path d="M815 210 L845 210 L845 240"/>
+
+                    <path d="M155 760 L155 790 L185 790"/>
+                    <path d="M815 790 L845 790 L845 760"/>
+
+                </g>
+
             </svg>
 
-
-            <!-- =================================================
-                 3D ORB CANVAS
-                 ================================================= -->
-
-            <canvas id="canvas"></canvas>
+        </div>
 
 
-            <!-- LABEL -->
+        <!-- =====================================================
+             CENTRAL ORB
+             ===================================================== -->
 
-            <div id="coreLabel">
+        <div
+            class="orb"
+            id="orb">
 
-                <strong>CORE</strong>
-
-                <span id="coreMode">
-                    STANDBY
-                </span>
-
+            <div
+                class="orb-particles"
+                id="orbParticles">
             </div>
 
+        </div>
+
+
+        <div class="core-label">
+
+            <div class="core-label-main">
+                CORE
+            </div>
+
+            <div class="core-label-sub"
+                 id="coreState">
+                STANDBY
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             VOICE STATUS
+             ===================================================== -->
+
+        <div
+            class="voice-panel"
+            id="voicePanel">
+
+            <div
+                class="voice-status"
+                id="voiceStatus">
+                AUDIO LINK · TAP TO ACTIVATE
+            </div>
+
+            <div class="voice-wave">
+
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
 
         </div>
 
@@ -1370,1389 +1418,322 @@ body{
 
 
     <!-- =====================================================
-         TRANSCRIPTION
+         DATA CARDS
          ===================================================== -->
 
-    <div
-        id="transcription"
-        class="empty"
-    >
+    <section class="dashboard">
 
-        En attente de commande vocale…
+        <article class="card">
 
-    </div>
+            <div class="card-label">
+                MAISON
+            </div>
 
+            <div class="card-value">
+                03
+            </div>
 
-    <!-- =====================================================
-         VOICE VISUALIZER
-         ===================================================== -->
+            <div class="card-description">
+                DISPOSITIFS ACTIFS
+            </div>
 
-    <div id="visualizer">
-
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-
-    </div>
+        </article>
 
 
-    <!-- =====================================================
-         SPEECH PANEL
-         ===================================================== -->
+        <article class="card">
 
-    <div id="speechPanel">
+            <div class="card-label">
+                MÉTÉO
+            </div>
 
-        <textarea
-            id="speechText"
-            placeholder="Texte que Jarvis doit prononcer..."
-        ></textarea>
+            <div class="card-value">
+                18°
+            </div>
+
+            <div class="card-description">
+                CONDITIONS STABLES
+            </div>
+
+        </article>
 
 
-        <div class="speechButtons">
+        <article class="card">
 
-            <button id="speakButton">
-                PARLER
-            </button>
+            <div class="card-label">
+                SYSTÈME
+            </div>
 
-            <button id="stopButton">
-                STOP
-            </button>
+            <div class="card-value">
+                82%
+            </div>
 
-        </div>
+            <div class="card-description">
+                PERFORMANCE
+            </div>
 
-    </div>
+        </article>
+
+
+        <article class="card">
+
+            <div class="card-label">
+                ACTIVITÉ
+            </div>
+
+            <div class="card-value">
+                12
+            </div>
+
+            <div class="card-description">
+                ÉVÉNEMENTS RÉCENTS
+            </div>
+
+        </article>
+
+    </section>
 
 
     <!-- =====================================================
          CONTROLS
          ===================================================== -->
 
-    <div id="controls">
+    <section class="controls">
 
         <button
-            id="listenButton"
-            class="control primary"
-        >
-            ACTIVER<br>
-            MICRO
-
-        </button>
-
-
-        <button
-            id="shortcutButton"
             class="control"
-        >
-            ENVOYER<br>
-            RACCOURCIS
-
+            id="micButton">
+            ACTIVER MICRO
         </button>
-
 
         <button
-            id="voiceButton"
             class="control"
-        >
-            VOIX<br>
-            JARVIS
-
+            id="shortcutButton">
+            ENVOYER RACCOURCIS
         </button>
 
-    </div>
+        <button
+            class="control"
+            id="speakButton">
+            VOIX JARVIS
+        </button>
+
+    </section>
 
 </div>
 
 
 <script>
 
-/* =========================================================
-   JARVIS VOICE CORE
-   PURE JAVASCRIPT
-   ========================================================= */
+/* ============================================================
+   JARVIS NEURAL INTERFACE
+   ============================================================ */
+
+/*
+   Configuration
+   ------------------------------------------------------------
+
+   Si tu souhaites utiliser un raccourci iOS spécifique,
+   indique son nom ici.
+
+   Exemple :
+
+   const SHORTCUT_NAME = "Jarvis";
+
+*/
+
+const SHORTCUT_NAME = "Jarvis";
 
 
-/* =========================================================
+/* ============================================================
    ELEMENTS
-   ========================================================= */
+   ============================================================ */
 
-const canvas =
-    document.getElementById(
-        "canvas"
-    );
+const orb =
+    document.getElementById("orb");
 
+const orbParticles =
+    document.getElementById("orbParticles");
 
-const core =
-    document.getElementById(
-        "core"
-    );
+const voicePanel =
+    document.getElementById("voicePanel");
 
+const voiceStatus =
+    document.getElementById("voiceStatus");
 
-const halo =
-    document.getElementById(
-        "halo"
-    );
+const coreState =
+    document.getElementById("coreState");
 
-
-const coreLabel =
-    document.getElementById(
-        "coreMode"
-    );
-
-
-const voiceState =
-    document.getElementById(
-        "voiceState"
-    );
-
-
-const transcription =
-    document.getElementById(
-        "transcription"
-    );
-
-
-const listenButton =
-    document.getElementById(
-        "listenButton"
-    );
-
+const micButton =
+    document.getElementById("micButton");
 
 const shortcutButton =
-    document.getElementById(
-        "shortcutButton"
-    );
-
-
-const voiceButton =
-    document.getElementById(
-        "voiceButton"
-    );
-
-
-const speechPanel =
-    document.getElementById(
-        "speechPanel"
-    );
-
-
-const speechText =
-    document.getElementById(
-        "speechText"
-    );
-
+    document.getElementById("shortcutButton");
 
 const speakButton =
-    document.getElementById(
-        "speakButton"
+    document.getElementById("speakButton");
+
+
+/* ============================================================
+   PARTICULES DE L'ORBE
+   ============================================================ */
+
+const PARTICLE_COUNT = 46;
+
+for(let i = 0; i < PARTICLE_COUNT; i++){
+
+    const p =
+        document.createElement("span");
+
+    p.className = "particle";
+
+    const x =
+        Math.random() * 82 + 9;
+
+    const y =
+        Math.random() * 82 + 9;
+
+    p.style.left = x + "%";
+    p.style.top = y + "%";
+
+    p.style.setProperty(
+        "--x",
+        ((Math.random()-.5)*28) + "px"
     );
 
-
-const stopButton =
-    document.getElementById(
-        "stopButton"
+    p.style.setProperty(
+        "--y",
+        ((Math.random()-.5)*28) + "px"
     );
 
-
-const bars =
-    Array.from(
-        document.querySelectorAll(
-            ".bar"
-        )
+    p.style.setProperty(
+        "--duration",
+        (2 + Math.random()*4) + "s"
     );
 
+    p.style.animationDelay =
+        (-Math.random()*4) + "s";
 
-/* =========================================================
-   SVG RING DATA
-   ========================================================= */
+    const size =
+        1 + Math.random()*3;
 
-const svgNS =
-    "http://www.w3.org/2000/svg";
+    p.style.width =
+        size + "px";
 
+    p.style.height =
+        size + "px";
+
+    orbParticles.appendChild(p);
+}
+
+
+/* ============================================================
+   GRADUATIONS
+   ============================================================ */
 
 const tickGroup =
-    document.getElementById(
-        "ticks"
-    );
+    document.getElementById("ticks");
 
-
-const numberGroup =
-    document.getElementById(
-        "numbers"
-    );
-
-
-/* =========================================================
-   GENERATE 72 TICKS
-   ========================================================= */
-
-for(
-    let i=0;
-    i<72;
-    i++
-){
+for(let i = 0; i < 120; i++){
 
     const angle =
-        (
-            i / 72
-        ) *
-        Math.PI *
-        2;
-
+        (i / 120) * Math.PI * 2;
 
     const major =
-        i % 9 === 0;
-
+        i % 10 === 0;
 
     const medium =
-        i % 3 === 0;
+        i % 5 === 0;
 
+    const outer =
+        448;
 
-    const radiusOuter =
-        54;
-
-
-    const radiusInner =
+    const inner =
         major
-        ? 50.8
-        : medium
-        ? 51.7
-        : 52.3;
-
+            ? 420
+            : medium
+                ? 428
+                : 435;
 
     const x1 =
-        50 +
-        Math.cos(angle) *
-        radiusOuter;
-
+        500 +
+        Math.cos(angle) * inner;
 
     const y1 =
-        50 +
-        Math.sin(angle) *
-        radiusOuter;
-
+        500 +
+        Math.sin(angle) * inner;
 
     const x2 =
-        50 +
-        Math.cos(angle) *
-        radiusInner;
-
+        500 +
+        Math.cos(angle) * outer;
 
     const y2 =
-        50 +
-        Math.sin(angle) *
-        radiusInner;
-
+        500 +
+        Math.sin(angle) * outer;
 
     const line =
         document.createElementNS(
-            svgNS,
+            "http://www.w3.org/2000/svg",
             "line"
         );
-
 
     line.setAttribute(
         "x1",
         x1
     );
 
-
     line.setAttribute(
         "y1",
         y1
     );
-
 
     line.setAttribute(
         "x2",
         x2
     );
 
-
     line.setAttribute(
         "y2",
         y2
     );
 
+    line.setAttribute(
+        "stroke-width",
+        major ? "2.2" : medium ? "1.5" : "0.8"
+    );
 
     line.setAttribute(
-        "class",
-        major
-        ? "tickMajor"
-        : medium
-        ? "tick"
-        : "tickGold"
+        "opacity",
+        major ? ".95" : medium ? ".7" : ".38"
     );
 
-
-    tickGroup.appendChild(
-        line
-    );
-
+    tickGroup.appendChild(line);
 }
 
 
-/* =========================================================
-   NUMBERS
-   ========================================================= */
-
-const values = [
-
-    "00",
-    "15",
-    "30",
-    "45",
-    "60",
-    "75",
-    "90",
-    "105",
-    "120",
-    "135",
-    "150",
-    "165",
-    "180",
-    "195",
-    "210",
-    "225",
-    "240",
-    "255",
-    "270",
-    "285",
-    "300",
-    "315",
-    "330",
-    "345"
-
-];
-
-
-for(
-    let i=0;
-    i<values.length;
-    i++
-){
-
-    const angle =
-        (
-            i /
-            values.length
-        ) *
-        Math.PI *
-        2;
-
-
-    const radius =
-        46.8;
-
-
-    const x =
-        50 +
-        Math.cos(angle) *
-        radius;
-
-
-    const y =
-        50 +
-        Math.sin(angle) *
-        radius;
-
-
-    const text =
-        document.createElementNS(
-            svgNS,
-            "text"
-        );
-
-
-    text.setAttribute(
-        "x",
-        x
-    );
-
-
-    text.setAttribute(
-        "y",
-        y
-    );
-
-
-    text.setAttribute(
-        "text-anchor",
-        "middle"
-    );
-
-
-    text.setAttribute(
-        "dominant-baseline",
-        "middle"
-    );
-
-
-    text.textContent =
-        values[i];
-
-
-    numberGroup.appendChild(
-        text
-    );
-
-}
-
-
-/* =========================================================
-   CANVAS
-   ========================================================= */
-
-const ctx =
-    canvas.getContext(
-        "2d"
-    );
-
-
-let width = 0;
-
-let height = 0;
-
-let cx = 0;
-
-let cy = 0;
-
-let radius = 0;
-
-
-/* =========================================================
-   RESIZE
-   ========================================================= */
-
-function resize(){
-
-    const rect =
-        core.getBoundingClientRect();
-
-
-    width =
-        rect.width;
-
-
-    height =
-        rect.height;
-
-
-    const dpr =
-        Math.min(
-            window.devicePixelRatio || 1,
-            2
-        );
-
-
-    canvas.width =
-        width * dpr;
-
-
-    canvas.height =
-        height * dpr;
-
-
-    canvas.style.width =
-        width + "px";
-
-
-    canvas.style.height =
-        height + "px";
-
-
-    ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-    );
-
-
-    cx =
-        width / 2;
-
-
-    cy =
-        height / 2;
-
-
-    radius =
-        Math.min(
-            width,
-            height
-        ) / 2;
-
-}
-
-
-window.addEventListener(
-    "resize",
-    resize
-);
-
-
-resize();
-
-
-/* =========================================================
-   ORB PARTICLES
-   ========================================================= */
-
-const particles = [];
-
-
-for(
-    let i=0;
-    i<95;
-    i++
-){
-
-    particles.push({
-
-        angle:
-            Math.random() *
-            Math.PI *
-            2,
-
-        distance:
-            .15 +
-            Math.random() *
-            .75,
-
-        size:
-            .5 +
-            Math.random() *
-            1.7,
-
-        speed:
-            (
-                .0005 +
-                Math.random() *
-                .001
-            ),
-
-        brightness:
-            .3 +
-            Math.random() *
-            .7
-
-    });
-
-}
-
-
-/* =========================================================
-   ORB STATE
-   ========================================================= */
-
-let audioLevel = 0;
-
-let smoothAudio = 0;
-
-let voiceActive = false;
-
-let recognition = null;
-
-
-/* =========================================================
-   DRAW ORB
-   ========================================================= */
-
-function drawOrb(time){
-
-    ctx.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    smoothAudio +=
-        (
-            audioLevel -
-            smoothAudio
-        ) *
-        .18;
-
-
-    const pulse =
-        smoothAudio *
-        radius *
-        .18;
-
-
-    /* =====================================================
-       OUTER ATMOSPHERE
-       ===================================================== */
-
-    const atmosphere =
-        ctx.createRadialGradient(
-
-            cx,
-            cy,
-            radius*.12,
-
-            cx,
-            cy,
-            radius*1.02 + pulse
-
-        );
-
-
-    atmosphere.addColorStop(
-        0,
-        "rgba(72,238,255,.20)"
-    );
-
-
-    atmosphere.addColorStop(
-        .42,
-        "rgba(4,102,127,.13)"
-    );
-
-
-    atmosphere.addColorStop(
-        .78,
-        "rgba(0,38,51,.18)"
-    );
-
-
-    atmosphere.addColorStop(
-        1,
-        "rgba(0,10,14,0)"
-    );
-
-
-    ctx.fillStyle =
-        atmosphere;
-
-
-    ctx.beginPath();
-
-
-    ctx.arc(
-        cx,
-        cy,
-        radius*.98 + pulse,
-        0,
-        Math.PI*2
-    );
-
-
-    ctx.fill();
-
-
-    /* =====================================================
-       CORE BODY
-       ===================================================== */
-
-    const body =
-        ctx.createRadialGradient(
-
-            cx -
-            radius*.25,
-
-            cy -
-            radius*.27,
-
-            radius*.05,
-
-            cx,
-
-            cy,
-
-            radius*.86
-
-        );
-
-
-    body.addColorStop(
-        0,
-        "#5cecf7"
-    );
-
-
-    body.addColorStop(
-        .12,
-        "#1b8d9e"
-    );
-
-
-    body.addColorStop(
-        .38,
-        "#063b4a"
-    );
-
-
-    body.addColorStop(
-        .70,
-        "#031b25"
-    );
-
-
-    body.addColorStop(
-        1,
-        "#01090d"
-    );
-
-
-    ctx.fillStyle =
-        body;
-
-
-    ctx.beginPath();
-
-
-    ctx.arc(
-        cx,
-        cy,
-        radius*.75 + pulse,
-        0,
-        Math.PI*2
-    );
-
-
-    ctx.fill();
-
-
-    /* =====================================================
-       GEODE FACETS
-       ===================================================== */
-
-    ctx.save();
-
-
-    ctx.translate(
-        cx,
-        cy
-    );
-
-
-    ctx.rotate(
-        time*.00015
-    );
-
-
-    const facetCount =
-        18;
-
-
-    for(
-        let i=0;
-        i<facetCount;
-        i++
-    ){
-
-        const a1 =
-            (
-                i /
-                facetCount
-            ) *
-            Math.PI *
-            2;
-
-
-        const a2 =
-            (
-                (i+1) /
-                facetCount
-            ) *
-            Math.PI *
-            2;
-
-
-        const r1 =
-            radius *
-            (
-                .32 +
-                Math.sin(
-                    i*2.7
-                )*.12
-            );
-
-
-        const r2 =
-            radius *
-            (
-                .67 +
-                Math.cos(
-                    i*1.9
-                )*.08
-            );
-
-
-        const rr =
-            radius *
-            (
-                .74 +
-                Math.sin(
-                    i*1.3
-                )*.04
-            );
-
-
-        const gradient =
-            ctx.createLinearGradient(
-                0,
-                -radius,
-                radius,
-                radius
-            );
-
-
-        if(
-            i % 3 === 0
-        ){
-
-            gradient.addColorStop(
-                0,
-                "rgba(92,236,247,.18)"
-            );
-
-            gradient.addColorStop(
-                1,
-                "rgba(0,35,45,.02)"
-            );
-
-        }
-
-        else if(
-            i % 3 === 1
-        ){
-
-            gradient.addColorStop(
-                0,
-                "rgba(10,133,151,.13)"
-            );
-
-            gradient.addColorStop(
-                1,
-                "rgba(0,18,26,.03)"
-            );
-
-        }
-
-        else{
-
-            gradient.addColorStop(
-                0,
-                "rgba(255,255,255,.055)"
-            );
-
-            gradient.addColorStop(
-                1,
-                "rgba(0,0,0,.02)"
-            );
-
-        }
-
-
-        ctx.fillStyle =
-            gradient;
-
-
-        ctx.beginPath();
-
-
-        ctx.moveTo(
-            0,
-            0
-        );
-
-
-        ctx.lineTo(
-            Math.cos(a1)*r1,
-            Math.sin(a1)*r1
-        );
-
-
-        ctx.lineTo(
-            Math.cos(
-                (a1+a2)/2
-            )*rr,
-
-            Math.sin(
-                (a1+a2)/2
-            )*rr
-        );
-
-
-        ctx.lineTo(
-            Math.cos(a2)*r2,
-            Math.sin(a2)*r2
-        );
-
-
-        ctx.closePath();
-
-
-        ctx.fill();
-
-
-        /* FACET EDGE */
-
-        ctx.strokeStyle =
-            "rgba(112,237,246,.12)";
-
-
-        ctx.lineWidth =
-            .45;
-
-
-        ctx.stroke();
-
-    }
-
-
-    ctx.restore();
-
-
-    /* =====================================================
-       CRYSTALLINE CORE
-       ===================================================== */
-
-    const crystalRadius =
-        radius *
-        (
-            .18 +
-            smoothAudio*.035
-        );
-
-
-    ctx.save();
-
-
-    ctx.translate(
-        cx,
-        cy
-    );
-
-
-    ctx.rotate(
-        time*.00045
-    );
-
-
-    ctx.beginPath();
-
-
-    for(
-        let i=0;
-        i<12;
-        i++
-    ){
-
-        const angle =
-            (
-                i /
-                12
-            ) *
-            Math.PI *
-            2;
-
-
-        const r =
-            i%2===0
-            ? crystalRadius
-            : crystalRadius*.68;
-
-
-        const x =
-            Math.cos(angle)*r;
-
-
-        const y =
-            Math.sin(angle)*r;
-
-
-        if(
-            i===0
-        ){
-
-            ctx.moveTo(
-                x,
-                y
-            );
-
-        }
-
-        else{
-
-            ctx.lineTo(
-                x,
-                y
-            );
-
-        }
-
-    }
-
-
-    ctx.closePath();
-
-
-    const crystal =
-        ctx.createRadialGradient(
-            -crystalRadius*.25,
-            -crystalRadius*.35,
-            0,
-            0,
-            0,
-            crystalRadius
-        );
-
-
-    crystal.addColorStop(
-        0,
-        "rgba(229,255,255,.95)"
-    );
-
-
-    crystal.addColorStop(
-        .20,
-        "rgba(70,231,244,.76)"
-    );
-
-
-    crystal.addColorStop(
-        .60,
-        "rgba(5,104,125,.48)"
-    );
-
-
-    crystal.addColorStop(
-        1,
-        "rgba(0,26,36,.16)"
-    );
-
-
-    ctx.fillStyle =
-        crystal;
-
-
-    ctx.fill();
-
-
-    ctx.strokeStyle =
-        "rgba(179,248,255,.52)";
-
-
-    ctx.lineWidth =
-        .8;
-
-
-    ctx.stroke();
-
-
-    ctx.restore();
-
-
-    /* =====================================================
-       INTERNAL ORBITS
-       ===================================================== */
-
-    ctx.save();
-
-
-    ctx.translate(
-        cx,
-        cy
-    );
-
-
-    for(
-        let i=0;
-        i<3;
-        i++
-    ){
-
-        ctx.save();
-
-
-        ctx.rotate(
-            time*.00025 *
-            (
-                i%2===0
-                ? 1
-                : -1
-            )
-            +
-            i*.9
-        );
-
-
-        ctx.scale(
-            1,
-            .32 +
-            i*.18
-        );
-
-
-        ctx.beginPath();
-
-
-        ctx.arc(
-            0,
-            0,
-            radius*
-            (
-                .27 +
-                i*.11
-            ),
-            0,
-            Math.PI*2
-        );
-
-
-        ctx.strokeStyle =
-            i===1
-            ? "rgba(200,162,83,.55)"
-            : "rgba(99,232,245,.35)";
-
-
-        ctx.lineWidth =
-            .65;
-
-
-        ctx.stroke();
-
-
-        ctx.restore();
-
-    }
-
-
-    ctx.restore();
-
-
-    /* =====================================================
-       PARTICLES
-       ===================================================== */
-
-    for(
-        const p of particles
-    ){
-
-        p.angle +=
-            p.speed *
-            (
-                1 +
-                smoothAudio*4
-            );
-
-
-        const px =
-            cx +
-            Math.cos(
-                p.angle
-            ) *
-            radius *
-            p.distance;
-
-
-        const py =
-            cy +
-            Math.sin(
-                p.angle
-            ) *
-            radius *
-            p.distance;
-
-
-        const alpha =
-            p.brightness *
-            (
-                .35 +
-                smoothAudio*.8
-            );
-
-
-        ctx.fillStyle =
-            `rgba(175,248,255,${alpha})`;
-
-
-        ctx.beginPath();
-
-
-        ctx.arc(
-            px,
-            py,
-            p.size,
-            0,
-            Math.PI*2
-        );
-
-
-        ctx.fill();
-
-    }
-
-
-    /* =====================================================
-       VOICE ENERGY GLOW
-       ===================================================== */
-
-    if(
-        smoothAudio > .02
-    ){
-
-        const glow =
-            ctx.createRadialGradient(
-                cx,
-                cy,
-                radius*.35,
-
-                cx,
-                cy,
-                radius*
-                (
-                    .65 +
-                    smoothAudio*.8
-                )
-            );
-
-
-        glow.addColorStop(
-            0,
-            `rgba(
-                25,
-                232,
-                255,
-                ${smoothAudio*.18}
-            )`
-        );
-
-
-        glow.addColorStop(
-            1,
-            "rgba(0,80,100,0)"
-        );
-
-
-        ctx.fillStyle =
-            glow;
-
-
-        ctx.beginPath();
-
-
-        ctx.arc(
-            cx,
-            cy,
-            radius,
-            0,
-            Math.PI*2
-        );
-
-
-        ctx.fill();
-
-    }
-
-
-    /* =====================================================
-       CORE PULSE
-       ===================================================== */
-
-    const scale =
-        1 +
-        smoothAudio*.075;
-
-
-    core.style.transform =
-        `scale(${scale})`;
-
-
-    halo.style.transform =
-        `translate(-50%,-50%)
-         scale(${1 + smoothAudio*.22})`;
-
-}
-
-
-/* =========================================================
-   ANIMATION
-   ========================================================= */
-
-let animationStart =
-    performance.now();
-
-
-function animate(){
-
-    const now =
-        performance.now();
-
-
-    drawOrb(
-        now -
-        animationStart
-    );
-
-
-    updateVisualizer();
-
-
-    requestAnimationFrame(
-        animate
-    );
-
-}
-
-
-animate();
-
-
-/* =========================================================
-   MICROPHONE
-   ========================================================= */
+/* ============================================================
+   AUDIO STATE
+   ============================================================ */
 
 let audioContext = null;
-
 let analyser = null;
-
-let microphoneStream = null;
-
 let microphoneSource = null;
+let audioStream = null;
 
-let audioData = null;
+let audioActive = false;
 
 
-/* =========================================================
-   START AUDIO ANALYSIS
-   ========================================================= */
+/* ============================================================
+   MICROPHONE
+   ============================================================ */
 
-async function startMicrophone(){
+async function startAudioAnalysis(){
 
     try{
 
-        microphoneStream =
+        audioStream =
             await navigator.mediaDevices.getUserMedia({
-
                 audio:true
-
             });
-
 
         audioContext =
             new (
@@ -2760,746 +1741,400 @@ async function startMicrophone(){
                 window.webkitAudioContext
             )();
 
-
-        microphoneSource =
-            audioContext.createMediaStreamSource(
-                microphoneStream
-            );
-
-
         analyser =
             audioContext.createAnalyser();
 
+        analyser.fftSize = 128;
 
-        analyser.fftSize =
-            256;
-
-
-        analyser.smoothingTimeConstant =
-            .78;
-
-
-        audioData =
-            new Uint8Array(
-                analyser.fftSize
+        microphoneSource =
+            audioContext.createMediaStreamSource(
+                audioStream
             );
-
 
         microphoneSource.connect(
             analyser
         );
 
+        audioActive = true;
 
-        voiceActive =
-            true;
+        updateAudioVisuals();
 
+    }catch(error){
 
-        voiceState.textContent =
-            "MICROPHONE ACTIF";
-
-
-        voiceState.classList.add(
-            "active"
-        );
-
-
-        coreLabel.textContent =
-            "LISTENING";
-
-
-        listenButton.innerHTML =
-            "MICRO<br>ACTIF";
-
-
-    }
-
-    catch(error){
-
-        console.error(
+        console.log(
+            "Microphone unavailable:",
             error
         );
 
-
-        voiceState.textContent =
-            "ACCÈS MICROPHONE REFUSÉ";
-
-
-        transcription.textContent =
-            "Autorise le microphone dans Safari pour utiliser la voix.";
+        voiceStatus.textContent =
+            "MICROPHONE NON DISPONIBLE";
 
     }
-
 }
 
 
-/* =========================================================
-   AUDIO LEVEL
-   ========================================================= */
+/* ============================================================
+   AUDIO → ORBE
+   ============================================================ */
 
-function updateAudioLevel(){
+function updateAudioVisuals(){
 
-    if(
-        !analyser ||
-        !audioData
-    ){
-
-        audioLevel *= .92;
-
+    if(!audioActive || !analyser){
         return;
-
     }
 
+    const data =
+        new Uint8Array(
+            analyser.frequencyBinCount
+        );
 
-    analyser.getByteTimeDomainData(
-        audioData
-    );
-
+    analyser.getByteFrequencyData(data);
 
     let sum = 0;
 
-
-    for(
-        let i=0;
-        i<audioData.length;
-        i++
-    ){
-
-        const value =
-            (
-                audioData[i] -
-                128
-            ) / 128;
-
-
-        sum +=
-            value *
-            value;
-
+    for(let i = 0; i < data.length; i++){
+        sum += data[i];
     }
 
+    const average =
+        sum / data.length;
 
-    const rms =
-        Math.sqrt(
-            sum /
-            audioData.length
-        );
-
-
-    audioLevel =
+    const intensity =
         Math.min(
-            1,
-            rms * 5.5
+            average / 95,
+            1
         );
 
-}
+    const scale =
+        1 +
+        intensity * .10;
 
+    orb.style.transform =
+        `translate(-50%,-50%) scale(${scale})`;
 
-/* =========================================================
-   VISUALIZER
-   ========================================================= */
+    orb.style.boxShadow = `
+        inset -18px -18px 35px rgba(0,0,0,.72),
+        inset 10px 8px 24px rgba(75,218,239,.20),
+        0 0 ${18 + intensity*20}px rgba(0,208,255,.35),
+        0 0 ${65 + intensity*80}px rgba(0,130,170,.25)
+    `;
 
-function updateVisualizer(){
-
-    updateAudioLevel();
-
-
-    bars.forEach(
-        (
-            bar,
-            index
-        ) => {
-
-            const wave =
-                Math.sin(
-                    performance.now()*.006 +
-                    index*.65
-                );
-
-
-            const height =
-                4 +
-                audioLevel *
-                (
-                    18 +
-                    wave*4
-                );
-
-
-            bar.style.height =
-                `${Math.max(
-                    3,
-                    height
-                )}px`;
-
-        }
+    requestAnimationFrame(
+        updateAudioVisuals
     );
-
 }
 
 
-/* =========================================================
-   SPEECH RECOGNITION
-   ========================================================= */
+/* ============================================================
+   RECONNAISSANCE VOCALE
+   ============================================================ */
+
+let recognition = null;
+let listening = false;
 
 const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
 
-
-if(
-    SpeechRecognition
-){
+if(SpeechRecognition){
 
     recognition =
         new SpeechRecognition();
 
+    recognition.lang = "fr-FR";
 
-    recognition.lang =
-        "fr-FR";
+    recognition.continuous = false;
 
+    recognition.interimResults = true;
 
-    recognition.continuous =
-        true;
-
-
-    recognition.interimResults =
-        true;
+    recognition.maxAlternatives = 1;
 
 
-    recognition.maxAlternatives =
-        1;
+    recognition.onstart = function(){
 
+        listening = true;
 
-    recognition.onstart =
-        () => {
+        voicePanel.classList.add(
+            "listening"
+        );
 
-            voiceActive =
-                true;
+        micButton.classList.add(
+            "active"
+        );
 
+        coreState.textContent =
+            "LISTENING";
 
-            voiceState.textContent =
-                "ÉCOUTE EN COURS";
+        voiceStatus.textContent =
+            "ÉCOUTE EN COURS";
 
-
-            voiceState.classList.add(
-                "active"
-            );
-
-
-            coreLabel.textContent =
-                "LISTENING";
-
-        };
+    };
 
 
     recognition.onresult =
-        event => {
+        function(event){
 
-            let finalText =
-                "";
-
-
-            let interimText =
-                "";
-
+            let transcript = "";
 
             for(
-                let i =
-                    event.resultIndex;
-
-                i <
-                    event.results.length;
-
+                let i = event.resultIndex;
+                i < event.results.length;
                 i++
             ){
 
-                const result =
-                    event.results[i];
-
-
-                if(
-                    result.isFinal
-                ){
-
-                    finalText +=
-                        result[0].transcript;
-
-                }
-
-                else{
-
-                    interimText +=
-                        result[0].transcript;
-
-                }
-
+                transcript +=
+                    event.results[i][0].transcript;
             }
 
+            transcript =
+                transcript.trim();
 
-            const text =
-                (
-                    finalText +
-                    interimText
-                ).trim();
+            if(transcript.length){
 
+                voiceStatus.textContent =
+                    transcript;
 
-            if(
-                text
-            ){
+                /*
+                   La transcription est conservée
+                   pour le bouton "ENVOYER RACCOURCIS".
+                */
 
-                transcription.textContent =
-                    text;
-
-
-                transcription.classList.remove(
-                    "empty"
-                );
-
+                window.jarvisLastCommand =
+                    transcript;
             }
-
         };
 
 
     recognition.onerror =
-        event => {
+        function(event){
 
             console.log(
-                "Speech error:",
+                "Speech recognition error:",
                 event.error
             );
 
-
-            voiceState.textContent =
-                "VOICE SYSTEM READY";
+            voiceStatus.textContent =
+                "ERREUR AUDIO";
 
         };
 
 
     recognition.onend =
-        () => {
+        function(){
 
-            if(
-                voiceActive
-            ){
+            listening = false;
 
-                try{
+            voicePanel.classList.remove(
+                "listening"
+            );
 
-                    recognition.start();
+            micButton.classList.remove(
+                "active"
+            );
 
-                }
-
-                catch(
-                    error
-                ){
-
-                    console.log(
-                        error
-                    );
-
-                }
-
-            }
+            coreState.textContent =
+                "READY";
 
         };
 
 }
 
 
-/* =========================================================
-   START VOICE
-   ========================================================= */
+/* ============================================================
+   BOUTON MICRO
+   ============================================================ */
 
-async function startVoice(){
+micButton.addEventListener(
+    "click",
+    async function(){
 
-    await startMicrophone();
+        if(!audioActive){
 
+            await startAudioAnalysis();
+        }
 
-    if(
-        !recognition
-    ){
+        if(!recognition){
 
-        transcription.textContent =
-            "La reconnaissance vocale Web n'est pas disponible dans ce navigateur.";
+            voiceStatus.textContent =
+                "RECONNAISSANCE VOCALE NON DISPONIBLE";
 
-        return;
+            return;
+        }
 
-    }
+        if(listening){
 
+            recognition.stop();
 
-    try{
+            return;
+        }
+
+        window.jarvisLastCommand = "";
 
         recognition.start();
 
     }
-
-    catch(
-        error
-    ){
-
-        console.log(
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   STOP VOICE
-   ========================================================= */
-
-function stopVoice(){
-
-    voiceActive =
-        false;
-
-
-    if(
-        recognition
-    ){
-
-        try{
-
-            recognition.stop();
-
-        }
-
-        catch(
-            error
-        ){
-
-            console.log(
-                error
-            );
-
-        }
-
-    }
-
-
-    if(
-        microphoneStream
-    ){
-
-        microphoneStream
-            .getTracks()
-            .forEach(
-                track =>
-                    track.stop()
-            );
-
-    }
-
-
-    voiceState.textContent =
-        "VOICE SYSTEM READY";
-
-
-    voiceState.classList.remove(
-        "active"
-    );
-
-
-    coreLabel.textContent =
-        "STANDBY";
-
-
-    listenButton.innerHTML =
-        "ACTIVER<br>MICRO";
-
-}
-
-
-/* =========================================================
-   MICROPHONE BUTTON
-   ========================================================= */
-
-listenButton.addEventListener(
-    "click",
-    async () => {
-
-        if(
-            voiceActive
-        ){
-
-            stopVoice();
-
-        }
-
-        else{
-
-            await startVoice();
-
-        }
-
-    }
 );
 
 
-/* =========================================================
-   SHORTCUT CONFIGURATION
-   =========================================================
-
-   IMPORTANT:
-
-   Remplace cette valeur par le nom
-   EXACT de ton raccourci Apple.
-
-   Exemple:
-
-   "Jarvis"
-
-   ========================================================= */
-
-const SHORTCUT_NAME =
-    "Jarvis";
-
-
-/* =========================================================
-   SEND TO SHORTCUTS
-   ========================================================= */
-
-function sendToShortcuts(){
-
-    const text =
-        transcription.textContent.trim();
-
-
-    if(
-        !text ||
-        text ===
-        "En attente de commande vocale…"
-    ){
-
-        return;
-
-    }
-
-
-    const encoded =
-        encodeURIComponent(
-            text
-        );
-
-
-    const url =
-        "shortcuts://run-shortcut" +
-        "?name=" +
-        encodeURIComponent(
-            SHORTCUT_NAME
-        ) +
-        "&input=" +
-        encoded;
-
-
-    window.location.href =
-        url;
-
-}
-
-
-/* =========================================================
-   SHORTCUT BUTTON
-   ========================================================= */
-
-shortcutButton.addEventListener(
-    "click",
-    sendToShortcuts
-);
-
-
-/* =========================================================
-   SPEECH PANEL
-   ========================================================= */
-
-voiceButton.addEventListener(
-    "click",
-    () => {
-
-        speechPanel.classList.toggle(
-            "visible"
-        );
-
-
-        if(
-            speechPanel.classList.contains(
-                "visible"
-            )
-        ){
-
-            speechText.focus();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
+/* ============================================================
    TEXT TO SPEECH
-   ========================================================= */
+   ============================================================ */
 
-function speakText(){
-
-    const text =
-        speechText.value.trim();
-
-
-    if(
-        !text
-    ){
-
-        return;
-
-    }
-
+function speakJarvis(text){
 
     if(
         !("speechSynthesis" in window)
     ){
 
-        alert(
-            "La synthèse vocale n'est pas disponible dans ce navigateur."
-        );
+        voiceStatus.textContent =
+            "SYNTHÈSE VOCALE INDISPONIBLE";
 
         return;
-
     }
 
-
-    window.speechSynthesis.cancel();
-
+    speechSynthesis.cancel();
 
     const utterance =
         new SpeechSynthesisUtterance(
             text
         );
 
-
     utterance.lang =
         "fr-FR";
 
-
     utterance.rate =
-        .94;
-
-
-    utterance.pitch =
         .92;
 
+    utterance.pitch =
+        .78;
 
     utterance.volume =
         1;
 
-
     utterance.onstart =
-        () => {
+        function(){
 
-            voiceState.textContent =
-                "JARVIS PARLE";
-
-
-            voiceState.classList.add(
-                "active"
-            );
-
-
-            coreLabel.textContent =
+            coreState.textContent =
                 "SPEAKING";
 
-        };
+            voiceStatus.textContent =
+                "TRANSMISSION VOCALE";
 
-
-    utterance.onend =
-        () => {
-
-            voiceState.textContent =
-                "VOICE SYSTEM READY";
-
-
-            voiceState.classList.remove(
-                "active"
+            voicePanel.classList.add(
+                "listening"
             );
 
+        };
 
-            coreLabel.textContent =
-                "STANDBY";
+    utterance.onend =
+        function(){
+
+            coreState.textContent =
+                "READY";
+
+            voiceStatus.textContent =
+                "AUDIO LINK · READY";
+
+            voicePanel.classList.remove(
+                "listening"
+            );
 
         };
 
-
-    window.speechSynthesis.speak(
+    speechSynthesis.speak(
         utterance
     );
-
 }
 
 
-/* =========================================================
-   SPEAK BUTTON
-   ========================================================= */
-
 speakButton.addEventListener(
     "click",
-    speakText
-);
+    function(){
 
-
-/* =========================================================
-   STOP SPEECH
-   ========================================================= */
-
-stopButton.addEventListener(
-    "click",
-    () => {
-
-        window.speechSynthesis.cancel();
-
-
-        voiceState.textContent =
-            "VOICE SYSTEM READY";
-
-
-        voiceState.classList.remove(
-            "active"
+        speakJarvis(
+            "Bonjour monsieur. JARVIS est opérationnel."
         );
-
-
-        coreLabel.textContent =
-            "STANDBY";
 
     }
 );
 
 
-/* =========================================================
-   AUTOMATIC KEYBOARD / DESKTOP TEST
-   ========================================================= */
+/* ============================================================
+   ENVOI VERS RACCOURCIS
+   ============================================================ */
 
-document.addEventListener(
-    "keydown",
-    event => {
+shortcutButton.addEventListener(
+    "click",
+    function(){
 
-        if(
-            event.code ===
-            "Space"
-        ){
+        const command =
+            window.jarvisLastCommand || "";
 
-            event.preventDefault();
+        if(!command){
+
+            voiceStatus.textContent =
+                "AUCUNE COMMANDE";
+
+            return;
+        }
+
+        /*
+          URL Scheme iOS.
+
+          Le texte reconnu est encodé pour être transmis
+          au raccourci configuré dans SHORTCUT_NAME.
+        */
+
+        const url =
+            "shortcuts://run-shortcut" +
+            "?name=" +
+            encodeURIComponent(
+                SHORTCUT_NAME
+            ) +
+            "&input=" +
+            encodeURIComponent(
+                command
+            );
+
+        window.location.href =
+            url;
+
+    }
+);
 
 
-            if(
-                voiceActive
-            ){
+/* ============================================================
+   TAP SUR L'ORBE
+   ============================================================ */
 
-                stopVoice();
+orb.addEventListener(
+    "click",
+    async function(){
 
-            }
+        if(!audioActive){
+            await startAudioAnalysis();
+        }
 
-            else{
+        if(recognition){
 
-                startVoice();
+            try{
+
+                if(!listening){
+
+                    window.jarvisLastCommand =
+                        "";
+
+                    recognition.start();
+
+                }else{
+
+                    recognition.stop();
+
+                }
+
+            }catch(error){
+
+                console.log(error);
 
             }
 
@@ -3509,16 +2144,83 @@ document.addEventListener(
 );
 
 
-/* =========================================================
+/* ============================================================
+   ROTATION GLOBALE LÉGÈRE
+   ============================================================ */
+
+let pointerX = 0;
+let pointerY = 0;
+
+document.addEventListener(
+    "pointermove",
+    function(event){
+
+        const x =
+            event.clientX /
+            window.innerWidth -
+            .5;
+
+        const y =
+            event.clientY /
+            window.innerHeight -
+            .5;
+
+        pointerX =
+            x * 4;
+
+        pointerY =
+            y * 4;
+
+        const system =
+            document.querySelector(
+                ".ring-system"
+            );
+
+        system.style.transform =
+            `
+            translate(-50%,-50%)
+            rotateX(${pointerY}deg)
+            rotateY(${pointerX}deg)
+            `;
+
+    }
+);
+
+
+/* ============================================================
    INITIAL STATE
-   ========================================================= */
+   ============================================================ */
 
-transcription.textContent =
-    "En attente de commande vocale…";
+window.jarvisLastCommand = "";
+
+coreState.textContent =
+    "STANDBY";
+
+voiceStatus.textContent =
+    "AUDIO LINK · TAP TO ACTIVATE";
 
 
-transcription.classList.add(
-    "empty"
+/* ============================================================
+   IOS SAFETY
+   ============================================================ */
+
+document.addEventListener(
+    "visibilitychange",
+    function(){
+
+        if(
+            document.hidden &&
+            recognition &&
+            listening
+        ){
+
+            try{
+                recognition.stop();
+            }catch(e){}
+
+        }
+
+    }
 );
 
 </script>
