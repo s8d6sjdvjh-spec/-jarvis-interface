@@ -2,3000 +2,1643 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1,
-               maximum-scale=1,
-               user-scalable=no,
-               viewport-fit=cover">
 
-<title>JARVIS — Gyrotourbillon Precision Core</title>
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1,
+maximum-scale=1,
+viewport-fit=cover">
+
+<title>JARVIS — Geode Core</title>
 
 <style>
-:root {
-    --bg: #02080b;
-    --cyan: #00d9ff;
-    --cyan-soft: #5eeaff;
-    --cyan-dark: #0b5364;
-    --white: #d9f8ff;
-    --panel: rgba(2, 14, 19, 0.78);
+
+:root{
+  --bg:#02070a;
+  --cyan:#16dcff;
+  --cyan2:#75efff;
+  --cyan3:#0a7894;
+  --text:#dffaff;
+  --muted:#527783;
+  --panel:rgba(2,16,22,.82);
 }
 
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-    background: var(--bg);
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
 }
 
-body {
-    position: relative;
-    color: var(--white);
+body{
+  overscroll-behavior:none;
 }
 
-#app {
-    position: relative;
-    width: 100vw;
-    height: 100dvh;
-    min-height: 650px;
-    overflow: hidden;
-    background:
-        radial-gradient(
-            ellipse at 50% 38%,
-            rgba(3, 30, 38, 0.48),
-            transparent 46%
-        ),
-        #02080b;
+#app{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% 39%,
+      rgba(0,100,130,.22),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(0,35,50,.25),
+      transparent 55%
+    ),
+    #02070a;
 }
 
 /* ---------------------------------------------------------
    GRID
 --------------------------------------------------------- */
 
-.grid {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.22;
-    background-image:
-        linear-gradient(
-            rgba(32, 121, 139, 0.14) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(32, 121, 139, 0.14) 1px,
-            transparent 1px
-        );
-    background-size: 74px 74px;
-}
+#grid{
+  position:absolute;
+  inset:0;
 
-.grid::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(
-            circle at 50% 45%,
-            transparent 0%,
-            transparent 38%,
-            rgba(0, 0, 0, 0.3) 76%,
-            rgba(0, 0, 0, 0.7) 100%
-        );
+  opacity:.27;
+
+  background-image:
+    linear-gradient(
+      rgba(25,111,128,.18) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(25,111,128,.18) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    44px 44px;
+
+  pointer-events:none;
 }
 
 /* ---------------------------------------------------------
-   HEADER
+   TOP BAR
 --------------------------------------------------------- */
 
-header {
-    position: absolute;
-    z-index: 20;
-    top: max(28px, env(safe-area-inset-top));
-    left: 0;
-    width: 100%;
-    padding: 0 42px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+#topbar{
+  position:absolute;
+  z-index:20;
+
+  top:0;
+  left:0;
+  right:0;
+
+  height:94px;
+
+  padding:
+    env(safe-area-inset-top)
+    22px
+    0
+    22px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  pointer-events:none;
 }
 
-.brand {
-    font-size: clamp(25px, 7vw, 39px);
-    letter-spacing: 0.32em;
-    font-weight: 300;
-    color: #d8f9ff;
-    text-shadow:
-        0 0 12px rgba(120, 235, 255, 0.08);
+.brand{
+  font-size:17px;
+  font-weight:300;
+  letter-spacing:.55em;
+  white-space:nowrap;
 }
 
-.status {
-    display: flex;
-    align-items: center;
-    gap: clamp(15px, 4vw, 28px);
+.status{
+  display:flex;
+  align-items:center;
+  gap:14px;
 }
 
-.statusItem {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 9px;
-    letter-spacing: 0.34em;
-    color: #60828b;
-    white-space: nowrap;
+.statusItem{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  color:#5e858e;
+
+  font-size:8px;
+  letter-spacing:.27em;
+
+  white-space:nowrap;
 }
 
-.statusDot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #00d9ff;
-    box-shadow:
-        0 0 7px #00d9ff,
-        0 0 16px rgba(0, 217, 255, 0.55);
+.dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:#18ddff;
+
+  box-shadow:
+    0 0 8px #18ddff,
+    0 0 18px rgba(24,221,255,.55);
 }
 
 /* ---------------------------------------------------------
    SUBTITLE
 --------------------------------------------------------- */
 
-.subtitle {
-    position: absolute;
-    z-index: 20;
-    top: 24.5%;
-    width: 100%;
-    text-align: center;
-    color: #42717c;
-    font-size: 10px;
-    letter-spacing: 0.48em;
-    font-weight: 400;
+#subtitle{
+  position:absolute;
+  z-index:15;
+
+  top:104px;
+  left:0;
+  right:0;
+
+  text-align:center;
+
+  color:#51818d;
+
+  font-size:9px;
+  letter-spacing:.38em;
+
+  white-space:nowrap;
+
+  pointer-events:none;
 }
 
 /* ---------------------------------------------------------
-   MAIN VISUAL
+   3D AREA
 --------------------------------------------------------- */
 
-.visual {
-    position: absolute;
-    z-index: 5;
-    top: 16.5%;
-    left: 50%;
-    width: min(96vw, 620px);
-    height: min(61vw, 620px);
-    transform: translateX(-50%);
+#scene{
+  position:absolute;
+
+  left:0;
+  right:0;
+
+  top:118px;
+  bottom:255px;
+
+  overflow:hidden;
 }
 
-#scene {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
+#three{
+  width:100%;
+  height:100%;
+
+  display:block;
+}
+
+/* ---------------------------------------------------------
+   CENTRAL LABEL
+--------------------------------------------------------- */
+
+#coreLabel{
+  position:absolute;
+
+  z-index:16;
+
+  left:50%;
+  top:50%;
+
+  transform:
+    translate(-50%,-50%);
+
+  text-align:center;
+
+  pointer-events:none;
+
+  color:rgba(175,241,252,.72);
+
+  font-size:8px;
+  letter-spacing:.34em;
+
+  text-shadow:
+    0 0 10px rgba(22,220,255,.5);
+}
+
+#coreLabel strong{
+  display:block;
+
+  margin-bottom:5px;
+
+  color:#d8fbff;
+
+  font-size:11px;
+  font-weight:300;
+
+  letter-spacing:.42em;
+}
+
+#coreLabel span{
+  opacity:.55;
+}
+
+/* ---------------------------------------------------------
+   CORE STATUS
+--------------------------------------------------------- */
+
+#activity{
+  position:absolute;
+
+  z-index:15;
+
+  top:137px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  color:#406c77;
+
+  font-size:7px;
+
+  letter-spacing:.32em;
+
+  white-space:nowrap;
+
+  pointer-events:none;
 }
 
 /* ---------------------------------------------------------
    PANELS
 --------------------------------------------------------- */
 
-.panels {
-    position: absolute;
-    z-index: 30;
-    left: 5.5%;
-    right: 5.5%;
-    bottom: max(95px, env(safe-area-inset-bottom) + 90px);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px 18px;
+#panels{
+  position:absolute;
+
+  z-index:30;
+
+  left:20px;
+  right:20px;
+
+  bottom:28px;
+
+  display:grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap:9px;
 }
 
-.panel {
-    min-height: 118px;
-    padding: 20px 20px 17px;
-    border: 1px solid rgba(0, 211, 244, 0.65);
-    background:
-        linear-gradient(
-            135deg,
-            rgba(5, 28, 35, 0.73),
-            rgba(1, 11, 15, 0.82)
-        );
-    box-shadow:
-        inset 0 0 25px rgba(0, 170, 210, 0.035),
-        0 0 18px rgba(0, 80, 100, 0.035);
+.panel{
+  min-height:87px;
+
+  padding:
+    14px
+    13px
+    12px;
+
+  border:
+    1px solid
+    rgba(18,202,235,.40);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(8,38,47,.78),
+      rgba(1,10,14,.82)
+    );
+
+  box-shadow:
+    inset 0 0 24px
+    rgba(0,150,190,.055),
+
+    0 0 18px
+    rgba(0,120,160,.025);
 }
 
-.panelLabel {
-    color: #65b5c4;
-    font-size: 9px;
-    letter-spacing: 0.42em;
-    margin-bottom: 15px;
+.panelTitle{
+  color:#55bfd2;
+
+  font-size:8px;
+
+  letter-spacing:.36em;
+
+  margin-bottom:10px;
 }
 
-.panelValue {
-    color: #d9faff;
-    font-size: clamp(31px, 8vw, 45px);
-    font-weight: 300;
-    line-height: 0.9;
-    margin-bottom: 13px;
+.panelValue{
+  color:#d9faff;
+
+  font-size:25px;
+
+  font-weight:300;
+
+  line-height:1;
 }
 
-.panelInfo {
-    color: #456c75;
-    font-size: 9px;
-    letter-spacing: 0.25em;
+.panelSub{
+  margin-top:9px;
+
+  color:#4e7780;
+
+  font-size:8px;
+
+  letter-spacing:.16em;
 }
 
 /* ---------------------------------------------------------
-   CANVAS MOBILE ADJUSTMENTS
+   SMALL SCREEN ADAPTATION
 --------------------------------------------------------- */
 
-@media (max-width: 430px) {
+@media(max-width:380px){
 
-    header {
-        padding-left: 38px;
-        padding-right: 28px;
-    }
+  .brand{
+    font-size:14px;
+  }
 
-    .brand {
-        font-size: 26px;
-    }
+  .status{
+    gap:8px;
+  }
 
-    .status {
-        gap: 13px;
-    }
+  .statusItem{
+    font-size:7px;
+    letter-spacing:.20em;
+  }
 
-    .statusItem {
-        font-size: 7px;
-        letter-spacing: 0.25em;
-    }
+  #subtitle{
+    font-size:7px;
+  }
 
-    .statusDot {
-        width: 7px;
-        height: 7px;
-    }
-
-    .subtitle {
-        top: 25.1%;
-        font-size: 8px;
-        letter-spacing: 0.37em;
-    }
-
-    .visual {
-        top: 18.3%;
-        width: 96vw;
-        height: 96vw;
-    }
-
-    .panels {
-        bottom: max(86px, env(safe-area-inset-bottom) + 78px);
-        gap: 10px 18px;
-        left: 5.5%;
-        right: 5.5%;
-    }
-
-    .panel {
-        min-height: 104px;
-        padding: 17px 18px 14px;
-    }
-
-    .panelLabel {
-        font-size: 8px;
-        margin-bottom: 13px;
-    }
-
-    .panelValue {
-        font-size: 35px;
-    }
-
-    .panelInfo {
-        font-size: 7px;
-    }
 }
 
-@media (max-height: 750px) {
-
-    .visual {
-        top: 16%;
-    }
-
-    .panels {
-        bottom: 76px;
-    }
-
-    .panel {
-        min-height: 92px;
-        padding: 14px 17px;
-    }
-
-    .panelValue {
-        margin-bottom: 8px;
-    }
-}
 </style>
 </head>
+
 
 <body>
 
 <div id="app">
 
-    <div class="grid"></div>
+  <div id="grid"></div>
 
-    <header>
-        <div class="brand">JARVIS</div>
+  <header id="topbar">
 
-        <div class="status">
-
-            <div class="statusItem">
-                <span class="statusDot"></span>
-                ONLINE
-            </div>
-
-            <div class="statusItem">
-                <span class="statusDot"></span>
-                SECURE
-            </div>
-
-            <div class="statusItem">
-                <span class="statusDot"></span>
-                VOICE
-            </div>
-
-        </div>
-    </header>
-
-    <div class="subtitle">
-        GYROTOURBILLON&nbsp;&nbsp;·&nbsp;&nbsp;PRECISION CORE&nbsp;&nbsp;·&nbsp;&nbsp;3 AXIS
+    <div class="brand">
+      J A R V I S
     </div>
 
-    <main class="visual">
-        <canvas id="scene"></canvas>
-    </main>
+    <div class="status">
 
-    <section class="panels">
+      <div class="statusItem">
+        <span class="dot"></span>
+        ONLINE
+      </div>
 
-        <div class="panel">
-            <div class="panelLabel">MAISON</div>
-            <div class="panelValue">03</div>
-            <div class="panelInfo">DISPOSITIFS ACTIFS</div>
-        </div>
+      <div class="statusItem">
+        <span class="dot"></span>
+        SECURE
+      </div>
 
-        <div class="panel">
-            <div class="panelLabel">MÉTÉO</div>
-            <div class="panelValue">18°</div>
-            <div class="panelInfo">CONDITIONS STABLES</div>
-        </div>
+      <div class="statusItem">
+        <span class="dot"></span>
+        VOICE
+      </div>
 
-        <div class="panel">
-            <div class="panelLabel">SYSTÈME</div>
-            <div class="panelValue">82%</div>
-            <div class="panelInfo">PERFORMANCE</div>
-        </div>
+    </div>
 
-        <div class="panel">
-            <div class="panelLabel">ACTIVITÉ</div>
-            <div class="panelValue">12</div>
-            <div class="panelInfo">ÉVÉNEMENTS RÉCENTS</div>
-        </div>
+  </header>
 
-    </section>
+
+  <div id="subtitle">
+    GEODE CORE · CRYSTALLINE MATRIX · 3D
+  </div>
+
+
+  <div id="scene">
+
+    <canvas id="three"></canvas>
+
+    <div id="coreLabel">
+      <strong>CORE</strong>
+      <span>ACTIVE</span>
+    </div>
+
+  </div>
+
+
+  <div id="activity">
+    CRYSTALLINE SYSTEM · ACTIVE
+  </div>
+
+
+  <section id="panels">
+
+    <div class="panel">
+
+      <div class="panelTitle">
+        MAISON
+      </div>
+
+      <div class="panelValue">
+        03
+      </div>
+
+      <div class="panelSub">
+        DISPOSITIFS ACTIFS
+      </div>
+
+    </div>
+
+
+    <div class="panel">
+
+      <div class="panelTitle">
+        MÉTÉO
+      </div>
+
+      <div class="panelValue">
+        18°
+      </div>
+
+      <div class="panelSub">
+        CONDITIONS STABLES
+      </div>
+
+    </div>
+
+
+    <div class="panel">
+
+      <div class="panelTitle">
+        SYSTÈME
+      </div>
+
+      <div class="panelValue">
+        82%
+      </div>
+
+      <div class="panelSub">
+        PERFORMANCE
+      </div>
+
+    </div>
+
+
+    <div class="panel">
+
+      <div class="panelTitle">
+        ACTIVITÉ
+      </div>
+
+      <div class="panelValue">
+        12
+      </div>
+
+      <div class="panelSub">
+        ÉVÉNEMENTS RÉCENTS
+      </div>
+
+    </div>
+
+  </section>
 
 </div>
 
-<script>
-"use strict";
 
-/* =========================================================
-   JARVIS GYROTOURBILLON
-   ---------------------------------------------------------
-   Rendu autonome Canvas 2D.
-   Aucun modèle externe.
-   Aucun CDN.
-   Trois axes indépendants.
-   Matériaux procéduraux.
-   ========================================================= */
+<!-- ======================================================
+     THREE.JS
+====================================================== -->
 
-const canvas = document.getElementById("scene");
-const ctx = canvas.getContext("2d", {
-    alpha: true
-});
+<script type="importmap">
+{
+  "imports":{
+    "three":
+    "https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js"
+  }
+}
+</script>
 
-let W = 0;
-let H = 0;
-let CX = 0;
-let CY = 0;
-let SCALE = 1;
 
-const TAU = Math.PI * 2;
+<script type="module">
 
-/* ---------------------------------------------------------
-   ÉTAT DU MOUVEMENT
---------------------------------------------------------- */
+import * as THREE from "three";
 
-let t = 0;
 
-const axis = {
-    x: 0.25,
-    y: -0.48,
-    z: 0.0
-};
+/* ======================================================
+   CANVAS
+====================================================== */
 
-const speed = {
-    x: 0.00072,
-    y: -0.00047,
-    z: 0.00031
-};
+const canvas =
+  document.getElementById("three");
 
-/* ---------------------------------------------------------
-   RESIZE
---------------------------------------------------------- */
 
-function resize() {
+/* ======================================================
+   RENDERER
+====================================================== */
 
-    const rect = canvas.getBoundingClientRect();
+const renderer =
+  new THREE.WebGLRenderer({
 
-    const dpr = Math.min(
-        window.devicePixelRatio || 1,
-        2
+    canvas:canvas,
+
+    antialias:true,
+
+    alpha:true,
+
+    powerPreference:
+      "high-performance"
+
+  });
+
+
+renderer.setPixelRatio(
+  Math.min(
+    window.devicePixelRatio || 1,
+    2
+  )
+);
+
+
+renderer.outputColorSpace =
+  THREE.SRGBColorSpace;
+
+
+renderer.toneMapping =
+  THREE.ACESFilmicToneMapping;
+
+
+renderer.toneMappingExposure =
+  1.18;
+
+
+/* ======================================================
+   SCENE
+====================================================== */
+
+const scene =
+  new THREE.Scene();
+
+
+scene.background =
+  new THREE.Color(
+    0x02070a
+  );
+
+
+/* ======================================================
+   CAMERA
+====================================================== */
+
+const camera =
+  new THREE.PerspectiveCamera(
+    32,
+    1,
+    0.1,
+    100
+  );
+
+
+camera.position.set(
+  0,
+  0,
+  7.8
+);
+
+
+camera.lookAt(
+  0,
+  0,
+  0
+);
+
+
+/* ======================================================
+   ENVIRONMENT
+====================================================== */
+
+function createEnvironment(){
+
+  const c =
+    document.createElement(
+      "canvas"
     );
 
-    W = rect.width;
-    H = rect.height;
+  c.width = 512;
+  c.height = 256;
 
-    canvas.width = Math.floor(W * dpr);
-    canvas.height = Math.floor(H * dpr);
+  const ctx =
+    c.getContext("2d");
 
-    ctx.setTransform(
-        dpr,
+
+  const gradient =
+    ctx.createLinearGradient(
+      0,
+      0,
+      0,
+      256
+    );
+
+
+  gradient.addColorStop(
+    0,
+    "#071b23"
+  );
+
+
+  gradient.addColorStop(
+    .35,
+    "#02090d"
+  );
+
+
+  gradient.addColorStop(
+    .65,
+    "#061820"
+  );
+
+
+  gradient.addColorStop(
+    1,
+    "#010406"
+  );
+
+
+  ctx.fillStyle =
+    gradient;
+
+  ctx.fillRect(
+    0,
+    0,
+    512,
+    256
+  );
+
+
+  const strips = [
+
+    [50,90,.22],
+    [160,50,.14],
+    [270,120,.26],
+    [405,45,.18],
+    [475,35,.12]
+
+  ];
+
+
+  for(
+    const strip of strips
+  ){
+
+    const g =
+      ctx.createLinearGradient(
+        strip[0],
         0,
-        0,
-        dpr,
-        0,
+        strip[0]+strip[1],
         0
+      );
+
+
+    g.addColorStop(
+      0,
+      "rgba(30,210,255,0)"
     );
 
-    CX = W / 2;
-    CY = H / 2;
 
-    SCALE = Math.min(W, H) / 620;
+    g.addColorStop(
+      .5,
+      `rgba(100,235,255,${strip[2]})`
+    );
+
+
+    g.addColorStop(
+      1,
+      "rgba(30,210,255,0)"
+    );
+
+
+    ctx.fillStyle = g;
+
+
+    ctx.fillRect(
+      strip[0],
+      0,
+      strip[1],
+      256
+    );
+
+  }
+
+
+  const texture =
+    new THREE.CanvasTexture(c);
+
+
+  texture.mapping =
+    THREE.EquirectangularReflectionMapping;
+
+
+  texture.colorSpace =
+    THREE.SRGBColorSpace;
+
+
+  scene.environment =
+    texture;
+
 }
 
-window.addEventListener(
-    "resize",
-    resize,
-    {
-        passive: true
-    }
+
+createEnvironment();
+
+
+/* ======================================================
+   LIGHTING
+====================================================== */
+
+const ambient =
+  new THREE.HemisphereLight(
+    0x72ddff,
+    0x010304,
+    1.7
+  );
+
+
+scene.add(
+  ambient
 );
+
+
+const key =
+  new THREE.DirectionalLight(
+    0xffffff,
+    4.2
+  );
+
+
+key.position.set(
+  -4,
+  5,
+  6
+);
+
+
+scene.add(
+  key
+);
+
+
+const cyanLight =
+  new THREE.PointLight(
+    0x12ddff,
+    14,
+    9
+  );
+
+
+cyanLight.position.set(
+  3,
+  1,
+  3
+);
+
+
+scene.add(
+  cyanLight
+);
+
+
+const cyanLight2 =
+  new THREE.PointLight(
+    0x008cff,
+    10,
+    7
+  );
+
+
+cyanLight2.position.set(
+  -3,
+  -2,
+  2
+);
+
+
+scene.add(
+  cyanLight2
+);
+
+
+const coreLight =
+  new THREE.PointLight(
+    0x18eaff,
+    18,
+    4
+  );
+
+
+coreLight.position.set(
+  0,
+  0,
+  1
+);
+
+
+scene.add(
+  coreLight
+);
+
+
+/* ======================================================
+   ORBE ROOT
+====================================================== */
+
+const geode =
+  new THREE.Group();
+
+
+scene.add(
+  geode
+);
+
+
+/* ======================================================
+   OUTER GEODE
+====================================================== */
+
+const outerGeometry =
+  new THREE.IcosahedronGeometry(
+    1.78,
+    4
+  );
+
+
+const outerMaterial =
+  new THREE.MeshPhysicalMaterial({
+
+    color:
+      0x163d48,
+
+    metalness:
+      .78,
+
+    roughness:
+      .23,
+
+    clearcoat:
+      .85,
+
+    clearcoatRoughness:
+      .14,
+
+    transmission:
+      .05,
+
+    transparent:
+      true,
+
+    opacity:
+      .82,
+
+    envMapIntensity:
+      2.4
+
+  });
+
+
+const outerMesh =
+  new THREE.Mesh(
+    outerGeometry,
+    outerMaterial
+  );
+
+
+geode.add(
+  outerMesh
+);
+
+
+/* ======================================================
+   FACET EDGES
+====================================================== */
+
+const edgeGeometry =
+  new THREE.EdgesGeometry(
+    outerGeometry,
+    22
+  );
+
+
+const edgeMaterial =
+  new THREE.LineBasicMaterial({
+
+    color:
+      0x25dfff,
+
+    transparent:
+      true,
+
+    opacity:
+      .72
+
+  });
+
+
+const outerEdges =
+  new THREE.LineSegments(
+    edgeGeometry,
+    edgeMaterial
+  );
+
+
+outerEdges.scale.setScalar(
+  1.002
+);
+
+
+geode.add(
+  outerEdges
+);
+
+
+/* ======================================================
+   SECOND INNER CRYSTAL SHELL
+====================================================== */
+
+const innerGeometry =
+  new THREE.IcosahedronGeometry(
+    1.34,
+    3
+  );
+
+
+const innerMaterial =
+  new THREE.MeshPhysicalMaterial({
+
+    color:
+      0x0a2530,
+
+    metalness:
+      .88,
+
+    roughness:
+      .17,
+
+    clearcoat:
+      1,
+
+    clearcoatRoughness:
+      .08,
+
+    transparent:
+      true,
+
+    opacity:
+      .76,
+
+    envMapIntensity:
+      2.8
+
+  });
+
+
+const innerMesh =
+  new THREE.Mesh(
+    innerGeometry,
+    innerMaterial
+  );
+
+
+innerMesh.rotation.set(
+  .35,
+  .2,
+  .15
+);
+
+
+geode.add(
+  innerMesh
+);
+
+
+/* ======================================================
+   INNER CRYSTAL WIREFRAME
+====================================================== */
+
+const innerEdgesGeometry =
+  new THREE.EdgesGeometry(
+    innerGeometry,
+    18
+  );
+
+
+const innerEdgesMaterial =
+  new THREE.LineBasicMaterial({
+
+    color:
+      0x6defff,
+
+    transparent:
+      true,
+
+    opacity:
+      .54
+
+  });
+
+
+const innerEdges =
+  new THREE.LineSegments(
+    innerEdgesGeometry,
+    innerEdgesMaterial
+  );
+
+
+innerEdges.rotation.copy(
+  innerMesh.rotation
+);
+
+
+geode.add(
+  innerEdges
+);
+
+
+/* ======================================================
+   CENTRAL CRYSTAL
+====================================================== */
+
+const coreGeometry =
+  new THREE.IcosahedronGeometry(
+    .58,
+    2
+  );
+
+
+const coreMaterial =
+  new THREE.MeshPhysicalMaterial({
+
+    color:
+      0x08768b,
+
+    metalness:
+      .35,
+
+    roughness:
+      .08,
+
+    transmission:
+      .32,
+
+    transparent:
+      true,
+
+    opacity:
+      .92,
+
+    clearcoat:
+      1,
+
+    clearcoatRoughness:
+      .04,
+
+    emissive:
+      0x004f62,
+
+    emissiveIntensity:
+      1.25
+
+  });
+
+
+const core =
+  new THREE.Mesh(
+    coreGeometry,
+    coreMaterial
+  );
+
+
+geode.add(
+  core
+);
+
+
+/* ======================================================
+   CORE EDGES
+====================================================== */
+
+const coreEdges =
+  new THREE.LineSegments(
+
+    new THREE.EdgesGeometry(
+      coreGeometry
+    ),
+
+    new THREE.LineBasicMaterial({
+
+      color:
+        0xb2faff,
+
+      transparent:
+        true,
+
+      opacity:
+        .88
+
+    })
+
+  );
+
+
+geode.add(
+  coreEdges
+);
+
+
+/* ======================================================
+   CRYSTAL NODES
+====================================================== */
+
+const nodeGeometry =
+  new THREE.SphereGeometry(
+    .027,
+    8,
+    8
+  );
+
+
+const nodeMaterial =
+  new THREE.MeshBasicMaterial({
+
+    color:
+      0x8ff7ff
+
+  });
+
+
+const nodes =
+  new THREE.Group();
+
+
+geode.add(
+  nodes
+);
+
+
+const nodeCount =
+  100;
+
+
+for(
+  let i=0;
+  i<nodeCount;
+  i++
+){
+
+  const p =
+    new THREE.Vector3();
+
+  const u =
+    Math.random();
+
+  const v =
+    Math.random();
+
+  const theta =
+    2*Math.PI*u;
+
+  const phi =
+    Math.acos(
+      2*v-1
+    );
+
+
+  const radius =
+    1.78 +
+    (Math.random()-.5)*.025;
+
+
+  p.x =
+    radius *
+    Math.sin(phi) *
+    Math.cos(theta);
+
+
+  p.y =
+    radius *
+    Math.sin(phi) *
+    Math.sin(theta);
+
+
+  p.z =
+    radius *
+    Math.cos(phi);
+
+
+  const node =
+    new THREE.Mesh(
+      nodeGeometry,
+      nodeMaterial
+    );
+
+
+  node.position.copy(
+    p
+  );
+
+
+  nodes.add(
+    node
+  );
+
+}
+
+
+/* ======================================================
+   INTERNAL PARTICLES
+====================================================== */
+
+const particleGeometry =
+  new THREE.BufferGeometry();
+
+
+const particlePositions =
+  new Float32Array(
+    420 * 3
+  );
+
+
+for(
+  let i=0;
+  i<420;
+  i++
+){
+
+  const radius =
+    .55 +
+    Math.random()*1.55;
+
+
+  const theta =
+    Math.random() *
+    Math.PI * 2;
+
+
+  const phi =
+    Math.acos(
+      2*Math.random()-1
+    );
+
+
+  particlePositions[
+    i*3
+  ] =
+    radius *
+    Math.sin(phi) *
+    Math.cos(theta);
+
+
+  particlePositions[
+    i*3+1
+  ] =
+    radius *
+    Math.sin(phi) *
+    Math.sin(theta);
+
+
+  particlePositions[
+    i*3+2
+  ] =
+    radius *
+    Math.cos(phi);
+
+}
+
+
+particleGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(
+    particlePositions,
+    3
+  )
+);
+
+
+const particleMaterial =
+  new THREE.PointsMaterial({
+
+    color:
+      0x35dfff,
+
+    size:
+      .018,
+
+    transparent:
+      true,
+
+    opacity:
+      .72,
+
+    blending:
+      THREE.AdditiveBlending
+
+  });
+
+
+const particles =
+  new THREE.Points(
+    particleGeometry,
+    particleMaterial
+  );
+
+
+geode.add(
+  particles
+);
+
+
+/* ======================================================
+   VERY SUBTLE AURA
+====================================================== */
+
+const auraGeometry =
+  new THREE.SphereGeometry(
+    1.92,
+    32,
+    32
+  );
+
+
+const auraMaterial =
+  new THREE.MeshBasicMaterial({
+
+    color:
+      0x007f9c,
+
+    transparent:
+      true,
+
+    opacity:
+      .055,
+
+    side:
+      THREE.BackSide,
+
+    blending:
+      THREE.AdditiveBlending
+
+  });
+
+
+const aura =
+  new THREE.Mesh(
+    auraGeometry,
+    auraMaterial
+  );
+
+
+geode.add(
+  aura
+);
+
+
+/* ======================================================
+   SCALE
+====================================================== */
+
+geode.scale.setScalar(
+  .96
+);
+
+
+/* ======================================================
+   RESIZE
+====================================================== */
+
+function resize(){
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+
+  const width =
+    Math.max(
+      1,
+      rect.width
+    );
+
+
+  const height =
+    Math.max(
+      1,
+      rect.height
+    );
+
+
+  renderer.setSize(
+    width,
+    height,
+    false
+  );
+
+
+  camera.aspect =
+    width / height;
+
+
+  camera.updateProjectionMatrix();
+
+}
+
+
+window.addEventListener(
+  "resize",
+  resize,
+  {passive:true}
+);
+
 
 resize();
 
-/* =========================================================
-   UTILITAIRES
-========================================================= */
 
-function clamp(v, a, b) {
-    return Math.max(a, Math.min(b, v));
-}
-
-function lerp(a, b, p) {
-    return a + (b - a) * p;
-}
-
-function hash(n) {
-
-    const x =
-        Math.sin(n * 12.9898) *
-        43758.5453;
-
-    return x -
-        Math.floor(x);
-}
-
-function noise(n) {
-
-    const i = Math.floor(n);
-    const f = n - i;
-
-    const a = hash(i);
-    const b = hash(i + 1);
-
-    const u =
-        f * f *
-        (3 - 2 * f);
-
-    return lerp(a, b, u);
-}
-
-function rotX(p, a) {
-
-    const c = Math.cos(a);
-    const s = Math.sin(a);
-
-    return {
-        x: p.x,
-        y: p.y * c - p.z * s,
-        z: p.y * s + p.z * c
-    };
-}
-
-function rotY(p, a) {
-
-    const c = Math.cos(a);
-    const s = Math.sin(a);
-
-    return {
-        x: p.x * c + p.z * s,
-        y: p.y,
-        z: -p.x * s + p.z * c
-    };
-}
-
-function rotZ(p, a) {
-
-    const c = Math.cos(a);
-    const s = Math.sin(a);
-
-    return {
-        x: p.x * c - p.y * s,
-        y: p.x * s + p.y * c,
-        z: p.z
-    };
-}
-
-function project(p) {
-
-    const camera = 950;
-
-    const depth =
-        camera /
-        (camera - p.z);
-
-    return {
-        x: CX + p.x * depth * SCALE,
-        y: CY + p.y * depth * SCALE,
-        z: p.z,
-        scale: depth
-    };
-}
-
-/* =========================================================
-   TRANSFORMATION 3 AXES
-========================================================= */
-
-function transformCore(p) {
-
-    let q = p;
-
-    q = rotX(
-        q,
-        axis.x
-    );
-
-    q = rotY(
-        q,
-        axis.y
-    );
-
-    q = rotZ(
-        q,
-        axis.z
-    );
-
-    return q;
-}
-
-/* =========================================================
-   MATERIALS
-========================================================= */
-
-function steelGradient(
-    x1,
-    y1,
-    x2,
-    y2,
-    phase = 0
-) {
-
-    const g =
-        ctx.createLinearGradient(
-            x1,
-            y1,
-            x2,
-            y2
-        );
-
-    const shimmer =
-        0.5 +
-        0.5 *
-        Math.sin(
-            phase
-        );
-
-    g.addColorStop(
-        0,
-        "#11171a"
-    );
-
-    g.addColorStop(
-        0.14,
-        "#465157"
-    );
-
-    g.addColorStop(
-        0.22,
-        "#aab7bb"
-    );
-
-    g.addColorStop(
-        0.27,
-        "#30383c"
-    );
-
-    g.addColorStop(
-        0.43,
-        "#080d0f"
-    );
-
-    g.addColorStop(
-        0.61,
-        "#7c898d"
-    );
-
-    g.addColorStop(
-        0.68,
-        "#171d20"
-    );
-
-    g.addColorStop(
-        0.86,
-        "#020607"
-    );
-
-    g.addColorStop(
-        1,
-        shimmer > 0.5
-            ? "#68757a"
-            : "#222b2e"
-    );
-
-    return g;
-}
-
-function bronzeGradient(
-    x1,
-    y1,
-    x2,
-    y2
-) {
-
-    const g =
-        ctx.createLinearGradient(
-            x1,
-            y1,
-            x2,
-            y2
-        );
-
-    g.addColorStop(
-        0,
-        "#24140a"
-    );
-
-    g.addColorStop(
-        0.18,
-        "#8d5b20"
-    );
-
-    g.addColorStop(
-        0.31,
-        "#e2b75e"
-    );
-
-    g.addColorStop(
-        0.39,
-        "#6e4214"
-    );
-
-    g.addColorStop(
-        0.58,
-        "#1f1208"
-    );
-
-    g.addColorStop(
-        0.73,
-        "#a8732a"
-    );
-
-    g.addColorStop(
-        0.84,
-        "#493015"
-    );
-
-    g.addColorStop(
-        1,
-        "#100b07"
-    );
-
-    return g;
-}
-
-function darkSteelGradient(
-    x1,
-    y1,
-    x2,
-    y2
-) {
-
-    const g =
-        ctx.createLinearGradient(
-            x1,
-            y1,
-            x2,
-            y2
-        );
-
-    g.addColorStop(
-        0,
-        "#020405"
-    );
-
-    g.addColorStop(
-        0.23,
-        "#263034"
-    );
-
-    g.addColorStop(
-        0.31,
-        "#0a1013"
-    );
-
-    g.addColorStop(
-        0.53,
-        "#4b565b"
-    );
-
-    g.addColorStop(
-        0.58,
-        "#0b1114"
-    );
-
-    g.addColorStop(
-        0.86,
-        "#020405"
-    );
-
-    return g;
-}
-
-/* =========================================================
-   TORUS / COURONNE 3D
-========================================================= */
-
-function drawTorus({
-    radius,
-    tube,
-    rx,
-    ry,
-    rz,
-    material,
-    alpha = 1,
-    detail = 110,
-    phase = 0
-}) {
-
-    const points = [];
-
-    for (
-        let i = 0;
-        i <= detail;
-        i++
-    ) {
-
-        const u =
-            (i / detail) *
-            TAU;
-
-        const radial =
-            radius +
-            tube *
-            Math.cos(
-                u
-            );
-
-        const z =
-            tube *
-            Math.sin(
-                u
-            );
-
-        let p = {
-            x:
-                radial *
-                Math.cos(u),
-
-            y:
-                radial *
-                Math.sin(u),
-
-            z
-        };
-
-        p = rotX(
-            p,
-            rx
-        );
-
-        p = rotY(
-            p,
-            ry
-        );
-
-        p = rotZ(
-            p,
-            rz
-        );
-
-        points.push(
-            project(p)
-        );
-    }
-
-    ctx.save();
-
-    ctx.globalAlpha =
-        alpha;
-
-    ctx.lineCap =
-        "round";
-
-    for (
-        let i = 0;
-        i < points.length - 1;
-        i++
-    ) {
-
-        const a =
-            points[i];
-
-        const b =
-            points[i + 1];
-
-        const light =
-            0.5 +
-            0.5 *
-            Math.sin(
-                i * 0.19 +
-                phase
-            );
-
-        ctx.lineWidth =
-            Math.max(
-                1,
-                tube *
-                SCALE *
-                (
-                    0.7 +
-                    light * 0.75
-                )
-            );
-
-        if (
-            material === "steel"
-        ) {
-
-            ctx.strokeStyle =
-                steelGradient(
-                    a.x,
-                    a.y,
-                    b.x,
-                    b.y,
-                    phase +
-                    i * 0.05
-                );
-
-        } else if (
-            material === "bronze"
-        ) {
-
-            ctx.strokeStyle =
-                bronzeGradient(
-                    a.x,
-                    a.y,
-                    b.x,
-                    b.y
-                );
-
-        } else {
-
-            ctx.strokeStyle =
-                darkSteelGradient(
-                    a.x,
-                    a.y,
-                    b.x,
-                    b.y
-                );
-        }
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            a.x,
-            a.y
-        );
-
-        ctx.lineTo(
-            b.x,
-            b.y
-        );
-
-        ctx.stroke();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   COURONNES INTERNES
-========================================================= */
-
-function drawMechanicalRing(
-    radius,
-    thickness,
-    colorMode,
-    rotation,
-    segmented = false
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    ctx.rotate(
-        rotation
-    );
-
-    const segments =
-        segmented
-            ? 160
-            : 240;
-
-    for (
-        let i = 0;
-        i < segments;
-        i++
-    ) {
-
-        const a0 =
-            (i / segments) *
-            TAU;
-
-        const a1 =
-            (
-                (i + 0.72) /
-                segments
-            ) *
-            TAU;
-
-        const irregular =
-            0.65 +
-            noise(
-                i * 0.83 +
-                radius
-            ) *
-            0.75;
-
-        const inner =
-            radius -
-            thickness *
-            0.5;
-
-        const outer =
-            radius +
-            thickness *
-            0.5;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            0,
-            0,
-            radius,
-            a0,
-            a1
-        );
-
-        if (
-            colorMode === "bronze"
-        ) {
-
-            ctx.strokeStyle =
-                i % 13 === 0
-                    ? "#d7a64e"
-                    : "#664219";
-
-        } else {
-
-            ctx.strokeStyle =
-                i % 17 === 0
-                    ? "#a9c4c8"
-                    : "#263d42";
-        }
-
-        ctx.lineWidth =
-            Math.max(
-                0.7,
-                thickness *
-                irregular *
-                0.45
-            );
-
-        ctx.stroke();
-
-        if (
-            i % 5 === 0
-        ) {
-
-            const len =
-                thickness *
-                (
-                    0.8 +
-                    noise(
-                        i * 2.3
-                    ) *
-                    2.0
-                );
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                Math.cos(a0) *
-                inner,
-
-                Math.sin(a0) *
-                inner
-            );
-
-            ctx.lineTo(
-                Math.cos(a0) *
-                (
-                    inner -
-                    len
-                ),
-
-                Math.sin(a0) *
-                (
-                    inner -
-                    len
-                )
-            );
-
-            ctx.strokeStyle =
-                i % 17 === 0
-                    ? "#9bb8bd"
-                    : "#285761";
-
-            ctx.lineWidth =
-                i % 19 === 0
-                    ? 2.1
-                    : 0.85;
-
-            ctx.stroke();
-        }
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   GRADUATIONS ORIENTÉES VERS LE CENTRE
-========================================================= */
-
-function drawPrecisionTicks(
-    radius,
-    count,
-    rotation,
-    alpha = 1
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    ctx.rotate(
-        rotation
-    );
-
-    ctx.globalAlpha =
-        alpha;
-
-    for (
-        let i = 0;
-        i < count;
-        i++
-    ) {
-
-        const a =
-            i / count *
-            TAU;
-
-        const major =
-            i % 11 === 0;
-
-        const medium =
-            i % 5 === 0;
-
-        const irregular =
-            0.55 +
-            noise(
-                i * 7.17
-            ) *
-            0.9;
-
-        const length =
-            major
-                ? 16 * irregular
-                : medium
-                    ? 10 * irregular
-                    : 5 * irregular;
-
-        const width =
-            major
-                ? 1.5
-                : medium
-                    ? 1.0
-                    : 0.65;
-
-        const r0 =
-            radius;
-
-        const r1 =
-            radius -
-            length;
-
-        /*
-          Les graduations pointent
-          réellement vers le centre.
-        */
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            Math.cos(a) *
-            r0,
-
-            Math.sin(a) *
-            r0
-        );
-
-        ctx.lineTo(
-            Math.cos(a) *
-            r1,
-
-            Math.sin(a) *
-            r1
-        );
-
-        ctx.strokeStyle =
-            major
-                ? "#b5d5da"
-                : "#36717b";
-
-        ctx.lineWidth =
-            width;
-
-        ctx.stroke();
-
-        if (
-            major
-        ) {
-
-            const rr =
-                r1 -
-                7;
-
-            ctx.beginPath();
-
-            ctx.arc(
-                Math.cos(a) *
-                rr,
-
-                Math.sin(a) *
-                rr,
-
-                1.15,
-
-                0,
-                TAU
-            );
-
-            ctx.fillStyle =
-                "#7fc6d0";
-
-            ctx.fill();
-        }
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   MICRO MARQUES SUR LES COURONNES
-========================================================= */
-
-function drawMicroEngraving(
-    radius,
-    count,
-    rotation
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    ctx.rotate(
-        rotation
-    );
-
-    for (
-        let i = 0;
-        i < count;
-        i++
-    ) {
-
-        const a =
-            i / count *
-            TAU;
-
-        const r =
-            radius +
-            (
-                noise(i * 4.11) -
-                0.5
-            ) *
-            7;
-
-        const len =
-            1.5 +
-            noise(
-                i * 9.2
-            ) *
-            4;
-
-        ctx.save();
-
-        ctx.rotate(a);
-
-        ctx.fillStyle =
-            i % 17 === 0
-                ? "rgba(196,225,228,.62)"
-                : "rgba(33,94,104,.7)";
-
-        ctx.fillRect(
-            r,
-            -0.55,
-            len,
-            1.1
-        );
-
-        ctx.restore();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   PETITS SYMBOLS TECHNIQUES
-========================================================= */
-
-function drawSymbols(
-    radius,
-    count,
-    rotation
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    ctx.rotate(
-        rotation
-    );
-
-    ctx.font =
-        "7px monospace";
-
-    ctx.textAlign =
-        "center";
-
-    ctx.textBaseline =
-        "middle";
-
-    const symbols =
-        [
-            "·",
-            "+",
-            "□",
-            "×",
-            "•",
-            "—"
-        ];
-
-    for (
-        let i = 0;
-        i < count;
-        i++
-    ) {
-
-        if (
-            i % 3 !== 0
-        ) continue;
-
-        const a =
-            i / count *
-            TAU;
-
-        const rr =
-            radius +
-            8;
-
-        ctx.save();
-
-        ctx.rotate(a);
-
-        ctx.fillStyle =
-            i % 13 === 0
-                ? "#8edce7"
-                : "#376e78";
-
-        ctx.fillText(
-            symbols[
-                i %
-                symbols.length
-            ],
-            rr,
-            0
-        );
-
-        ctx.restore();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   AXES DU GYROTOURBILLON
-========================================================= */
-
-function drawAxisBar(
-    length,
-    width,
-    rotation,
-    material,
-    phase
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    ctx.rotate(
-        rotation
-    );
-
-    const grad =
-        material === "bronze"
-            ? bronzeGradient(
-                -length,
-                -width,
-                length,
-                width
-            )
-            : steelGradient(
-                -length,
-                -width,
-                length,
-                width,
-                phase
-            );
-
-    ctx.shadowBlur =
-        0;
-
-    ctx.fillStyle =
-        grad;
-
-    ctx.beginPath();
-
-    ctx.roundRect(
-        -length,
-        -width / 2,
-        length * 2,
-        width,
-        width * 0.28
-    );
-
-    ctx.fill();
-
-    /*
-      Chanfreins.
-    */
-
-    ctx.strokeStyle =
-        "rgba(220,240,242,.65)";
-
-    ctx.lineWidth =
-        Math.max(
-            0.5,
-            width * 0.06
-        );
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        -length + 5,
-        -width * 0.25
-    );
-
-    ctx.lineTo(
-        length - 5,
-        -width * 0.25
-    );
-
-    ctx.stroke();
-
-    /*
-      Marques d'usinage.
-    */
-
-    for (
-        let i = 0;
-        i < 11;
-        i++
-    ) {
-
-        const x =
-            -length +
-            12 +
-            i *
-            (
-                (length * 2 - 24) /
-                10
-            );
-
-        ctx.strokeStyle =
-            "rgba(0,0,0,.28)";
-
-        ctx.lineWidth =
-            0.6;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            x,
-            -width * 0.34
-        );
-
-        ctx.lineTo(
-            x + 3,
-            width * 0.34
-        );
-
-        ctx.stroke();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   ROUAGE CENTRAL
-========================================================= */
-
-function drawGear(
-    radius,
-    teeth,
-    toothDepth,
-    rotation
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    ctx.rotate(
-        rotation
-    );
-
-    const outer =
-        radius +
-        toothDepth;
-
-    const inner =
-        radius -
-        2;
-
-    const step =
-        TAU /
-        teeth;
-
-    ctx.beginPath();
-
-    for (
-        let i = 0;
-        i < teeth;
-        i++
-    ) {
-
-        const a =
-            i * step;
-
-        const a0 =
-            a;
-
-        const a1 =
-            a +
-            step * 0.18;
-
-        const a2 =
-            a +
-            step * 0.31;
-
-        const a3 =
-            a +
-            step * 0.69;
-
-        const a4 =
-            a +
-            step * 0.82;
-
-        const a5 =
-            a +
-            step;
-
-        const pts =
-            [
-                [
-                    inner *
-                    Math.cos(a0),
-                    inner *
-                    Math.sin(a0)
-                ],
-                [
-                    outer *
-                    Math.cos(a1),
-                    outer *
-                    Math.sin(a1)
-                ],
-                [
-                    outer *
-                    Math.cos(a2),
-                    outer *
-                    Math.sin(a2)
-                ],
-                [
-                    inner *
-                    Math.cos(a3),
-                    inner *
-                    Math.sin(a3)
-                ],
-                [
-                    outer *
-                    Math.cos(a4),
-                    outer *
-                    Math.sin(a4)
-                ],
-                [
-                    outer *
-                    Math.cos(a5),
-                    outer *
-                    Math.sin(a5)
-                ]
-            ];
-
-        for (
-            const p of pts
-        ) {
-
-            if (
-                i === 0 &&
-                p === pts[0]
-            ) {
-
-                ctx.moveTo(
-                    p[0],
-                    p[1]
-                );
-
-            } else {
-
-                ctx.lineTo(
-                    p[0],
-                    p[1]
-                );
-            }
-        }
-    }
-
-    ctx.closePath();
-
-    ctx.fillStyle =
-        steelGradient(
-            -radius,
-            -radius,
-            radius,
-            radius,
-            rotation
-        );
-
-    ctx.fill();
-
-    ctx.strokeStyle =
-        "#a3b2b5";
-
-    ctx.lineWidth =
-        0.8;
-
-    ctx.stroke();
-
-    /*
-      Perçages.
-    */
-
-    for (
-        let i = 0;
-        i < 8;
-        i++
-    ) {
-
-        const a =
-            i / 8 *
-            TAU;
-
-        const rr =
-            radius *
-            0.65;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            Math.cos(a) * rr,
-            Math.sin(a) * rr,
-            2.2,
-            0,
-            TAU
-        );
-
-        ctx.fillStyle =
-            "#020506";
-
-        ctx.fill();
-
-        ctx.strokeStyle =
-            "#6f8589";
-
-        ctx.lineWidth =
-            0.5;
-
-        ctx.stroke();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   RUBIS CENTRAL
-========================================================= */
-
-function drawRuby(
-    radius
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    /*
-      Très peu de rouge.
-      Pas de halo rouge massif.
-    */
-
-    const g =
-        ctx.createRadialGradient(
-            -radius * 0.35,
-            -radius * 0.45,
-            radius * 0.1,
-            0,
-            0,
-            radius
-        );
-
-    g.addColorStop(
-        0,
-        "#ffe7e7"
-    );
-
-    g.addColorStop(
-        0.12,
-        "#c86b78"
-    );
-
-    g.addColorStop(
-        0.38,
-        "#681f2d"
-    );
-
-    g.addColorStop(
-        0.73,
-        "#240c13"
-    );
-
-    g.addColorStop(
-        1,
-        "#050305"
-    );
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        0,
-        radius,
-        0,
-        TAU
-    );
-
-    ctx.fillStyle =
-        g;
-
-    ctx.fill();
-
-    ctx.strokeStyle =
-        "rgba(215,126,140,.65)";
-
-    ctx.lineWidth =
-        0.7;
-
-    ctx.stroke();
-
-    /*
-      Reflet interne.
-    */
-
-    ctx.beginPath();
-
-    ctx.ellipse(
-        -radius * 0.28,
-        -radius * 0.33,
-        radius * 0.19,
-        radius * 0.11,
-        -0.4,
-        0,
-        TAU
-    );
-
-    ctx.fillStyle =
-        "rgba(255,255,255,.76)";
-
-    ctx.fill();
-
-    ctx.restore();
-}
-
-/* =========================================================
-   VIS CENTRAL
-========================================================= */
-
-function drawPivot(
-    radius
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    const g =
-        ctx.createRadialGradient(
-            -radius * 0.4,
-            -radius * 0.4,
-            radius * 0.1,
-            0,
-            0,
-            radius
-        );
-
-    g.addColorStop(
-        0,
-        "#d6e3e4"
-    );
-
-    g.addColorStop(
-        0.2,
-        "#596a6f"
-    );
-
-    g.addColorStop(
-        0.48,
-        "#101619"
-    );
-
-    g.addColorStop(
-        1,
-        "#020405"
-    );
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        0,
-        radius,
-        0,
-        TAU
-    );
-
-    ctx.fillStyle =
-        g;
-
-    ctx.fill();
-
-    ctx.strokeStyle =
-        "#9baeb1";
-
-    ctx.lineWidth =
-        0.8;
-
-    ctx.stroke();
-
-    ctx.restore();
-}
-
-/* =========================================================
-   PONTS MÉCANIQUES
-========================================================= */
-
-function drawBridge(
-    length,
-    width,
-    rotation,
-    material
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    ctx.rotate(
-        rotation
-    );
-
-    const g =
-        material === "bronze"
-            ? bronzeGradient(
-                -length,
-                0,
-                length,
-                0
-            )
-            : darkSteelGradient(
-                -length,
-                0,
-                length,
-                0
-            );
-
-    ctx.fillStyle =
-        g;
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        -length,
-        -width * 0.42
-    );
-
-    ctx.lineTo(
-        -length * 0.38,
-        -width
-    );
-
-    ctx.lineTo(
-        length * 0.44,
-        -width * 0.62
-    );
-
-    ctx.lineTo(
-        length,
-        0
-    );
-
-    ctx.lineTo(
-        length * 0.44,
-        width * 0.62
-    );
-
-    ctx.lineTo(
-        -length * 0.38,
-        width
-    );
-
-    ctx.closePath();
-
-    ctx.fill();
-
-    ctx.strokeStyle =
-        "rgba(190,205,208,.68)";
-
-    ctx.lineWidth =
-        0.75;
-
-    ctx.stroke();
-
-    /*
-      Fraisage interne.
-    */
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        -length * 0.63,
-        -width * 0.25
-    );
-
-    ctx.lineTo(
-        length * 0.43,
-        -width * 0.25
-    );
-
-    ctx.strokeStyle =
-        "rgba(0,0,0,.58)";
-
-    ctx.lineWidth =
-        1.2;
-
-    ctx.stroke();
-
-    /*
-      Micro-vis.
-    */
-
-    for (
-        let i = 0;
-        i < 3;
-        i++
-    ) {
-
-        const x =
-            -length * 0.52 +
-            i *
-            length * 0.48;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            x,
-            0,
-            2.5,
-            0,
-            TAU
-        );
-
-        ctx.fillStyle =
-            "#111719";
-
-        ctx.fill();
-
-        ctx.strokeStyle =
-            "#88999d";
-
-        ctx.lineWidth =
-            0.55;
-
-        ctx.stroke();
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            x - 1.2,
-            -1.2
-        );
-
-        ctx.lineTo(
-            x + 1.2,
-            1.2
-        );
-
-        ctx.strokeStyle =
-            "#536367";
-
-        ctx.lineWidth =
-            0.55;
-
-        ctx.stroke();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   RESSORT / DÉTAIL CENTRAL
-========================================================= */
-
-function drawSpring(
-    radius,
-    turns,
-    rotation
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    ctx.rotate(
-        rotation
-    );
-
-    ctx.beginPath();
-
-    const total =
-        turns *
-        TAU;
-
-    const points =
-        220;
-
-    for (
-        let i = 0;
-        i <= points;
-        i++
-    ) {
-
-        const p =
-            i / points;
-
-        const a =
-            p *
-            total;
-
-        const r =
-            radius *
-            (
-                0.15 +
-                p * 0.85
-            );
-
-        const x =
-            Math.cos(a) *
-            r;
-
-        const y =
-            Math.sin(a) *
-            r;
-
-        if (
-            i === 0
-        ) {
-
-            ctx.moveTo(
-                x,
-                y
-            );
-
-        } else {
-
-            ctx.lineTo(
-                x,
-                y
-            );
-        }
-    }
-
-    ctx.strokeStyle =
-        "#a27632";
-
-    ctx.lineWidth =
-        1.05;
-
-    ctx.stroke();
-
-    ctx.restore();
-}
-
-/* =========================================================
-   PATINE ET IMPERFECTIONS
-========================================================= */
-
-function drawPatina(
-    radius,
-    count,
-    rotation
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    ctx.rotate(
-        rotation
-    );
-
-    for (
-        let i = 0;
-        i < count;
-        i++
-    ) {
-
-        const a =
-            hash(i * 5.3) *
-            TAU;
-
-        const rr =
-            radius *
-            (
-                0.68 +
-                hash(i * 3.8) *
-                0.28
-            );
-
-        const size =
-            0.4 +
-            hash(i * 8.1) *
-            1.6;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            Math.cos(a) * rr,
-            Math.sin(a) * rr,
-            size,
-            0,
-            TAU
-        );
-
-        const r =
-            hash(i * 1.2);
-
-        if (
-            r < 0.34
-        ) {
-
-            ctx.fillStyle =
-                "rgba(91,65,31,.40)";
-
-        } else if (
-            r < 0.68
-        ) {
-
-            ctx.fillStyle =
-                "rgba(103,132,119,.20)";
-
-        } else {
-
-            ctx.fillStyle =
-                "rgba(183,190,177,.18)";
-        }
-
-        ctx.fill();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   PARTICULES MÉCANIQUES DISCRÈTES
-========================================================= */
-
-function drawDust(
-    radius,
-    count,
-    rotation
-) {
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    ctx.rotate(
-        rotation
-    );
-
-    for (
-        let i = 0;
-        i < count;
-        i++
-    ) {
-
-        const a =
-            hash(i * 2.7) *
-            TAU;
-
-        const rr =
-            radius *
-            (
-                0.25 +
-                hash(i * 9.1) *
-                0.7
-            );
-
-        const x =
-            Math.cos(a) *
-            rr;
-
-        const y =
-            Math.sin(a) *
-            rr;
-
-        const s =
-            0.25 +
-            hash(i * 4.2) *
-            1.0;
-
-        ctx.fillStyle =
-            `rgba(161,185,187,${
-                0.08 +
-                hash(i) * 0.17
-            })`;
-
-        ctx.fillRect(
-            x,
-            y,
-            s,
-            s
-        );
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   HALO DE PROFONDEUR
-========================================================= */
-
-function drawCoreShadow(
-    radius
-) {
-
-    ctx.save();
-
-    const g =
-        ctx.createRadialGradient(
-            CX,
-            CY,
-            radius * 0.05,
-            CX,
-            CY,
-            radius
-        );
-
-    g.addColorStop(
-        0,
-        "rgba(0,0,0,.72)"
-    );
-
-    g.addColorStop(
-        0.65,
-        "rgba(0,0,0,.27)"
-    );
-
-    g.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle =
-        g;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        CX,
-        CY,
-        radius,
-        0,
-        TAU
-    );
-
-    ctx.fill();
-
-    ctx.restore();
-}
-
-/* =========================================================
-   GYROTOURBILLON COMPLET
-========================================================= */
-
-function drawGyrotourbillon() {
-
-    /*
-      Le mécanisme central représente environ
-      20 % du diamètre de la zone mécanique,
-      tandis que les couronnes remplissent
-      le reste de l'espace.
-
-      Aucun contour rouge dominant.
-    */
-
-    const core =
-        78 * SCALE;
-
-    drawCoreShadow(
-        core * 1.7
-    );
-
-    /*
-      Premier anneau structurel.
-    */
-
-    drawTorus({
-        radius: 54,
-        tube: 4.5,
-        rx: axis.x,
-        ry: axis.y,
-        rz: axis.z,
-        material: "steel",
-        alpha: 1,
-        detail: 150,
-        phase: t * 0.0007
-    });
-
-    /*
-      Deuxième axe.
-    */
-
-    drawTorus({
-        radius: 44,
-        tube: 4.1,
-        rx: axis.x + 1.12,
-        ry: axis.y,
-        rz: axis.z + 0.15,
-        material: "bronze",
-        alpha: 0.96,
-        detail: 140,
-        phase: t * 0.001
-    });
-
-    /*
-      Troisième axe.
-    */
-
-    drawTorus({
-        radius: 35,
-        tube: 3.6,
-        rx: axis.x,
-        ry: axis.y + 1.05,
-        rz: axis.z + 0.5,
-        material: "steel",
-        alpha: 1,
-        detail: 130,
-        phase: t * 0.0014
-    });
-
-    /*
-      Cage intérieure.
-    */
-
-    drawTorus({
-        radius: 27,
-        tube: 2.8,
-        rx: axis.x + 0.7,
-        ry: axis.y - 0.9,
-        rz: axis.z,
-        material: "bronze",
-        alpha: 0.95,
-        detail: 120,
-        phase: t * 0.0019
-    });
-
-    /*
-      Roue centrale.
-    */
-
-    drawGear(
-        20,
-        36,
-        2.6,
-        axis.z * 1.4
-    );
-
-    /*
-      Ponts.
-    */
-
-    drawBridge(
-        38,
-        6.5,
-        axis.x + 0.7,
-        "steel"
-    );
-
-    drawBridge(
-        33,
-        5.2,
-        axis.y + 2.15,
-        "bronze"
-    );
-
-    drawBridge(
-        28,
-        4.2,
-        axis.z + 0.8,
-        "steel"
-    );
-
-    /*
-      Axe X.
-    */
-
-    drawAxisBar(
-        45,
-        3.2,
-        axis.x,
-        "steel",
-        t * 0.001
-    );
-
-    /*
-      Axe Y.
-    */
-
-    drawAxisBar(
-        40,
-        2.8,
-        axis.y + 0.85,
-        "bronze",
-        t * 0.0008
-    );
-
-    /*
-      Axe Z.
-    */
-
-    drawAxisBar(
-        36,
-        2.5,
-        axis.z + 1.4,
-        "steel",
-        t * 0.0012
-    );
-
-    /*
-      Ressort concentrique.
-    */
-
-    drawSpring(
-        25,
-        2.7,
-        axis.z
-    );
-
-    /*
-      Rubis.
-    */
-
-    drawRuby(
-        8.8
-    );
-
-    /*
-      Pivot métallique autour du rubis.
-    */
-
-    drawPivot(
-        13
-    );
-
-    /*
-      Le rubis est replacé par-dessus le pivot.
-    */
-
-    drawRuby(
-        8.5
-    );
-
-    /*
-      Patine très fine.
-    */
-
-    drawPatina(
-        67,
-        90,
-        axis.z
-    );
-
-    /*
-      Micro-poussières métalliques.
-    */
-
-    drawDust(
-        74,
-        100,
-        axis.x
-    );
-}
-
-/* =========================================================
-   COURONNES EXTÉRIEURES
-========================================================= */
-
-function drawOuterArchitecture() {
-
-    const base =
-        Math.min(W, H);
-
-    /*
-      Les couronnes restent dans la zone
-      prévue par la dernière version.
-
-      Elles ne touchent jamais les bords.
-    */
-
-    const radii = [
-        base * 0.255,
-        base * 0.292,
-        base * 0.329,
-        base * 0.366,
-        base * 0.403
-    ];
-
-    for (
-        let i = 0;
-        i < radii.length;
-        i++
-    ) {
-
-        const r =
-            radii[i];
-
-        const thickness =
-            i === 4
-                ? 1.2
-                : 0.85;
-
-        drawMechanicalRing(
-            r,
-            thickness,
-            i === 1 ||
-            i === 3
-                ? "bronze"
-                : "steel",
-            t *
-            (
-                i % 2 === 0
-                    ? 0.000025
-                    : -0.000017
-            ),
-            true
-        );
-
-        drawPrecisionTicks(
-            r,
-            i === 4
-                ? 96
-                : 84,
-            -t *
-            (
-                0.000012 +
-                i * 0.000004
-            ),
-            0.82
-        );
-
-        drawMicroEngraving(
-            r,
-            130,
-            t *
-            0.00001
-        );
-
-        if (
-            i === 0 ||
-            i === 2 ||
-            i === 4
-        ) {
-
-            drawSymbols(
-                r,
-                72,
-                -t *
-                0.000008
-            );
-        }
-    }
-
-    /*
-      Couronnes intermédiaires très fines.
-      Elles évitent l'effet "Saturne".
-    */
-
-    const fine =
-        [
-            base * 0.273,
-            base * 0.310,
-            base * 0.347,
-            base * 0.384
-        ];
-
-    for (
-        let i = 0;
-        i < fine.length;
-        i++
-    ) {
-
-        ctx.save();
-
-        ctx.translate(
-            CX,
-            CY
-        );
-
-        ctx.rotate(
-            t *
-            (
-                i % 2
-                    ? -0.000011
-                    : 0.000015
-            )
-        );
-
-        ctx.beginPath();
-
-        ctx.arc(
-            0,
-            0,
-            fine[i],
-            0,
-            TAU
-        );
-
-        ctx.strokeStyle =
-            i % 2
-                ? "rgba(32,103,114,.75)"
-                : "rgba(76,139,148,.55)";
-
-        ctx.lineWidth =
-            0.7;
-
-        ctx.stroke();
-
-        ctx.restore();
-    }
-}
-
-/* =========================================================
-   PETITES VIS DE COURONNE
-========================================================= */
-
-function drawOuterScrews() {
-
-    const r =
-        Math.min(W, H) *
-        0.394;
-
-    ctx.save();
-
-    ctx.translate(
-        CX,
-        CY
-    );
-
-    for (
-        let i = 0;
-        i < 16;
-        i++
-    ) {
-
-        const a =
-            i / 16 *
-            TAU +
-            t * 0.000006;
-
-        const x =
-            Math.cos(a) *
-            r;
-
-        const y =
-            Math.sin(a) *
-            r;
-
-        const radius =
-            i % 4 === 0
-                ? 2.4
-                : 1.15;
-
-        const g =
-            ctx.createRadialGradient(
-                x - 0.8,
-                y - 0.8,
-                0.3,
-                x,
-                y,
-                radius * 1.5
-            );
-
-        g.addColorStop(
-            0,
-            "#dce7e8"
-        );
-
-        g.addColorStop(
-            0.35,
-            "#6f7c7f"
-        );
-
-        g.addColorStop(
-            0.72,
-            "#172023"
-        );
-
-        g.addColorStop(
-            1,
-            "#020405"
-        );
-
-        ctx.beginPath();
-
-        ctx.arc(
-            x,
-            y,
-            radius,
-            0,
-            TAU
-        );
-
-        ctx.fillStyle =
-            g;
-
-        ctx.fill();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   ÉCLAIRAGE DE LA SCÈNE
-========================================================= */
-
-function drawSceneLight() {
-
-    /*
-      Halo cyan extrêmement discret.
-      Le mécanisme reste métallique.
-    */
-
-    const g =
-        ctx.createRadialGradient(
-            CX - W * 0.08,
-            CY - H * 0.1,
-            0,
-            CX,
-            CY,
-            Math.min(W, H) * 0.45
-        );
-
-    g.addColorStop(
-        0,
-        "rgba(30,160,190,.055)"
-    );
-
-    g.addColorStop(
-        0.45,
-        "rgba(0,90,110,.022)"
-    );
-
-    g.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle =
-        g;
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-}
-
-/* =========================================================
+/* ======================================================
    ANIMATION
-========================================================= */
+====================================================== */
 
-function animate() {
+const clock =
+  new THREE.Clock();
 
-    t += 16.67;
 
-    /*
-      Trois rotations réellement indépendantes.
+function animate(){
 
-      X = oscillation / rotation lente
-      Y = rotation secondaire
-      Z = rotation plus lente
-    */
+  requestAnimationFrame(
+    animate
+  );
 
-    axis.x +=
-        speed.x;
 
-    axis.y +=
-        speed.y;
+  const t =
+    clock.getElapsedTime();
 
-    axis.z +=
-        speed.z;
 
-    /*
-      Oscillation très légère pour éviter
-      une rotation artificiellement parfaite.
-    */
+  /*
+     Rotation lente de plusieurs
+     couches indépendantes.
+  */
 
-    const wobbleX =
-        Math.sin(
-            t * 0.00019
-        ) *
-        0.08;
+  geode.rotation.y =
+    t * .105;
 
-    const wobbleY =
-        Math.cos(
-            t * 0.00023
-        ) *
-        0.065;
 
-    ctx.clearRect(
-        0,
-        0,
-        W,
-        H
-    );
+  geode.rotation.x =
+    Math.sin(t*.23) * .075;
 
-    drawSceneLight();
 
-    drawOuterArchitecture();
+  outerEdges.rotation.y =
+    -t * .018;
 
-    drawOuterScrews();
 
-    /*
-      Gyrotourbillon par-dessus
-      les structures arrière.
-    */
+  innerMesh.rotation.y =
+    t * -.17;
 
-    ctx.save();
 
-    /*
-      Micro déplacement orbital
-      quasiment imperceptible.
-    */
+  innerMesh.rotation.z =
+    Math.sin(t*.31)*.09;
 
-    const orbitalX =
-        Math.sin(
-            t * 0.00017
-        ) *
-        1.2;
 
-    const orbitalY =
-        Math.cos(
-            t * 0.00021
-        ) *
-        1.0;
+  innerEdges.rotation.y =
+    innerMesh.rotation.y;
 
-    CX += orbitalX * 0;
-    CY += orbitalY * 0;
 
-    drawGyrotourbillon();
+  core.rotation.x =
+    t * .19;
 
-    ctx.restore();
 
-    requestAnimationFrame(
-        animate
-    );
+  core.rotation.y =
+    t * .27;
+
+
+  coreEdges.rotation.x =
+    core.rotation.x;
+
+
+  coreEdges.rotation.y =
+    core.rotation.y;
+
+
+  particles.rotation.y =
+    -t * .045;
+
+
+  particles.rotation.x =
+    Math.sin(t*.17)*.04;
+
+
+  nodes.rotation.y =
+    t * .055;
+
+
+  /*
+     Pulsation extrêmement légère
+     du noyau lumineux.
+  */
+
+  const pulse =
+    1 +
+    Math.sin(t*1.8)*.035;
+
+
+  core.scale.setScalar(
+    pulse
+  );
+
+
+  coreLight.intensity =
+    16 +
+    Math.sin(t*1.8)*3;
+
+
+  renderer.render(
+    scene,
+    camera
+  );
+
 }
 
-/* =========================================================
-   DÉMARRAGE
-========================================================= */
 
 animate();
 
-/* =========================================================
-   INTERACTION TACTILE
-   ---------------------------------------------------------
-   Une légère interaction permet de révéler
-   les volumes sans transformer l'interface
-   en jeu vidéo.
-========================================================= */
 
-let touchX = 0;
-let touchY = 0;
+/* ======================================================
+   TOUCH INTERACTION
+====================================================== */
+
+let targetX = 0;
+let targetY = 0;
+
+let currentX = 0;
+let currentY = 0;
+
 
 window.addEventListener(
-    "touchmove",
-    function(e) {
+  "pointermove",
+  event => {
 
-        if (
-            !e.touches ||
-            !e.touches.length
-        ) return;
+    const x =
+      event.clientX /
+      window.innerWidth;
 
-        const touch =
-            e.touches[0];
 
-        const nx =
-            touch.clientX /
-            window.innerWidth -
-            0.5;
+    const y =
+      event.clientY /
+      window.innerHeight;
 
-        const ny =
-            touch.clientY /
-            window.innerHeight -
-            0.5;
 
-        touchX =
-            clamp(
-                nx,
-                -0.5,
-                0.5
-            );
+    targetX =
+      (x-.5)*.22;
 
-        touchY =
-            clamp(
-                ny,
-                -0.5,
-                0.5
-            );
 
-    },
-    {
-        passive: true
-    }
+    targetY =
+      (y-.5)*.16;
+
+  },
+  {passive:true}
 );
 
-/* =========================================================
-   FIN
-========================================================= */
+
+function interaction(){
+
+  currentX +=
+    (targetX-currentX)*.035;
+
+
+  currentY +=
+    (targetY-currentY)*.035;
+
+
+  geode.rotation.z =
+    currentX;
+
+
+  geode.rotation.x +=
+    currentY*.002;
+
+
+  requestAnimationFrame(
+    interaction
+  );
+
+}
+
+
+interaction();
+
 </script>
 
 </body>
