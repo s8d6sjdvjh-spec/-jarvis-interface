@@ -3,650 +3,450 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width,
-               initial-scale=1,
-               maximum-scale=1,
-               viewport-fit=cover,
-               user-scalable=no">
-
-<meta name="theme-color" content="#02090d">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+      content="width=device-width,initial-scale=1,maximum-scale=1,
+               viewport-fit=cover,user-scalable=no">
 
 <title>JARVIS — Voice Core</title>
 
 <style>
-:root {
-    --bg: #02080c;
-    --grid: rgba(38, 142, 164, 0.11);
-    --grid-strong: rgba(54, 173, 194, 0.18);
-
-    --cyan: #28e6ff;
-    --cyan-soft: #7defff;
-    --cyan-dark: #08758a;
-
-    --blue: #319cff;
-    --violet: #8b73ff;
-    --gold: #c7a34d;
-    --white: #e8fbff;
-
-    --panel: rgba(2, 15, 21, 0.78);
+:root{
+    --bg:#02090d;
+    --grid:#0b2b35;
+    --cyan:#21d9ff;
+    --cyan2:#7cecff;
+    --blue:#3d8dff;
+    --violet:#8b73ff;
+    --gold:#c9a04a;
+    --white:#d9faff;
+    --muted:#47717c;
+    --panel:#04151b;
 }
 
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
 html,
-body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: var(--bg);
-    color: var(--white);
+body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:var(--bg);
+    color:var(--white);
     font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
+        "SF Pro Display",
+        "Helvetica Neue",
+        Arial,
         sans-serif;
 }
 
-body {
-    position: relative;
+body{
+    position:fixed;
+    inset:0;
 }
 
 /* =========================================================
-   BACKGROUND
-   ========================================================= */
+   MAIN FRAME
+========================================================= */
 
-#background {
-    position: fixed;
-    inset: 0;
+#app{
+    position:relative;
+    width:100%;
+    height:100%;
+    min-height:100dvh;
+    overflow:hidden;
     background:
         radial-gradient(
-            circle at 50% 43%,
-            rgba(0, 133, 165, 0.16),
-            transparent 34%
+            ellipse at 50% 45%,
+            rgba(0,91,112,.20) 0%,
+            rgba(0,25,32,.12) 35%,
+            rgba(0,0,0,0) 70%
         ),
+        #02090d;
+}
+
+/* Fine technical grid */
+
+#app::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+
+    background-image:
+        linear-gradient(
+            rgba(35,145,165,.105) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(35,145,165,.105) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        34px 34px,
+        34px 34px;
+
+    opacity:.78;
+}
+
+#app::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+
+    background:
         radial-gradient(
-            circle at 50% 43%,
-            rgba(0, 62, 91, 0.20),
-            transparent 57%
-        ),
-        linear-gradient(
-            180deg,
-            #02080c 0%,
-            #031017 55%,
-            #02080c 100%
-        );
-}
-
-#grid {
-    position: absolute;
-    inset: 0;
-
-    background-image:
-        linear-gradient(
-            rgba(41, 148, 169, 0.10) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(41, 148, 169, 0.10) 1px,
-            transparent 1px
+            circle at 50% 48%,
+            transparent 0 34%,
+            rgba(0,0,0,.12) 58%,
+            rgba(0,0,0,.48) 100%
         );
 
-    background-size: 27px 27px;
-
-    opacity: 0.75;
-}
-
-#grid::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-
-    background-image:
-        linear-gradient(
-            rgba(61, 190, 212, 0.08) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(61, 190, 212, 0.08) 1px,
-            transparent 1px
-        );
-
-    background-size: 135px 135px;
-}
-
-/* =========================================================
-   MAIN
-   ========================================================= */
-
-.app {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    z-index:3;
 }
 
 /* =========================================================
    HEADER
-   ========================================================= */
+========================================================= */
 
-.header {
-    position: absolute;
+.header{
+    position:absolute;
+    z-index:20;
+    top:0;
+    left:0;
+    width:100%;
+    height:13.5dvh;
 
-    top: calc(
-        env(safe-area-inset-top) + 32px
-    );
+    padding:
+        max(4.5dvh,env(safe-area-inset-top))
+        5.5vw 0;
 
-    left: 0;
-    right: 0;
-
-    height: 72px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 38px;
-
-    z-index: 20;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 }
 
-.brand {
-    font-size: 31px;
-    font-weight: 300;
-
-    letter-spacing: 0.31em;
-
-    white-space: nowrap;
+.brand{
+    font-size:clamp(25px,7vw,38px);
+    font-weight:300;
+    letter-spacing:.30em;
+    white-space:nowrap;
 }
 
-.status {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-
-    font-size: 10px;
-
-    letter-spacing: 0.31em;
-
-    color: rgba(196, 239, 247, 0.62);
-
-    white-space: nowrap;
+.status{
+    display:flex;
+    align-items:center;
+    gap:4vw;
+    font-size:9px;
+    letter-spacing:.31em;
+    color:#6d949d;
+    white-space:nowrap;
 }
 
-.status-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.statusItem{
+    display:flex;
+    align-items:center;
+    gap:7px;
 }
 
-.status-dot {
-    width: 7px;
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: var(--cyan);
-
+.statusDot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#1fdcff;
     box-shadow:
-        0 0 7px var(--cyan),
-        0 0 18px rgba(40, 230, 255, 0.7);
-
-    animation:
-        statusPulse 2.2s ease-in-out infinite;
-}
-
-.status-item:nth-child(2) .status-dot {
-    animation-delay: .4s;
-}
-
-.status-item:nth-child(3) .status-dot {
-    animation-delay: .8s;
-}
-
-@keyframes statusPulse {
-    0%,
-    100% {
-        opacity: .65;
-        transform: scale(.8);
-    }
-
-    50% {
-        opacity: 1;
-        transform: scale(1.15);
-    }
+        0 0 7px #1fdcff,
+        0 0 17px rgba(31,220,255,.7);
 }
 
 /* =========================================================
    TITLES
-   ========================================================= */
+========================================================= */
 
-.subtitle {
-    position: absolute;
-
-    top: calc(
-        env(safe-area-inset-top) + 137px
-    );
-
-    left: 0;
-    right: 0;
-
-    text-align: center;
-
-    font-size: 12px;
-
-    letter-spacing: 0.42em;
-
-    color: rgba(107, 210, 226, 0.63);
-
-    z-index: 15;
+.titleBlock{
+    position:absolute;
+    z-index:20;
+    top:15.5dvh;
+    left:0;
+    width:100%;
+    text-align:center;
+    pointer-events:none;
 }
 
-.subsubtitle {
-    position: absolute;
+.title{
+    font-size:clamp(11px,3.2vw,16px);
+    letter-spacing:.38em;
+    color:#6797a2;
+    text-transform:uppercase;
+}
 
-    top: calc(
-        env(safe-area-inset-top) + 170px
-    );
-
-    left: 0;
-    right: 0;
-
-    text-align: center;
-
-    font-size: 8px;
-
-    letter-spacing: 0.42em;
-
-    color: rgba(104, 184, 198, 0.38);
-
-    z-index: 15;
+.subtitle{
+    margin-top:13px;
+    font-size:8px;
+    letter-spacing:.34em;
+    color:#365a63;
+    text-transform:uppercase;
 }
 
 /* =========================================================
-   CORE AREA
-   ========================================================= */
+   CORE VISUAL
+========================================================= */
 
-.core-area {
-    position: absolute;
+.coreStage{
+    position:absolute;
+    z-index:5;
 
-    left: 50%;
+    left:0;
+    top:20dvh;
 
-    top: 43%;
+    width:100%;
+    height:51dvh;
 
-    width: min(94vw, 650px);
-    height: min(94vw, 650px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
 
-    transform:
-        translate(-50%, -50%);
+    overflow:hidden;
+}
 
-    z-index: 5;
+#coreCanvas{
+    display:block;
+    width:100%;
+    height:100%;
 }
 
 /* =========================================================
-   CANVAS
-   ========================================================= */
+   TRANSCRIPT
+========================================================= */
 
-#visual {
-    position: absolute;
+.voicePanel{
+    position:absolute;
+    z-index:20;
 
-    inset: 0;
+    left:5vw;
+    right:5vw;
+    top:72.5dvh;
+    height:9.5dvh;
 
-    width: 100%;
-    height: 100%;
+    border-top:1px solid rgba(31,214,255,.45);
+    border-bottom:1px solid rgba(31,214,255,.28);
 
-    display: block;
-}
-
-/* =========================================================
-   CORE LABEL
-   ========================================================= */
-
-.core-label {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    transform:
-        translate(-50%, -50%);
-
-    pointer-events: none;
-
-    text-align: center;
-
-    z-index: 10;
-
-    text-shadow:
-        0 0 10px rgba(62, 238, 255, .55);
-}
-
-.core-title {
-    font-size: 13px;
-
-    letter-spacing: 0.44em;
-
-    margin-left: .44em;
-
-    color: rgba(225, 250, 255, .88);
-}
-
-.core-state {
-    margin-top: 9px;
-
-    font-size: 7px;
-
-    letter-spacing: 0.38em;
-
-    color: rgba(106, 213, 228, .55);
-}
-
-/* =========================================================
-   VOICE PANEL
-   ========================================================= */
-
-.voice-panel {
-    position: absolute;
-
-    left: 50%;
-
-    top: calc(43% + min(47vw, 325px) + 38px);
-
-    transform: translateX(-50%);
-
-    width: min(88vw, 590px);
-
-    z-index: 15;
-
-    text-align: center;
-}
-
-.voice-wave {
-    height: 27px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    gap: 4px;
-
-    opacity: .8;
-}
-
-.wave-bar {
-    width: 2px;
-
-    height: 8px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
 
     background:
         linear-gradient(
-            to bottom,
-            #8ff8ff,
-            #04b7d1
+            90deg,
+            transparent,
+            rgba(0,50,61,.12),
+            transparent
         );
 
-    box-shadow:
-        0 0 7px rgba(37, 226, 255, .55);
-
-    transform-origin: center;
-
-    transition:
-        height .055s linear;
+    pointer-events:none;
 }
 
-.voice-text {
-    margin-top: 13px;
+.voiceState{
+    font-size:9px;
+    letter-spacing:.32em;
+    color:#67a8b5;
+    text-transform:uppercase;
+}
 
-    min-height: 25px;
+.transcript{
+    margin-top:8px;
 
-    padding: 7px 18px;
+    max-width:90%;
+    overflow:hidden;
 
-    border-top:
-        1px solid rgba(46, 199, 221, .32);
+    font-size:14px;
+    font-weight:300;
+    letter-spacing:.08em;
 
-    border-bottom:
-        1px solid rgba(46, 199, 221, .32);
+    color:#d9fbff;
 
-    font-size: 11px;
+    white-space:nowrap;
+    text-overflow:ellipsis;
 
-    letter-spacing: .25em;
-
-    color: rgba(206, 245, 251, .68);
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
+    text-shadow:
+        0 0 10px rgba(35,220,255,.35);
 }
 
 /* =========================================================
-   BUTTONS
-   ========================================================= */
+   AUDIO LEVEL
+========================================================= */
 
-.controls {
-    position: absolute;
+.audioMeter{
+    position:absolute;
+    z-index:21;
 
-    bottom:
-        calc(
-            env(safe-area-inset-bottom) + 44px
-        );
+    top:84dvh;
+    left:50%;
+    transform:translateX(-50%);
 
-    left: 50%;
+    width:44vw;
+    max-width:260px;
+    height:14px;
 
-    transform: translateX(-50%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
 
-    width: min(92vw, 650px);
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 12px;
-
-    z-index: 20;
+    pointer-events:none;
 }
 
-.control {
-    height: 63px;
+.audioBar{
+    width:3px;
+    height:5px;
 
-    border:
-        1px solid
-        rgba(33, 210, 239, .58);
+    background:#20dfff;
+
+    box-shadow:
+        0 0 5px #20dfff,
+        0 0 12px rgba(32,223,255,.6);
+
+    transform-origin:center;
+    transition:height .05s linear;
+}
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+.controls{
+    position:absolute;
+    z-index:30;
+
+    left:4.5vw;
+    right:4.5vw;
+    bottom:max(5.8dvh,env(safe-area-inset-bottom));
+
+    height:8.8dvh;
+
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:2.4vw;
+}
+
+.control{
+    appearance:none;
+    border:1px solid rgba(31,218,255,.60);
 
     background:
         linear-gradient(
             180deg,
-            rgba(4, 27, 36, .88),
-            rgba(1, 14, 20, .88)
+            rgba(7,39,48,.66),
+            rgba(1,17,23,.72)
         );
 
-    color:
-        rgba(216, 249, 255, .84);
+    color:#9bdce6;
 
-    font-size: 10px;
+    font-family:inherit;
 
-    letter-spacing: .28em;
+    letter-spacing:.20em;
+    font-size:9px;
+    text-transform:uppercase;
 
-    cursor: pointer;
+    position:relative;
+    overflow:hidden;
 
     transition:
-        background .2s ease,
-        border-color .2s ease,
-        box-shadow .2s ease,
-        transform .2s ease;
+        transform .15s ease,
+        border-color .15s ease,
+        background .15s ease;
+
+    -webkit-user-select:none;
+    user-select:none;
 }
 
-.control:active {
-    transform: scale(.97);
-}
-
-.control:hover {
-    border-color: var(--cyan);
-
-    box-shadow:
-        0 0 20px rgba(25, 220, 246, .15);
+.control::before{
+    content:"";
+    position:absolute;
+    inset:0;
 
     background:
-        rgba(5, 39, 49, .95);
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(34,222,255,.09),
+            transparent
+        );
+
+    transform:translateX(-100%);
 }
 
-.control.active {
-    border-color: #7af5ff;
+.control:active{
+    transform:scale(.97);
+    border-color:#6ff0ff;
+    background:rgba(9,61,73,.8);
+}
+
+.control.active{
+    border-color:#61efff;
 
     box-shadow:
-        inset 0 0 22px rgba(25, 226, 250, .12),
-        0 0 24px rgba(22, 215, 240, .16);
+        0 0 10px rgba(31,220,255,.25),
+        inset 0 0 18px rgba(31,220,255,.06);
 
-    color: #dffcff;
+    color:#d9fbff;
+}
+
+.controlIcon{
+    display:block;
+    font-size:17px;
+    margin-bottom:5px;
+}
+
+.smallNote{
+    position:absolute;
+    z-index:25;
+
+    left:0;
+    width:100%;
+
+    bottom:1.8dvh;
+
+    text-align:center;
+
+    font-size:6px;
+    letter-spacing:.30em;
+    color:#274a53;
 }
 
 /* =========================================================
-   SMALL STATUS CORNERS
-   ========================================================= */
+   DESKTOP SAFETY
+========================================================= */
 
-.corner {
-    position: absolute;
+@media(min-width:700px){
 
-    width: 26px;
-    height: 26px;
-
-    border-color:
-        rgba(73, 218, 238, .55);
-
-    z-index: 10;
-
-    pointer-events: none;
-}
-
-.corner.tl {
-    top: 18%;
-    left: 4%;
-
-    border-top: 1px solid;
-    border-left: 1px solid;
-}
-
-.corner.tr {
-    top: 18%;
-    right: 4%;
-
-    border-top: 1px solid;
-    border-right: 1px solid;
-}
-
-.corner.bl {
-    bottom: 18%;
-    left: 4%;
-
-    border-bottom: 1px solid;
-    border-left: 1px solid;
-}
-
-.corner.br {
-    bottom: 18%;
-    right: 4%;
-
-    border-bottom: 1px solid;
-    border-right: 1px solid;
-}
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 600px) {
-
-    .header {
-        padding:
-            0 26px;
+    .coreStage{
+        height:53dvh;
+        top:19dvh;
     }
 
-    .brand {
-        font-size: 27px;
+    .voicePanel{
+        top:72dvh;
     }
 
-    .status {
-        gap: 11px;
-        font-size: 8px;
-        letter-spacing: .25em;
+    .controls{
+        max-width:620px;
+        margin:auto;
+        left:50%;
+        right:auto;
+        width:620px;
+        transform:translateX(-50%);
     }
 
-    .subtitle {
-        font-size: 10px;
-        letter-spacing: .34em;
-    }
-
-    .subsubtitle {
-        font-size: 7px;
-        letter-spacing: .30em;
-    }
-
-    .core-area {
-        width: 96vw;
-        height: 96vw;
-
-        top: 42%;
-    }
-
-    .voice-panel {
-        top:
-            calc(
-                42% + 48vw + 30px
-            );
-    }
-
-    .controls {
-        bottom:
-            calc(
-                env(safe-area-inset-bottom) + 28px
-            );
-
-        width: calc(100vw - 36px);
-
-        gap: 8px;
-    }
-
-    .control {
-        height: 61px;
-
-        font-size: 8px;
-
-        letter-spacing: .22em;
-    }
-
-    .corner {
-        display: none;
-    }
-}
-
-@media (max-height: 720px) {
-
-    .core-area {
-        top: 39%;
-    }
-
-    .voice-panel {
-        top:
-            calc(
-                39% + 47vw + 25px
-            );
-    }
-
-    .controls {
-        bottom:
-            calc(
-                env(safe-area-inset-bottom) + 14px
-            );
+    .header{
+        padding-left:4vw;
+        padding-right:4vw;
     }
 }
 </style>
@@ -654,16 +454,11 @@ body {
 
 <body>
 
-<div id="background">
-    <div id="grid"></div>
-</div>
+<div id="app">
 
-<div class="app">
-
-    <div class="corner tl"></div>
-    <div class="corner tr"></div>
-    <div class="corner bl"></div>
-    <div class="corner br"></div>
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
     <header class="header">
 
@@ -673,18 +468,18 @@ body {
 
         <div class="status">
 
-            <div class="status-item">
-                <span class="status-dot"></span>
+            <div class="statusItem">
+                <span class="statusDot"></span>
                 <span>ONLINE</span>
             </div>
 
-            <div class="status-item">
-                <span class="status-dot"></span>
+            <div class="statusItem">
+                <span class="statusDot"></span>
                 <span>SECURE</span>
             </div>
 
-            <div class="status-item">
-                <span class="status-dot"></span>
+            <div class="statusItem">
+                <span class="statusDot"></span>
                 <span>VOICE</span>
             </div>
 
@@ -692,105 +487,185 @@ body {
 
     </header>
 
-    <div class="subtitle">
-        VOICE CORE · CRYSTALLINE MATRIX · 3 AXIS
-    </div>
+    <!-- =====================================================
+         TITLES
+    ====================================================== -->
 
-    <div class="subsubtitle">
-        HOLOGRAPHIC CONCENTRIC SYSTEM · AUDIO REACTIVE
-    </div>
+    <section class="titleBlock">
 
-    <main class="core-area">
-
-        <canvas id="visual"></canvas>
-
-        <div class="core-label">
-
-            <div class="core-title">
-                CORE
-            </div>
-
-            <div
-                class="core-state"
-                id="coreState">
-                READY
-            </div>
-
+        <div class="title">
+            VOICE CORE · CRYSTALLINE MATRIX · 3 AXIS
         </div>
 
-    </main>
-
-    <section class="voice-panel">
-
-        <div
-            class="voice-wave"
-            id="voiceWave">
-        </div>
-
-        <div
-            class="voice-text"
-            id="voiceText">
-            VOICE INPUT · READY
+        <div class="subtitle">
+            HOLOGRAPHIC CONCENTRIC SYSTEM · AUDIO REACTIVE
         </div>
 
     </section>
 
-    <div class="controls">
+    <!-- =====================================================
+         CENTRAL VISUAL
+    ====================================================== -->
+
+    <main class="coreStage">
+        <canvas id="coreCanvas"></canvas>
+    </main>
+
+    <!-- =====================================================
+         VOICE INFORMATION
+    ====================================================== -->
+
+    <section class="voicePanel">
+
+        <div class="voiceState" id="voiceState">
+            VOICE SYSTEM READY
+        </div>
+
+        <div class="transcript" id="transcript">
+            EN ATTENTE DE COMMANDE
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         AUDIO METER
+    ====================================================== -->
+
+    <div class="audioMeter" id="audioMeter">
+
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+        <span class="audioBar"></span>
+
+    </div>
+
+    <!-- =====================================================
+         CONTROLS
+    ====================================================== -->
+
+    <nav class="controls">
 
         <button
             class="control"
-            id="microButton">
-            MICRO<br>ACTIF
+            id="micButton"
+            type="button">
+
+            <span class="controlIcon">◉</span>
+            MICRO
+            <br>
+            ACTIF
+
         </button>
 
         <button
             class="control"
-            id="shortcutButton">
-            ENVOYER<br>RACCOURCIS
+            id="shortcutButton"
+            type="button">
+
+            <span class="controlIcon">↗</span>
+            ENVOYER
+            <br>
+            RACCOURCIS
+
         </button>
 
         <button
             class="control"
-            id="speakButton">
-            VOIX<br>JARVIS
+            id="speakButton"
+            type="button">
+
+            <span class="controlIcon">◌</span>
+            VOIX
+            <br>
+            JARVIS
+
         </button>
 
+    </nav>
+
+    <div class="smallNote">
+        AUDIO LINK · CORE SYNCHRONIZED · LISTENING
     </div>
 
 </div>
 
 <script>
-/* =========================================================
-   JARVIS VISUAL ENGINE
-   ========================================================= */
-
-(() => {
-
 "use strict";
 
 /* =========================================================
-   CANVAS
-   ========================================================= */
+   JARVIS CORE ENGINE
+   =========================================================
+
+   Principes :
+
+   1. Le centre ne bouge jamais.
+   2. Les quatre couronnes partagent exactement le même centre.
+   3. La voix modifie leur rayon, pas leur position.
+   4. Les rotations sont uniquement angulaires.
+   5. La géode reste centrée.
+   6. Les informations sont générées radialement.
+   7. Aucun objet n'est autorisé à sortir de la zone du core.
+========================================================= */
+
+
+/* =========================================================
+   DOM
+========================================================= */
 
 const canvas =
-    document.getElementById("visual");
+    document.getElementById("coreCanvas");
 
 const ctx =
     canvas.getContext("2d");
 
-const coreArea =
-    document.querySelector(".core-area");
+const micButton =
+    document.getElementById("micButton");
+
+const shortcutButton =
+    document.getElementById("shortcutButton");
+
+const speakButton =
+    document.getElementById("speakButton");
+
+const transcript =
+    document.getElementById("transcript");
+
+const voiceState =
+    document.getElementById("voiceState");
+
+const audioBars =
+    [...document.querySelectorAll(".audioBar")];
+
+
+/* =========================================================
+   CANVAS
+========================================================= */
 
 let W = 0;
 let H = 0;
-let CX = 0;
-let CY = 0;
 let DPR = 1;
 
-function resizeCanvas() {
+function resizeCanvas(){
 
     const rect =
-        coreArea.getBoundingClientRect();
+        canvas.getBoundingClientRect();
 
     DPR =
         Math.min(
@@ -802,16 +677,10 @@ function resizeCanvas() {
     H = rect.height;
 
     canvas.width =
-        Math.floor(W * DPR);
+        Math.round(W * DPR);
 
     canvas.height =
-        Math.floor(H * DPR);
-
-    canvas.style.width =
-        W + "px";
-
-    canvas.style.height =
-        H + "px";
+        Math.round(H * DPR);
 
     ctx.setTransform(
         DPR,
@@ -821,48 +690,43 @@ function resizeCanvas() {
         0,
         0
     );
-
-    CX = W / 2;
-    CY = H / 2;
 }
-
-resizeCanvas();
 
 window.addEventListener(
     "resize",
     resizeCanvas,
-    { passive: true }
+    {passive:true}
 );
+
+resizeCanvas();
+
 
 /* =========================================================
    AUDIO
-   ========================================================= */
+========================================================= */
 
 let audioContext = null;
 let analyser = null;
-let microphone = null;
-
+let microphoneSource = null;
 let audioData = null;
 
 let audioLevel = 0;
-let smoothAudio = 0;
+let smoothedAudio = 0;
 
-let listening = false;
+async function startMicrophone(){
 
-async function startAudio() {
-
-    if (audioContext) {
+    if(analyser){
         return;
     }
 
-    try {
+    try{
 
         const stream =
             await navigator.mediaDevices.getUserMedia({
-                audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                    autoGainControl: true
+                audio:{
+                    echoCancellation:true,
+                    noiseSuppression:true,
+                    autoGainControl:true
                 }
             });
 
@@ -872,43 +736,47 @@ async function startAudio() {
                 window.webkitAudioContext
             )();
 
-        analyser =
-            audioContext.createAnalyser();
-
-        analyser.fftSize = 1024;
-
-        analyser.smoothingTimeConstant =
-            0.72;
-
-        microphone =
+        microphoneSource =
             audioContext.createMediaStreamSource(
                 stream
             );
 
-        microphone.connect(
-            analyser
-        );
+        analyser =
+            audioContext.createAnalyser();
+
+        analyser.fftSize = 512;
+        analyser.smoothingTimeConstant = .72;
 
         audioData =
             new Uint8Array(
                 analyser.fftSize
             );
 
-    } catch (error) {
-
-        console.warn(
-            "Microphone unavailable:",
-            error
+        microphoneSource.connect(
+            analyser
         );
+
+        micButton.classList.add("active");
+
+        voiceState.textContent =
+            "VOICE SYSTEM · LISTENING";
+
+    }catch(error){
+
+        console.error(error);
+
+        voiceState.textContent =
+            "MICROPHONE UNAVAILABLE";
+
     }
 }
 
-function readAudio() {
 
-    if (!analyser) {
+function updateAudio(){
 
-        smoothAudio *= .94;
+    if(!analyser){
 
+        audioLevel *= .92;
         return;
     }
 
@@ -918,16 +786,16 @@ function readAudio() {
 
     let sum = 0;
 
-    for (
+    for(
         let i = 0;
         i < audioData.length;
         i++
-    ) {
+    ){
 
-        const value =
+        const v =
             (audioData[i] - 128) / 128;
 
-        sum += value * value;
+        sum += v * v;
     }
 
     const rms =
@@ -935,30 +803,1606 @@ function readAudio() {
             sum / audioData.length
         );
 
-    audioLevel =
+    const normalized =
         Math.min(
             1,
-            rms * 5.5
+            rms * 5.2
         );
 
-    smoothAudio +=
-        (
-            audioLevel -
-            smoothAudio
-        ) * .22;
+    audioLevel =
+        audioLevel * .72 +
+        normalized * .28;
+
+    smoothedAudio =
+        smoothedAudio * .82 +
+        audioLevel * .18;
 }
 
+
 /* =========================================================
-   VOICE RECOGNITION
-   ========================================================= */
+   AUDIO METER
+========================================================= */
+
+function updateAudioBars(){
+
+    const level =
+        Math.max(
+            .04,
+            smoothedAudio
+        );
+
+    audioBars.forEach(
+        (bar,index)=>{
+
+            const center =
+                Math.abs(
+                    index -
+                    (audioBars.length-1)/2
+                );
+
+            const envelope =
+                Math.max(
+                    .15,
+                    1 - center /
+                    (audioBars.length/2)
+                );
+
+            const variation =
+                Math.sin(
+                    time * .012 +
+                    index * .8
+                ) * .08;
+
+            const h =
+                4 +
+                level *
+                38 *
+                envelope +
+                variation *
+                20;
+
+            bar.style.height =
+                Math.max(
+                    4,
+                    h
+                ) + "px";
+        }
+    );
+}
+
+
+/* =========================================================
+   DRAWING HELPERS
+========================================================= */
+
+function polar(
+    cx,
+    cy,
+    radius,
+    angle
+){
+
+    return {
+        x:
+            cx +
+            Math.cos(angle) *
+            radius,
+
+        y:
+            cy +
+            Math.sin(angle) *
+            radius
+    };
+}
+
+
+function line(
+    x1,
+    y1,
+    x2,
+    y2,
+    color,
+    width=1,
+    alpha=1
+){
+
+    ctx.save();
+
+    ctx.globalAlpha =
+        alpha;
+
+    ctx.strokeStyle =
+        color;
+
+    ctx.lineWidth =
+        width;
+
+    ctx.beginPath();
+
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+
+function circle(
+    cx,
+    cy,
+    radius,
+    stroke,
+    width=1,
+    alpha=1
+){
+
+    ctx.save();
+
+    ctx.globalAlpha =
+        alpha;
+
+    ctx.strokeStyle =
+        stroke;
+
+    ctx.lineWidth =
+        width;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        radius,
+        0,
+        Math.PI*2
+    );
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+
+function arc(
+    cx,
+    cy,
+    radius,
+    start,
+    end,
+    color,
+    width=1,
+    alpha=1
+){
+
+    ctx.save();
+
+    ctx.globalAlpha =
+        alpha;
+
+    ctx.strokeStyle =
+        color;
+
+    ctx.lineWidth =
+        width;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        radius,
+        start,
+        end
+    );
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   TEXT ALONG RADIAL POSITION
+========================================================= */
+
+function radialText(
+    text,
+    cx,
+    cy,
+    radius,
+    angle,
+    color,
+    size,
+    alpha=1
+){
+
+    const p =
+        polar(
+            cx,
+            cy,
+            radius,
+            angle
+        );
+
+    ctx.save();
+
+    ctx.translate(
+        p.x,
+        p.y
+    );
+
+    ctx.rotate(
+        angle + Math.PI/2
+    );
+
+    ctx.globalAlpha =
+        alpha;
+
+    ctx.fillStyle =
+        color;
+
+    ctx.font =
+        `${size}px monospace`;
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+    ctx.fillText(
+        text,
+        0,
+        0
+    );
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   TECHNICAL GRID INSIDE CORE
+========================================================= */
+
+function drawCoreGrid(
+    cx,
+    cy,
+    radius
+){
+
+    ctx.save();
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        radius,
+        0,
+        Math.PI*2
+    );
+
+    ctx.clip();
+
+    const step =
+        Math.max(
+            12,
+            radius / 9
+        );
+
+    ctx.strokeStyle =
+        "rgba(29,165,190,.08)";
+
+    ctx.lineWidth =
+        .6;
+
+    for(
+        let x = cx-radius;
+        x <= cx+radius;
+        x += step
+    ){
+
+        line(
+            x,
+            cy-radius,
+            x,
+            cy+radius,
+            "#1a8395",
+            .55,
+            .25
+        );
+    }
+
+    for(
+        let y = cy-radius;
+        y <= cy+radius;
+        y += step
+    ){
+
+        line(
+            cx-radius,
+            y,
+            cx+radius,
+            y,
+            "#1a8395",
+            .55,
+            .25
+        );
+    }
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   RING DEFINITIONS
+========================================================= */
+
+const rings = [
+
+    {
+        base:.205,
+        rotation:.00055,
+        phase:0,
+        cyan:"#37eaff",
+        secondary:"#6f83ff"
+    },
+
+    {
+        base:.335,
+        rotation:-.00034,
+        phase:1.7,
+        cyan:"#28dfff",
+        secondary:"#b28aff"
+    },
+
+    {
+        base:.465,
+        rotation:.00022,
+        phase:3.2,
+        cyan:"#1ed6f2",
+        secondary:"#caa14b"
+    },
+
+    {
+        base:.595,
+        rotation:-.00016,
+        phase:4.8,
+        cyan:"#46e9ff",
+        secondary:"#b89753"
+    }
+
+];
+
+
+/* =========================================================
+   RING RENDERER
+========================================================= */
+
+function drawRing(
+    ring,
+    cx,
+    cy,
+    coreRadius,
+    index
+){
+
+    /*
+       Audio expansion is deliberately constrained.
+
+       The rings never translate.
+       They only increase their radius.
+    */
+
+    const breathing =
+        smoothedAudio *
+        (index + 1) *
+        coreRadius *
+        .026;
+
+    const radius =
+        coreRadius *
+        ring.base +
+        breathing;
+
+    const rotation =
+        time *
+        ring.rotation +
+        ring.phase;
+
+    /* Main holographic body */
+
+    circle(
+        cx,
+        cy,
+        radius,
+        ring.cyan,
+        1.7,
+        .82
+    );
+
+    circle(
+        cx,
+        cy,
+        radius + 3,
+        ring.cyan,
+        .55,
+        .30
+    );
+
+    circle(
+        cx,
+        cy,
+        radius - 4,
+        ring.cyan,
+        .45,
+        .34
+    );
+
+    /* Secondary information track */
+
+    circle(
+        cx,
+        cy,
+        radius - 9,
+        "#38bfd4",
+        .55,
+        .55
+    );
+
+    circle(
+        cx,
+        cy,
+        radius - 17,
+        "#276e7c",
+        .45,
+        .55
+    );
+
+    /* Counter rotating arcs */
+
+    const arcDirection =
+        index % 2 === 0
+        ? 1
+        : -1;
+
+    for(
+        let a=0;
+        a<5;
+        a++
+    ){
+
+        const start =
+            rotation *
+            arcDirection +
+            a *
+            1.18;
+
+        const length =
+            .34 +
+            index * .045;
+
+        arc(
+            cx,
+            cy,
+            radius - 11,
+            start,
+            start + length,
+            ring.secondary,
+            1.5,
+            .72
+        );
+
+        arc(
+            cx,
+            cy,
+            radius - 24,
+            -start * .8,
+            -start * .8 + length*.75,
+            ring.cyan,
+            1,
+            .55
+        );
+    }
+
+    /* Major graduations */
+
+    const majorTicks = 24;
+
+    for(
+        let i=0;
+        i<majorTicks;
+        i++
+    ){
+
+        const angle =
+            rotation +
+            i *
+            Math.PI*2 /
+            majorTicks;
+
+        const outer =
+            radius - 1;
+
+        const inner =
+            radius -
+            (i % 3 === 0 ? 13 : 8);
+
+        const p1 =
+            polar(
+                cx,
+                cy,
+                inner,
+                angle
+            );
+
+        const p2 =
+            polar(
+                cx,
+                cy,
+                outer,
+                angle
+            );
+
+        line(
+            p1.x,
+            p1.y,
+            p2.x,
+            p2.y,
+            i % 6 === 0
+                ? "#e1fbff"
+                : ring.cyan,
+            i % 6 === 0
+                ? 1.25
+                : .65,
+            i % 6 === 0
+                ? .88
+                : .62
+        );
+    }
+
+    /* Micro graduations */
+
+    const micro =
+        96;
+
+    for(
+        let i=0;
+        i<micro;
+        i++
+    ){
+
+        const angle =
+            rotation +
+            i *
+            Math.PI*2 /
+            micro;
+
+        const len =
+            i % 4 === 0
+            ? 5
+            : 2.5;
+
+        const p1 =
+            polar(
+                cx,
+                cy,
+                radius - 1,
+                angle
+            );
+
+        const p2 =
+            polar(
+                cx,
+                cy,
+                radius - len,
+                angle
+            );
+
+        line(
+            p1.x,
+            p1.y,
+            p2.x,
+            p2.y,
+            "#79d8e5",
+            .5,
+            .48
+        );
+    }
+
+    /* Numerical information */
+
+    const numbers = [
+        "000","030","060","090",
+        "120","150","180","210",
+        "240","270","300","330"
+    ];
+
+    numbers.forEach(
+        (value,i)=>{
+
+            const angle =
+                rotation +
+                i *
+                Math.PI*2 /
+                numbers.length;
+
+            radialText(
+                value,
+                cx,
+                cy,
+                radius - 31,
+                angle,
+                "#86bbc4",
+                Math.max(
+                    7,
+                    coreRadius*.023
+                ),
+                .72
+            );
+        }
+    );
+
+    /* Information artifacts */
+
+    for(
+        let i=0;
+        i<18;
+        i++
+    ){
+
+        const angle =
+            rotation * 1.4 +
+            i *
+            Math.PI*2 /
+            18;
+
+        const rr =
+            radius -
+            34 -
+            (i%3)*7;
+
+        const p =
+            polar(
+                cx,
+                cy,
+                rr,
+                angle
+            );
+
+        ctx.save();
+
+        ctx.translate(
+            p.x,
+            p.y
+        );
+
+        ctx.rotate(
+            angle
+        );
+
+        ctx.globalAlpha =
+            .42 +
+            smoothedAudio*.3;
+
+        ctx.strokeStyle =
+            i%4===0
+            ? "#d2ae55"
+            : "#43d7ea";
+
+        ctx.lineWidth =
+            .65;
+
+        if(i%3===0){
+
+            ctx.strokeRect(
+                -2,
+                -2,
+                4,
+                4
+            );
+
+        }else{
+
+            ctx.beginPath();
+
+            ctx.moveTo(-3,0);
+            ctx.lineTo(3,0);
+
+            ctx.stroke();
+        }
+
+        ctx.restore();
+    }
+
+    /* Bright data nodes */
+
+    for(
+        let i=0;
+        i<4;
+        i++
+    ){
+
+        const angle =
+            rotation +
+            i *
+            Math.PI/2 +
+            .5;
+
+        const p =
+            polar(
+                cx,
+                cy,
+                radius - 2,
+                angle
+            );
+
+        const pulse =
+            1 +
+            smoothedAudio*3 +
+            Math.sin(
+                time*.004+i
+            );
+
+        ctx.save();
+
+        ctx.shadowBlur =
+            10 + smoothedAudio*18;
+
+        ctx.shadowColor =
+            ring.cyan;
+
+        ctx.fillStyle =
+            ring.cyan;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            2*pulse,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+}
+
+
+/* =========================================================
+   GEODE
+========================================================= */
+
+function polygonPoint(
+    cx,
+    cy,
+    radius,
+    sides,
+    index,
+    irregularity
+){
+
+    const angle =
+        index *
+        Math.PI*2 /
+        sides -
+        Math.PI/2;
+
+    const wave =
+        Math.sin(
+            index*2.37
+        ) * irregularity;
+
+    const r =
+        radius *
+        (1 + wave);
+
+    return polar(
+        cx,
+        cy,
+        r,
+        angle
+    );
+}
+
+
+function drawPolygon(
+    cx,
+    cy,
+    radius,
+    sides,
+    rotation,
+    irregularity,
+    stroke,
+    width,
+    alpha,
+    fill
+){
+
+    ctx.save();
+
+    ctx.beginPath();
+
+    for(
+        let i=0;
+        i<sides;
+        i++
+    ){
+
+        const angle =
+            rotation +
+            i *
+            Math.PI*2 /
+            sides;
+
+        const irregular =
+            1 +
+            Math.sin(
+                i*2.71
+            ) *
+            irregularity;
+
+        const r =
+            radius *
+            irregular;
+
+        const x =
+            cx +
+            Math.cos(angle)*r;
+
+        const y =
+            cy +
+            Math.sin(angle)*r;
+
+        if(i===0){
+            ctx.moveTo(x,y);
+        }else{
+            ctx.lineTo(x,y);
+        }
+    }
+
+    ctx.closePath();
+
+    if(fill){
+
+        ctx.fillStyle =
+            fill;
+
+        ctx.fill();
+    }
+
+    ctx.globalAlpha =
+        alpha;
+
+    ctx.strokeStyle =
+        stroke;
+
+    ctx.lineWidth =
+        width;
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   GEODE FACETS
+========================================================= */
+
+function drawGeode(
+    cx,
+    cy,
+    radius
+){
+
+    const pulse =
+        1 +
+        smoothedAudio *
+        .14;
+
+    const r =
+        radius *
+        pulse;
+
+    /* Outer crystalline halo */
+
+    const glow =
+        ctx.createRadialGradient(
+            cx,
+            cy,
+            r*.1,
+            cx,
+            cy,
+            r*1.6
+        );
+
+    glow.addColorStop(
+        0,
+        "rgba(30,224,255,.26)"
+    );
+
+    glow.addColorStop(
+        .45,
+        "rgba(24,138,176,.10)"
+    );
+
+    glow.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle =
+        glow;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        r*1.6,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /* Back polygon shell */
+
+    drawPolygon(
+        cx,
+        cy,
+        r,
+        14,
+        time*.00018,
+        .075,
+        "#3bdff1",
+        1.2,
+        .82,
+        "rgba(2,26,34,.72)"
+    );
+
+    /* Middle crystal layer */
+
+    drawPolygon(
+        cx,
+        cy,
+        r*.80,
+        11,
+        -time*.00024,
+        .105,
+        "#7bd8ff",
+        .85,
+        .72,
+        "rgba(3,43,54,.42)"
+    );
+
+    /* Inner crystal layer */
+
+    drawPolygon(
+        cx,
+        cy,
+        r*.58,
+        9,
+        time*.00031,
+        .13,
+        "#4eeaff",
+        .8,
+        .76,
+        "rgba(5,58,70,.28)"
+    );
+
+    /* Facet network */
+
+    const sides = 14;
+
+    const outer = [];
+
+    for(
+        let i=0;
+        i<sides;
+        i++
+    ){
+
+        outer.push(
+            polygonPoint(
+                cx,
+                cy,
+                r*.92,
+                sides,
+                i,
+                .075
+            )
+        );
+    }
+
+    for(
+        let i=0;
+        i<sides;
+        i++
+    ){
+
+        const a =
+            outer[i];
+
+        const b =
+            outer[
+                (i+1)%sides
+            ];
+
+        const inner =
+            polar(
+                cx,
+                cy,
+                r*.35 +
+                Math.sin(i*1.9)*r*.05,
+                i*Math.PI*2/sides +
+                time*.0002
+            );
+
+        line(
+            a.x,
+            a.y,
+            inner.x,
+            inner.y,
+            i%3===0
+                ? "#8befff"
+                : "#32899c",
+            i%3===0
+                ? .75
+                : .45,
+            .62
+        );
+
+        line(
+            inner.x,
+            inner.y,
+            b.x,
+            b.y,
+            "#287383",
+            .42,
+            .48
+        );
+    }
+
+    /* Floating crystal vertices */
+
+    for(
+        let i=0;
+        i<18;
+        i++
+    ){
+
+        const angle =
+            time*.0004 +
+            i *
+            Math.PI*2 /
+            18;
+
+        const rr =
+            r *
+            (.35 +
+            (i%5)*.11);
+
+        const p =
+            polar(
+                cx,
+                cy,
+                rr,
+                angle
+            );
+
+        const size =
+            1.5 +
+            smoothedAudio*3;
+
+        ctx.save();
+
+        ctx.shadowBlur =
+            8 + smoothedAudio*15;
+
+        ctx.shadowColor =
+            i%4===0
+            ? "#c9a04a"
+            : "#30e7ff";
+
+        ctx.fillStyle =
+            i%4===0
+            ? "#d6b25b"
+            : "#65edff";
+
+        ctx.globalAlpha =
+            .45 +
+            smoothedAudio*.35;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            size,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    /* Central crystal */
+
+    const coreGlow =
+        ctx.createRadialGradient(
+            cx,
+            cy,
+            0,
+            cx,
+            cy,
+            r*.48
+        );
+
+    coreGlow.addColorStop(
+        0,
+        "rgba(220,255,255,.80)"
+    );
+
+    coreGlow.addColorStop(
+        .12,
+        "rgba(62,225,255,.52)"
+    );
+
+    coreGlow.addColorStop(
+        .42,
+        "rgba(0,149,185,.18)"
+    );
+
+    coreGlow.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle =
+        coreGlow;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        r*.48,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    drawPolygon(
+        cx,
+        cy,
+        r*.26,
+        8,
+        time*.0007,
+        .09,
+        "#a6f6ff",
+        1,
+        .9,
+        "rgba(3,43,53,.62)"
+    );
+
+    /* Core label */
+
+    ctx.save();
+
+    ctx.fillStyle =
+        "#d7fbff";
+
+    ctx.font =
+        `${Math.max(10,r*.16)}px monospace`;
+
+    ctx.letterSpacing =
+        "4px";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+    ctx.globalAlpha =
+        .85;
+
+    ctx.fillText(
+        "CORE",
+        cx,
+        cy-3
+    );
+
+    ctx.fillStyle =
+        "#4e8995";
+
+    ctx.font =
+        `${Math.max(6,r*.08)}px monospace`;
+
+    ctx.fillText(
+        smoothedAudio > .08
+        ? "LISTENING"
+        : "READY",
+        cx,
+        cy+13
+    );
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   CENTRAL AXIS
+========================================================= */
+
+function drawAxis(
+    cx,
+    cy,
+    radius
+){
+
+    ctx.save();
+
+    ctx.globalAlpha =
+        .25 +
+        smoothedAudio*.35;
+
+    const axisLength =
+        radius*1.15;
+
+    line(
+        cx-axisLength,
+        cy,
+        cx+axisLength,
+        cy,
+        "#5bdbea",
+        .45,
+        1
+    );
+
+    line(
+        cx,
+        cy-axisLength,
+        cx,
+        cy+axisLength,
+        "#5bdbea",
+        .45,
+        1
+    );
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   OUTER INFORMATION FIELD
+========================================================= */
+
+function drawOuterArtifacts(
+    cx,
+    cy,
+    radius
+){
+
+    const count = 32;
+
+    for(
+        let i=0;
+        i<count;
+        i++
+    ){
+
+        const angle =
+            i *
+            Math.PI*2 /
+            count;
+
+        const rr =
+            radius +
+            10 +
+            (i%3)*6;
+
+        const p =
+            polar(
+                cx,
+                cy,
+                rr,
+                angle
+            );
+
+        const size =
+            i%4===0
+            ? 3
+            : 1.3;
+
+        ctx.save();
+
+        ctx.globalAlpha =
+            .28 +
+            smoothedAudio*.35;
+
+        ctx.fillStyle =
+            i%7===0
+            ? "#d0a64e"
+            : "#43dff2";
+
+        if(i%5===0){
+
+            ctx.strokeStyle =
+                ctx.fillStyle;
+
+            ctx.lineWidth =
+                .7;
+
+            ctx.strokeRect(
+                p.x-size,
+                p.y-size,
+                size*2,
+                size*2
+            );
+
+        }else{
+
+            ctx.beginPath();
+
+            ctx.arc(
+                p.x,
+                p.y,
+                size,
+                0,
+                Math.PI*2
+            );
+
+            ctx.fill();
+        }
+
+        ctx.restore();
+    }
+}
+
+
+/* =========================================================
+   MAIN RENDER
+========================================================= */
+
+let time = 0;
+
+function render(){
+
+    time++;
+
+    updateAudio();
+
+    updateAudioBars();
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    /* -----------------------------------------------------
+       Central geometry
+
+       The visual is deliberately constrained to the
+       available width so that no ring can escape the
+       iPhone viewport.
+    ----------------------------------------------------- */
+
+    const cx =
+        W/2;
+
+    const cy =
+        H*.48;
+
+    const maxRadius =
+        Math.min(
+            W*.465,
+            H*.47
+        );
+
+    /* ambient core glow */
+
+    const ambient =
+        ctx.createRadialGradient(
+            cx,
+            cy,
+            0,
+            cx,
+            cy,
+            maxRadius*1.18
+        );
+
+    ambient.addColorStop(
+        0,
+        "rgba(0,158,188,.11)"
+    );
+
+    ambient.addColorStop(
+        .45,
+        "rgba(0,79,101,.06)"
+    );
+
+    ambient.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle =
+        ambient;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        maxRadius*1.18,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /* Technical grid */
+
+    drawCoreGrid(
+        cx,
+        cy,
+        maxRadius
+    );
+
+    /* Four fixed concentric rings */
+
+    rings.forEach(
+        (ring,index)=>{
+
+            drawRing(
+                ring,
+                cx,
+                cy,
+                maxRadius,
+                index
+            );
+        }
+    );
+
+    /* Outer information */
+
+    drawOuterArtifacts(
+        cx,
+        cy,
+        maxRadius
+    );
+
+    /* Axis */
+
+    drawAxis(
+        cx,
+        cy,
+        maxRadius
+    );
+
+    /* Central geode */
+
+    drawGeode(
+        cx,
+        cy,
+        maxRadius*.165
+    );
+
+    /* Compass labels */
+
+    const labels = [
+        ["N", -Math.PI/2],
+        ["E", 0],
+        ["S", Math.PI/2],
+        ["W", Math.PI]
+    ];
+
+    labels.forEach(
+        ([label,angle])=>{
+
+            const p =
+                polar(
+                    cx,
+                    cy,
+                    maxRadius*.91,
+                    angle
+                );
+
+            ctx.save();
+
+            ctx.fillStyle =
+                "#b8eaf0";
+
+            ctx.globalAlpha =
+                .76;
+
+            ctx.font =
+                `${Math.max(
+                    9,
+                    maxRadius*.045
+                )}px monospace`;
+
+            ctx.textAlign =
+                "center";
+
+            ctx.textBaseline =
+                "middle";
+
+            ctx.fillText(
+                label,
+                p.x,
+                p.y
+            );
+
+            ctx.restore();
+        }
+    );
+
+    /* Audio-driven micro pulse */
+
+    if(smoothedAudio > .025){
+
+        ctx.save();
+
+        ctx.globalAlpha =
+            smoothedAudio*.18;
+
+        ctx.strokeStyle =
+            "#4beaff";
+
+        ctx.lineWidth =
+            1;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            cx,
+            cy,
+            maxRadius *
+            (
+                .18 +
+                smoothedAudio*.13
+            ),
+            0,
+            Math.PI*2
+        );
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    requestAnimationFrame(
+        render
+    );
+}
+
+render();
+
+
+/* =========================================================
+   SPEECH RECOGNITION
+========================================================= */
+
+let recognition = null;
 
 const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
 
-let recognition = null;
-
-if (SpeechRecognition) {
+if(SpeechRecognition){
 
     recognition =
         new SpeechRecognition();
@@ -973,88 +2417,185 @@ if (SpeechRecognition) {
         true;
 
     recognition.onstart =
-        () => {
+        ()=>{
 
-            listening = true;
+            voiceState.textContent =
+                "VOICE SYSTEM · LISTENING";
 
-            microButton.classList.add(
+            micButton.classList.add(
                 "active"
             );
-
-            coreState.textContent =
-                "LISTENING";
-        };
-
-    recognition.onend =
-        () => {
-
-            listening = false;
-
-            microButton.classList.remove(
-                "active"
-            );
-
-            coreState.textContent =
-                "READY";
-        };
-
-    recognition.onerror =
-        event => {
-
-            console.warn(
-                "Speech recognition:",
-                event.error
-            );
-
-            listening = false;
-
-            microButton.classList.remove(
-                "active"
-            );
-
-            coreState.textContent =
-                "READY";
         };
 
     recognition.onresult =
-        event => {
+        event=>{
 
-            let transcript = "";
+            let finalText = "";
+            let interimText = "";
 
-            for (
-                let i =
-                    event.resultIndex;
-                i < event.results.length;
+            for(
+                let i=event.resultIndex;
+                i<event.results.length;
                 i++
-            ) {
+            ){
 
-                transcript +=
-                    event.results[i][0].transcript;
+                const result =
+                    event.results[i];
+
+                const text =
+                    result[0].transcript;
+
+                if(result.isFinal){
+
+                    finalText +=
+                        text;
+
+                }else{
+
+                    interimText +=
+                        text;
+                }
             }
 
-            transcript =
-                transcript.trim();
+            const display =
+                finalText ||
+                interimText;
 
-            if (transcript) {
+            if(display){
 
-                voiceText.textContent =
-                    transcript;
+                transcript.textContent =
+                    display
+                    .trim()
+                    .toUpperCase();
+            }
 
-                lastTranscript =
-                    transcript;
+            if(finalText){
+
+                window.jarvisLastCommand =
+                    finalText.trim();
             }
         };
+
+    recognition.onerror =
+        event=>{
+
+            console.log(
+                "Speech recognition:",
+                event.error
+            );
+        };
+
+    recognition.onend =
+        ()=>{
+
+            if(
+                micButton.classList.contains(
+                    "active"
+                )
+            ){
+
+                try{
+                    recognition.start();
+                }catch(e){}
+            }
+        };
+
 }
 
+
 /* =========================================================
-   SYNTHESIS
-   ========================================================= */
+   MICROPHONE BUTTON
+========================================================= */
 
-function speakJarvis(
-    text = "Oui, monsieur."
-) {
+micButton.addEventListener(
+    "click",
+    async()=>{
 
-    if (!("speechSynthesis" in window)) {
+        await startMicrophone();
+
+        if(!recognition){
+
+            voiceState.textContent =
+                "AUDIO ACTIVE · TRANSCRIPTION UNAVAILABLE";
+
+            return;
+        }
+
+        try{
+
+            recognition.start();
+
+        }catch(error){
+
+            console.log(error);
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SEND TO SHORTCUTS
+========================================================= */
+
+shortcutButton.addEventListener(
+    "click",
+    ()=>{
+
+        const command =
+            (
+                window.jarvisLastCommand ||
+                transcript.textContent ||
+                ""
+            ).trim();
+
+        if(!command){
+
+            voiceState.textContent =
+                "NO COMMAND AVAILABLE";
+
+            return;
+        }
+
+        /*
+           The shortcut name can be changed here.
+
+           Example:
+           shortcuts://run-shortcut?name=JARVIS
+        */
+
+        const shortcutName =
+            "JARVIS";
+
+        const url =
+            "shortcuts://run-shortcut" +
+            "?name=" +
+            encodeURIComponent(
+                shortcutName
+            ) +
+            "&input=" +
+            encodeURIComponent(
+                command
+            );
+
+        window.location.href =
+            url;
+
+    }
+);
+
+
+/* =========================================================
+   SYNTHETIC JARVIS VOICE
+========================================================= */
+
+function speakJarvis(text){
+
+    if(!("speechSynthesis" in window)){
+
+        voiceState.textContent =
+            "SPEECH SYNTHESIS UNAVAILABLE";
+
         return;
     }
 
@@ -1069,2006 +2610,92 @@ function speakJarvis(
         "fr-FR";
 
     utterance.rate =
-        0.92;
+        .94;
 
     utterance.pitch =
-        0.82;
+        .78;
 
     utterance.volume =
         1;
+
+    utterance.onstart =
+        ()=>{
+
+            voiceState.textContent =
+                "JARVIS VOICE · OUTPUT";
+
+            speakButton.classList.add(
+                "active"
+            );
+        };
+
+    utterance.onend =
+        ()=>{
+
+            voiceState.textContent =
+                "VOICE SYSTEM · READY";
+
+            speakButton.classList.remove(
+                "active"
+            );
+        };
 
     window.speechSynthesis.speak(
         utterance
     );
 }
 
-/* =========================================================
-   UI
-   ========================================================= */
-
-const microButton =
-    document.getElementById(
-        "microButton"
-    );
-
-const shortcutButton =
-    document.getElementById(
-        "shortcutButton"
-    );
-
-const speakButton =
-    document.getElementById(
-        "speakButton"
-    );
-
-const voiceText =
-    document.getElementById(
-        "voiceText"
-    );
-
-const coreState =
-    document.getElementById(
-        "coreState"
-    );
-
-const voiceWave =
-    document.getElementById(
-        "voiceWave"
-    );
-
-let lastTranscript = "";
-
-for (
-    let i = 0;
-    i < 31;
-    i++
-) {
-
-    const bar =
-        document.createElement(
-            "span"
-        );
-
-    bar.className =
-        "wave-bar";
-
-    voiceWave.appendChild(
-        bar
-    );
-}
-
-const waveBars =
-    [...document.querySelectorAll(
-        ".wave-bar"
-    )];
-
-microButton.addEventListener(
-    "click",
-    async () => {
-
-        await startAudio();
-
-        if (!recognition) {
-
-            coreState.textContent =
-                "VOICE API N/A";
-
-            voiceText.textContent =
-                "RECONNAISSANCE VOCALE NON DISPONIBLE";
-
-            return;
-        }
-
-        if (listening) {
-
-            recognition.stop();
-
-        } else {
-
-            try {
-
-                recognition.start();
-
-            } catch (error) {
-
-                console.warn(error);
-            }
-        }
-    }
-);
-
-shortcutButton.addEventListener(
-    "click",
-    () => {
-
-        if (!lastTranscript) {
-
-            voiceText.textContent =
-                "AUCUNE COMMANDE";
-
-            return;
-        }
-
-        /*
-         * POINT D'INTÉGRATION
-         *
-         * Ici tu pourras plus tard connecter
-         * l'interface à un raccourci iOS,
-         * une URL, une API ou ton backend.
-         */
-
-        const payload = {
-            command:
-                lastTranscript,
-            timestamp:
-                Date.now()
-        };
-
-        console.log(
-            "JARVIS → Raccourcis:",
-            payload
-        );
-
-        voiceText.textContent =
-            "COMMANDE PRÊTE · " +
-            lastTranscript;
-    }
-);
 
 speakButton.addEventListener(
     "click",
-    () => {
+    ()=>{
 
-        if (lastTranscript) {
+        const text =
+            window.jarvisLastCommand
+            ? "Commande reçue."
+            : "Je vous écoute.";
 
-            speakJarvis(
-                lastTranscript
-            );
-
-        } else {
-
-            speakJarvis(
-                "Oui, monsieur."
-            );
-        }
-
-        coreState.textContent =
-            "SPEAKING";
-
-        setTimeout(
-            () => {
-
-                coreState.textContent =
-                    listening
-                    ? "LISTENING"
-                    : "READY";
-
-            },
-            1800
+        speakJarvis(
+            text
         );
     }
 );
 
-/* =========================================================
-   RANDOM DATA
-   ========================================================= */
-
-const symbols = [
-    "◈",
-    "◇",
-    "△",
-    "▽",
-    "□",
-    "○",
-    "×",
-    "·",
-    "⌁",
-    "⌖",
-    "⌬",
-    "∴",
-    "∵",
-    "⊙",
-    "⊕",
-    "⊗",
-    "∆",
-    "Σ",
-    "λ",
-    "Ω"
-];
-
-const digits = [
-    "000",
-    "015",
-    "030",
-    "045",
-    "060",
-    "075",
-    "090",
-    "105",
-    "120",
-    "135",
-    "150",
-    "165",
-    "180",
-    "195",
-    "210",
-    "225",
-    "240",
-    "255",
-    "270",
-    "285",
-    "300",
-    "315",
-    "330",
-    "345"
-];
-
-function seededValue(
-    index,
-    salt = 0
-) {
-
-    const x =
-        Math.sin(
-            index * 91.731 +
-            salt * 17.193
-        ) * 43758.5453;
-
-    return (
-        x -
-        Math.floor(x)
-    );
-}
 
 /* =========================================================
-   GEOMETRY HELPERS
-   ========================================================= */
+   INITIAL STATE
+========================================================= */
 
-function polar(
-    radius,
-    angle
-) {
+window.jarvisLastCommand =
+    "";
 
-    return {
-        x:
-            CX +
-            Math.cos(angle) *
-            radius,
+voiceState.textContent =
+    "VOICE SYSTEM · READY";
 
-        y:
-            CY +
-            Math.sin(angle) *
-            radius
-    };
-}
+transcript.textContent =
+    "EN ATTENTE DE COMMANDE";
 
-function ringPath(
-    radius,
-    start,
-    end
-) {
-
-    ctx.beginPath();
-
-    ctx.arc(
-        CX,
-        CY,
-        radius,
-        start,
-        end
-    );
-}
 
 /* =========================================================
-   GLOW CIRCLE
-   ========================================================= */
-
-function glowCircle(
-    x,
-    y,
-    radius,
-    color,
-    intensity
-) {
-
-    const gradient =
-        ctx.createRadialGradient(
-            x,
-            y,
-            0,
-            x,
-            y,
-            radius
-        );
-
-    gradient.addColorStop(
-        0,
-        color
-    );
-
-    gradient.addColorStop(
-        .22,
-        color.replace(
-            ")",
-            ", .55)"
-        )
-    );
-
-    gradient.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.globalAlpha =
-        intensity;
-
-    ctx.fillStyle =
-        gradient;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x,
-        y,
-        radius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    ctx.globalAlpha =
-        1;
-}
-
-/* =========================================================
-   MAIN VISUAL STATE
-   ========================================================= */
-
-let time = 0;
-
-const ringBases = [
-    .22,
-    .34,
-    .46,
-    .58
-];
-
-const ringThickness = [
-    2.0,
-    2.2,
-    2.5,
-    2.8
-];
-
-const ringColors = [
-    "#62efff",
-    "#2bd9f3",
-    "#38c9ff",
-    "#75e9f7"
-];
-
-const ringRotations = [
-    .00019,
-    -.00013,
-    .000085,
-    -.000052
-];
-
-/* =========================================================
-   DRAW BACK HALO
-   ========================================================= */
-
-function drawHalo() {
-
-    const maxR =
-        Math.min(W, H) * .62;
-
-    const gradient =
-        ctx.createRadialGradient(
-            CX,
-            CY,
-            0,
-            CX,
-            CY,
-            maxR
-        );
-
-    gradient.addColorStop(
-        0,
-        `rgba(
-            21,
-            218,
-            246,
-            ${.12 + smoothAudio * .20}
-        )`
-    );
-
-    gradient.addColorStop(
-        .35,
-        "rgba(0,100,140,.07)"
-    );
-
-    gradient.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle =
-        gradient;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        CX,
-        CY,
-        maxR,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-}
-
-/* =========================================================
-   OUTER STRUCTURE
-   ========================================================= */
-
-function drawOuterArchitecture() {
-
-    const maxR =
-        Math.min(W, H) * .59;
-
-    ctx.save();
-
-    ctx.strokeStyle =
-        "rgba(45,215,240,.24)";
-
-    ctx.lineWidth =
-        .7;
-
-    for (
-        let i = 0;
-        i < 3;
-        i++
-    ) {
-
-        const r =
-            maxR -
-            i * 10;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            CX,
-            CY,
-            r,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.stroke();
-    }
-
-    /*
-     * Very fine orbital fragments.
-     */
-
-    for (
-        let i = 0;
-        i < 80;
-        i++
-    ) {
-
-        const angle =
-            seededValue(i, 10) *
-            Math.PI *
-            2;
-
-        const r =
-            maxR -
-            4 +
-            seededValue(i, 11) *
-            9;
-
-        const length =
-            3 +
-            seededValue(i, 12) *
-            9;
-
-        const p1 =
-            polar(r, angle);
-
-        const p2 =
-            polar(
-                r + length,
-                angle
-            );
-
-        ctx.strokeStyle =
-            i % 7 === 0
-            ? "rgba(226,250,255,.68)"
-            : "rgba(50,201,225,.40)";
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            p1.x,
-            p1.y
-        );
-
-        ctx.lineTo(
-            p2.x,
-            p2.y
-        );
-
-        ctx.stroke();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   ONE RING
-   ========================================================= */
-
-function drawRing(
-    index,
-    baseRadius,
-    audio
-) {
-
-    const minSide =
-        Math.min(W, H);
-
-    /*
-     * The ring expands around the SAME CENTER.
-     * No lateral translation.
-     */
-
-    const idleRadius =
-        minSide * baseRadius;
-
-    const expansion =
-        idleRadius *
-        audio *
-        .085;
-
-    const radius =
-        idleRadius +
-        expansion;
-
-    const rotation =
-        time *
-        ringRotations[index];
-
-    ctx.save();
-
-    /*
-     * Outer holographic body
-     */
-
-    ctx.shadowBlur =
-        18 +
-        audio * 28;
-
-    ctx.shadowColor =
-        ringColors[index];
-
-    ctx.strokeStyle =
-        ringColors[index];
-
-    ctx.globalAlpha =
-        .76 +
-        audio * .22;
-
-    ctx.lineWidth =
-        ringThickness[index];
-
-    ctx.beginPath();
-
-    ctx.arc(
-        CX,
-        CY,
-        radius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.stroke();
-
-    ctx.shadowBlur = 0;
-
-    /*
-     * Parallel secondary arcs
-     */
-
-    for (
-        let layer = 1;
-        layer <= 3;
-        layer++
-    ) {
-
-        const rr =
-            radius -
-            layer * (
-                6 +
-                index * 2
-            );
-
-        ctx.strokeStyle =
-            `rgba(
-                54,
-                208,
-                232,
-                ${.22 - layer * .035}
-            )`;
-
-        ctx.lineWidth =
-            layer === 1
-            ? .9
-            : .55;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            CX,
-            CY,
-            rr,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.stroke();
-    }
-
-    /*
-     * Dashed information orbit
-     */
-
-    ctx.setLineDash([
-        2 + index,
-        7 + index * 2
-    ]);
-
-    ctx.lineWidth =
-        .8;
-
-    ctx.strokeStyle =
-        "rgba(102,231,247,.58)";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        CX,
-        CY,
-        radius + 4,
-        rotation,
-        rotation +
-        Math.PI * 2
-    );
-
-    ctx.stroke();
-
-    ctx.setLineDash([]);
-
-    /*
-     * Gold information arc
-     */
-
-    const goldStart =
-        rotation +
-        Math.PI *
-        (
-            .18 +
-            index * .11
-        );
-
-    const goldLength =
-        Math.PI *
-        (
-            .24 +
-            audio * .12
-        );
-
-    ctx.strokeStyle =
-        "rgba(205,169,79,.82)";
-
-    ctx.lineWidth =
-        1.2 +
-        audio * 1.4;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        CX,
-        CY,
-        radius - 3,
-        goldStart,
-        goldStart +
-        goldLength
-    );
-
-    ctx.stroke();
-
-    /*
-     * Violet secondary arc
-     */
-
-    const violetStart =
-        rotation -
-        Math.PI *
-        (
-            .65 +
-            index * .15
-        );
-
-    ctx.strokeStyle =
-        "rgba(133,111,255,.72)";
-
-    ctx.lineWidth =
-        .9;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        CX,
-        CY,
-        radius - 8,
-        violetStart,
-        violetStart +
-        Math.PI * .19
-    );
-
-    ctx.stroke();
-
-    /*
-     * Major graduation marks
-     */
-
-    const majorCount =
-        24;
-
-    for (
-        let i = 0;
-        i < majorCount;
-        i++
-    ) {
-
-        const angle =
-            rotation +
-            (
-                i /
-                majorCount
-            ) *
-            Math.PI *
-            2;
-
-        const outer =
-            radius +
-            1;
-
-        const inner =
-            radius -
-            (
-                i % 6 === 0
-                ? 14
-                : 8
-            );
-
-        const p1 =
-            polar(
-                inner,
-                angle
-            );
-
-        const p2 =
-            polar(
-                outer,
-                angle
-            );
-
-        ctx.strokeStyle =
-            i % 6 === 0
-            ? "rgba(232,250,255,.88)"
-            : "rgba(101,224,239,.55)";
-
-        ctx.lineWidth =
-            i % 6 === 0
-            ? 1.35
-            : .7;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            p1.x,
-            p1.y
-        );
-
-        ctx.lineTo(
-            p2.x,
-            p2.y
-        );
-
-        ctx.stroke();
-    }
-
-    /*
-     * Saturated micro graduations
-     */
-
-    const microCount =
-        144;
-
-    for (
-        let i = 0;
-        i < microCount;
-        i++
-    ) {
-
-        const angle =
-            rotation +
-            (
-                i /
-                microCount
-            ) *
-            Math.PI *
-            2;
-
-        const length =
-            i % 12 === 0
-            ? 8
-            : i % 4 === 0
-            ? 5
-            : 2.5;
-
-        const r1 =
-            radius -
-            2;
-
-        const r2 =
-            r1 -
-            length;
-
-        const p1 =
-            polar(
-                r1,
-                angle
-            );
-
-        const p2 =
-            polar(
-                r2,
-                angle
-            );
-
-        ctx.strokeStyle =
-            i % 19 === 0
-            ? "rgba(221,245,249,.78)"
-            : i % 7 === 0
-            ? "rgba(62,221,241,.72)"
-            : "rgba(61,181,202,.40)";
-
-        ctx.lineWidth =
-            i % 12 === 0
-            ? 1
-            : .45;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            p1.x,
-            p1.y
-        );
-
-        ctx.lineTo(
-            p2.x,
-            p2.y
-        );
-
-        ctx.stroke();
-    }
-
-    /*
-     * Data numbers
-     */
-
-    ctx.textAlign =
-        "center";
-
-    ctx.textBaseline =
-        "middle";
-
-    for (
-        let i = 0;
-        i < 24;
-        i++
-    ) {
-
-        const angle =
-            rotation +
-            (
-                i /
-                24
-            ) *
-            Math.PI *
-            2;
-
-        const textRadius =
-            radius -
-            22;
-
-        const p =
-            polar(
-                textRadius,
-                angle
-            );
-
-        ctx.save();
-
-        ctx.translate(
-            p.x,
-            p.y
-        );
-
-        /*
-         * Tangential orientation.
-         */
-
-        ctx.rotate(
-            angle +
-            Math.PI / 2
-        );
-
-        ctx.font =
-            index === 3
-            ? "8px monospace"
-            : "7px monospace";
-
-        ctx.fillStyle =
-            i % 5 === 0
-            ? "rgba(221,248,252,.78)"
-            : "rgba(83,198,218,.55)";
-
-        ctx.fillText(
-            digits[i],
-            0,
-            0
-        );
-
-        ctx.restore();
-    }
-
-    /*
-     * Technical symbols between graduations
-     */
-
-    for (
-        let i = 0;
-        i < 32;
-        i++
-    ) {
-
-        const angle =
-            rotation +
-            seededValue(
-                i,
-                index + 40
-            ) *
-            Math.PI *
-            2;
-
-        const r =
-            radius -
-            31 -
-            seededValue(
-                i,
-                index + 50
-            ) *
-            11;
-
-        const p =
-            polar(
-                r,
-                angle
-            );
-
-        ctx.font =
-            "8px monospace";
-
-        ctx.fillStyle =
-            i % 4 === 0
-            ? "rgba(207,178,88,.72)"
-            : "rgba(89,215,235,.48)";
-
-        ctx.textAlign =
-            "center";
-
-        ctx.textBaseline =
-            "middle";
-
-        ctx.fillText(
-            symbols[
-                i %
-                symbols.length
-            ],
-            p.x,
-            p.y
-        );
-    }
-
-    /*
-     * Moving information nodes
-     */
-
-    const nodeCount =
-        5 + index;
-
-    for (
-        let i = 0;
-        i < nodeCount;
-        i++
-    ) {
-
-        const angle =
-            rotation * (
-                1 +
-                index * .25
-            ) +
-            seededValue(
-                i,
-                index + 90
-            ) *
-            Math.PI *
-            2;
-
-        const p =
-            polar(
-                radius,
-                angle
-            );
-
-        const nodeR =
-            i % 3 === 0
-            ? 2.2
-            : 1.2;
-
-        glowCircle(
-            p.x,
-            p.y,
-            12 +
-            audio * 18,
-            "rgba(45,228,255,.30)",
-            .35
-        );
-
-        ctx.fillStyle =
-            i % 4 === 0
-            ? "#d9faff"
-            : "#39dff7";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            p.x,
-            p.y,
-            nodeR +
-            audio * 1.5,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   BETWEEN-RING INFORMATION
-   ========================================================= */
-
-function drawInterRingInformation(
-    audio
-) {
-
-    const minSide =
-        Math.min(W, H);
-
-    ctx.save();
-
-    /*
-     * These elements deliberately occupy
-     * the EMPTY spaces between rings.
-     */
-
-    for (
-        let layer = 0;
-        layer < 3;
-        layer++
-    ) {
-
-        const radius =
-            minSide *
-            (
-                .285 +
-                layer * .105
-            );
-
-        const rotation =
-            -time *
-            (
-                .00011 +
-                layer * .000045
-            );
-
-        const count =
-            42 +
-            layer * 16;
-
-        for (
-            let i = 0;
-            i < count;
-            i++
-        ) {
-
-            const angle =
-                rotation +
-                (
-                    i /
-                    count
-                ) *
-                Math.PI *
-                2;
-
-            const p =
-                polar(
-                    radius,
-                    angle
-                );
-
-            const size =
-                i % 9 === 0
-                ? 3
-                : i % 3 === 0
-                ? 1.8
-                : 1;
-
-            ctx.fillStyle =
-                i % 13 === 0
-                ? "rgba(202,168,77,.74)"
-                : "rgba(70,207,226,.48)";
-
-            ctx.fillRect(
-                p.x - size / 2,
-                p.y - size / 2,
-                size,
-                size
-            );
-        }
-    }
-
-    /*
-     * Opposing arc system.
-     */
-
-    const arcs = [
-        {
-            r: .275,
-            start: .25,
-            len: .33,
-            color: "rgba(74,225,242,.72)"
-        },
-        {
-            r: .39,
-            start: 2.4,
-            len: .21,
-            color: "rgba(190,158,67,.72)"
-        },
-        {
-            r: .50,
-            start: 4.0,
-            len: .28,
-            color: "rgba(122,103,255,.72)"
-        },
-        {
-            r: .56,
-            start: 5.1,
-            len: .18,
-            color: "rgba(76,226,243,.74)"
-        }
-    ];
-
-    arcs.forEach(
-        (arc, index) => {
-
-            const r =
-                minSide *
-                arc.r;
-
-            const direction =
-                index % 2 === 0
-                ? 1
-                : -1;
-
-            const rotation =
-                time *
-                .00013 *
-                direction;
-
-            ctx.strokeStyle =
-                arc.color;
-
-            ctx.lineWidth =
-                1.3 +
-                audio * 1.7;
-
-            ctx.beginPath();
-
-            ctx.arc(
-                CX,
-                CY,
-                r,
-                arc.start +
-                rotation,
-                arc.start +
-                rotation +
-                Math.PI *
-                arc.len
-            );
-
-            ctx.stroke();
-        }
-    );
-
-    ctx.restore();
-}
-
-/* =========================================================
-   GEODE
-   ========================================================= */
-
-function drawGeode(
-    audio
-) {
-
-    const minSide =
-        Math.min(W, H);
-
-    /*
-     * Deliberately smaller than the orbital system.
-     */
-
-    const base =
-        minSide *
-        .105;
-
-    const pulse =
-        1 +
-        audio *
-        .12;
-
-    const radius =
-        base *
-        pulse;
-
-    /*
-     * Halo.
-     */
-
-    glowCircle(
-        CX,
-        CY,
-        radius * 3.8,
-        "rgba(28,211,243,.12)",
-        .8
-    );
-
-    glowCircle(
-        CX -
-        radius * .28,
-        CY -
-        radius * .22,
-        radius * 1.35,
-        "rgba(96,238,255,.16)",
-        .7
-    );
-
-    /*
-     * Dark crystalline body.
-     */
-
-    const points = 18;
-
-    const vertices = [];
-
-    for (
-        let i = 0;
-        i < points;
-        i++
-    ) {
-
-        const angle =
-            (
-                i /
-                points
-            ) *
-            Math.PI *
-            2 -
-            Math.PI / 2;
-
-        const irregular =
-            .82 +
-            seededValue(
-                i,
-                500
-            ) *
-            .24;
-
-        const localRadius =
-            radius *
-            irregular;
-
-        vertices.push({
-            x:
-                CX +
-                Math.cos(angle) *
-                localRadius,
-
-            y:
-                CY +
-                Math.sin(angle) *
-                localRadius
-        });
-    }
-
-    /*
-     * Outer crystalline silhouette.
-     */
-
-    ctx.save();
-
-    ctx.beginPath();
-
-    vertices.forEach(
-        (p, i) => {
-
-            if (i === 0) {
-                ctx.moveTo(
-                    p.x,
-                    p.y
-                );
-            } else {
-                ctx.lineTo(
-                    p.x,
-                    p.y
-                );
-            }
-        }
-    );
-
-    ctx.closePath();
-
-    const bodyGradient =
-        ctx.createRadialGradient(
-            CX - radius * .3,
-            CY - radius * .35,
-            radius * .08,
-            CX,
-            CY,
-            radius * 1.25
-        );
-
-    bodyGradient.addColorStop(
-        0,
-        "rgba(130,244,255,.42)"
-    );
-
-    bodyGradient.addColorStop(
-        .32,
-        "rgba(10,81,103,.70)"
-    );
-
-    bodyGradient.addColorStop(
-        .72,
-        "rgba(3,25,35,.92)"
-    );
-
-    bodyGradient.addColorStop(
-        1,
-        "rgba(1,8,13,.98)"
-    );
-
-    ctx.fillStyle =
-        bodyGradient;
-
-    ctx.fill();
-
-    ctx.strokeStyle =
-        "rgba(98,238,255,.88)";
-
-    ctx.lineWidth =
-        1.5 +
-        audio * 2;
-
-    ctx.shadowBlur =
-        16 +
-        audio * 25;
-
-    ctx.shadowColor =
-        "rgba(35,229,255,.65)";
-
-    ctx.stroke();
-
-    ctx.shadowBlur = 0;
-
-    /*
-     * Faceted internal geometry.
-     */
-
-    for (
-        let i = 0;
-        i < points;
-        i++
-    ) {
-
-        const a =
-            vertices[i];
-
-        const b =
-            vertices[
-                (i + 1) %
-                points
-            ];
-
-        const centerOffset =
-            audio *
-            (
-                5 +
-                seededValue(
-                    i,
-                    600
-                ) * 8
-            );
-
-        const angle =
-            Math.atan2(
-                a.y - CY,
-                a.x - CX
-            );
-
-        const innerX =
-            CX +
-            Math.cos(angle) *
-            (
-                radius *
-                .15 +
-                centerOffset
-            );
-
-        const innerY =
-            CY +
-            Math.sin(angle) *
-            (
-                radius *
-                .15 +
-                centerOffset
-            );
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            a.x,
-            a.y
-        );
-
-        ctx.lineTo(
-            innerX,
-            innerY
-        );
-
-        ctx.lineTo(
-            b.x,
-            b.y
-        );
-
-        ctx.closePath();
-
-        ctx.fillStyle =
-            i % 4 === 0
-            ? "rgba(43,207,232,.13)"
-            : i % 3 === 0
-            ? "rgba(122,99,245,.10)"
-            : "rgba(7,53,69,.20)";
-
-        ctx.fill();
-
-        ctx.strokeStyle =
-            "rgba(78,209,229,.27)";
-
-        ctx.lineWidth =
-            .55;
-
-        ctx.stroke();
-    }
-
-    /*
-     * Crystalline internal network.
-     */
-
-    for (
-        let i = 0;
-        i < 13;
-        i++
-    ) {
-
-        const angle =
-            seededValue(
-                i,
-                700
-            ) *
-            Math.PI *
-            2;
-
-        const r1 =
-            radius *
-            (
-                .12 +
-                seededValue(
-                    i,
-                    701
-                ) *
-                .28
-            );
-
-        const r2 =
-            radius *
-            (
-                .72 +
-                seededValue(
-                    i,
-                    702
-                ) *
-                .25
-            );
-
-        const p1 =
-            polar(
-                r1,
-                angle
-            );
-
-        const p2 =
-            polar(
-                r2,
-                angle +
-                (
-                    seededValue(
-                        i,
-                        703
-                    ) -
-                    .5
-                ) *
-                .7
-            );
-
-        ctx.strokeStyle =
-            "rgba(130,235,247,.34)";
-
-        ctx.lineWidth =
-            .55;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            p1.x,
-            p1.y
-        );
-
-        ctx.lineTo(
-            p2.x,
-            p2.y
-        );
-
-        ctx.stroke();
-    }
-
-    /*
-     * Inner crystal facets.
-     */
-
-    for (
-        let i = 0;
-        i < 8;
-        i++
-    ) {
-
-        const angle =
-            (
-                i /
-                8
-            ) *
-            Math.PI *
-            2 +
-            time *
-            .0002;
-
-        const r =
-            radius *
-            (
-                .28 +
-                audio * .05
-            );
-
-        const p =
-            polar(
-                r,
-                angle
-            );
-
-        ctx.fillStyle =
-            i % 2 === 0
-            ? "rgba(70,225,247,.22)"
-            : "rgba(136,104,255,.18)";
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            CX,
-            CY
-        );
-
-        ctx.lineTo(
-            p.x,
-            p.y
-        );
-
-        ctx.lineTo(
-            CX +
-            Math.cos(
-                angle + .38
-            ) *
-            r,
-
-            CY +
-            Math.sin(
-                angle + .38
-            ) *
-            r
-        );
-
-        ctx.closePath();
-
-        ctx.fill();
-    }
-
-    /*
-     * Core light.
-     */
-
-    const coreRadius =
-        radius *
-        (
-            .18 +
-            audio * .06
-        );
-
-    const coreGradient =
-        ctx.createRadialGradient(
-            CX,
-            CY,
-            0,
-            CX,
-            CY,
-            coreRadius
-        );
-
-    coreGradient.addColorStop(
-        0,
-        "rgba(235,255,255,.95)"
-    );
-
-    coreGradient.addColorStop(
-        .12,
-        "rgba(117,242,255,.75)"
-    );
-
-    coreGradient.addColorStop(
-        .48,
-        "rgba(17,180,220,.30)"
-    );
-
-    coreGradient.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle =
-        coreGradient;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        CX,
-        CY,
-        coreRadius * 2.8,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    /*
-     * Tiny crystalline particles.
-     */
-
-    for (
-        let i = 0;
-        i < 30;
-        i++
-    ) {
-
-        const angle =
-            seededValue(
-                i,
-                800
-            ) *
-            Math.PI *
-            2;
-
-        const r =
-            radius *
-            (
-                .25 +
-                seededValue(
-                    i,
-                    801
-                ) *
-                .70
-            );
-
-        const p =
-            polar(
-                r,
-                angle
-            );
-
-        const s =
-            .7 +
-            seededValue(
-                i,
-                802
-            ) *
-            1.8 +
-            audio * 1.4;
-
-        ctx.fillStyle =
-            i % 6 === 0
-            ? "rgba(222,249,255,.9)"
-            : "rgba(66,214,238,.55)";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            p.x,
-            p.y,
-            s,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-    }
-
-    ctx.restore();
-}
-
-/* =========================================================
-   VOICE WAVEFORM
-   ========================================================= */
-
-function updateWaveform(
-    audio
-) {
-
-    waveBars.forEach(
-        (bar, index) => {
-
-            const center =
-                waveBars.length / 2;
-
-            const distance =
-                Math.abs(
-                    index -
-                    center
-                ) /
-                center;
-
-            const shape =
-                1 -
-                distance;
-
-            const noise =
-                seededValue(
-                    index,
-                    Math.floor(
-                        time / 90
-                    )
-                );
-
-            const height =
-                5 +
-                shape *
-                (
-                    audio *
-                    22
-                ) +
-                noise *
-                audio *
-                8;
-
-            bar.style.height =
-                height + "px";
-        }
-    );
-}
-
-/* =========================================================
-   RENDER
-   ========================================================= */
-
-function render() {
-
-    readAudio();
-
-    time++;
-
-    ctx.clearRect(
-        0,
-        0,
-        W,
-        H
-    );
-
-    /*
-     * Very subtle global breathing.
-     */
-
-    const idleBreath =
-        (
-            Math.sin(
-                time * .018
-            ) +
-            1
-        ) *
-        .5;
-
-    const effectiveAudio =
-        Math.max(
-            smoothAudio,
-            idleBreath *
-            .018
-        );
-
-    drawHalo();
-
-    /*
-     * Large peripheral architecture.
-     */
-
-    drawOuterArchitecture();
-
-    /*
-     * Information occupying spaces
-     * between the four main rings.
-     */
-
-    drawInterRingInformation(
-        effectiveAudio
-    );
-
-    /*
-     * Four fixed concentric systems.
-     */
-
-    for (
-        let i = 0;
-        i < ringBases.length;
-        i++
-    ) {
-
-        drawRing(
-            i,
-            ringBases[i],
-            effectiveAudio
-        );
-    }
-
-    /*
-     * Geode LAST so that it sits
-     * visually in front of the rings.
-     */
-
-    drawGeode(
-        effectiveAudio
-    );
-
-    updateWaveform(
-        effectiveAudio
-    );
-
-    requestAnimationFrame(
-        render
-    );
-}
-
-render();
-
-/* =========================================================
-   INITIAL MICROPHONE PREPARATION
-   ========================================================= */
+   PREVENT UNWANTED PAGE MOVEMENT
+========================================================= */
 
 document.addEventListener(
-    "visibilitychange",
-    () => {
-
-        if (
-            document.hidden &&
-            audioContext
-        ) {
-
-            audioContext.suspend();
-
-        } else if (
-            !document.hidden &&
-            audioContext
-        ) {
-
-            audioContext.resume();
-        }
-    }
+    "touchmove",
+    event=>{
+        event.preventDefault();
+    },
+    {passive:false}
 );
 
-/* =========================================================
-   KEYBOARD SUPPORT
-   ========================================================= */
-
-window.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.code ===
-            "Space"
-        ) {
-
-            event.preventDefault();
-
-            microButton.click();
-        }
-    }
+document.addEventListener(
+    "gesturestart",
+    event=>{
+        event.preventDefault();
+    },
+    {passive:false}
 );
 
-/* =========================================================
-   RESIZE OBSERVER
-   ========================================================= */
-
-if (
-    "ResizeObserver"
-    in window
-) {
-
-    const observer =
-        new ResizeObserver(
-            resizeCanvas
-        );
-
-    observer.observe(
-        coreArea
-    );
-}
-
-})();
 </script>
 
 </body>
