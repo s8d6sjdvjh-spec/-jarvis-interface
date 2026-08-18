@@ -2,1438 +2,1528 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover,
+               user-scalable=no">
 
-<title>JARVIS — Crystalline Voice Core</title>
+<title>JARVIS — Voice Core</title>
 
 <style>
+:root{
+  --cyan:#35e8ff;
+  --cyan2:#83f6ff;
+  --blue:#4d9dff;
+  --violet:#9c78ff;
+  --gold:#e4b45a;
+  --bg:#020b10;
+}
+
 *{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#02090d;
-    color:#d8faff;
-    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:var(--bg);
+  color:#dffcff;
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
 }
 
 body{
-    background:
-        radial-gradient(
-            circle at 50% 45%,
-            rgba(10,80,96,.20),
-            transparent 43%
-        ),
-        #02090d;
+  position:relative;
 }
 
-/* ================= BACKGROUND ================= */
+/* =========================================================
+   BACKGROUND
+========================================================= */
 
-#bg{
-    position:fixed;
-    inset:0;
-    background-image:
-        linear-gradient(rgba(40,140,158,.105) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(40,140,158,.105) 1px,transparent 1px),
-        linear-gradient(rgba(40,140,158,.035) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(40,140,158,.035) 1px,transparent 1px);
-    background-size:
-        32px 32px,
-        32px 32px,
-        8px 8px,
-        8px 8px;
+#background{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(
+      ellipse at 50% 48%,
+      rgba(12,75,94,.22) 0%,
+      rgba(2,16,22,.10) 35%,
+      rgba(1,8,12,1) 72%
+    ),
+    linear-gradient(
+      rgba(30,130,150,.075) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(30,130,150,.075) 1px,
+      transparent 1px
+    );
+  background-size:
+    100% 100%,
+    26px 26px,
+    26px 26px;
 }
 
-/* ================= APP ================= */
-
-#app{
-    position:relative;
-    z-index:2;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    padding:
-        max(18px,env(safe-area-inset-top))
-        18px
-        max(14px,env(safe-area-inset-bottom));
+#background:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(rgba(74,212,238,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(74,212,238,.035) 1px,transparent 1px);
+  background-size:130px 130px;
+  pointer-events:none;
 }
 
-/* ================= HEADER ================= */
+/* =========================================================
+   HEADER
+========================================================= */
 
 header{
-    height:65px;
-    flex:none;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+  position:absolute;
+  z-index:20;
+  top:calc(env(safe-area-inset-top) + 25px);
+  left:30px;
+  right:24px;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
 .logo{
-    font-size:29px;
-    font-weight:300;
-    letter-spacing:.27em;
-    white-space:nowrap;
+  font-size:31px;
+  font-weight:300;
+  letter-spacing:.28em;
+  white-space:nowrap;
 }
 
 .status{
-    display:flex;
-    gap:16px;
-    font-size:9px;
-    letter-spacing:.27em;
-    color:#607f89;
+  display:flex;
+  gap:20px;
+  align-items:center;
+  font-size:11px;
+  letter-spacing:.28em;
+  color:rgba(190,235,243,.58);
+  white-space:nowrap;
 }
 
 .status span{
-    display:flex;
-    align-items:center;
-    gap:6px;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
-.dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:#23e4ff;
-    box-shadow:
-        0 0 7px #23e4ff,
-        0 0 18px rgba(35,228,255,.65);
+.status i{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--cyan);
+  box-shadow:
+    0 0 8px var(--cyan),
+    0 0 18px rgba(53,232,255,.7);
 }
-
-/* ================= TITLES ================= */
 
 .title{
-    text-align:center;
-    flex:none;
-    margin-top:8px;
+  position:absolute;
+  z-index:20;
+  top:calc(env(safe-area-inset-top) + 105px);
+  left:0;
+  width:100%;
+  text-align:center;
+  font-size:13px;
+  letter-spacing:.34em;
+  color:rgba(137,214,225,.68);
 }
 
-.title-main{
-    font-size:11px;
-    letter-spacing:.34em;
-    color:#67949f;
+.subtitle{
+  position:absolute;
+  z-index:20;
+  top:calc(env(safe-area-inset-top) + 137px);
+  width:100%;
+  text-align:center;
+  font-size:9px;
+  letter-spacing:.34em;
+  color:rgba(105,170,182,.48);
 }
 
-.title-sub{
-    margin-top:13px;
-    font-size:7px;
-    letter-spacing:.38em;
-    color:#365963;
+/* =========================================================
+   MAIN CORE
+========================================================= */
+
+#coreStage{
+  position:absolute;
+  z-index:5;
+
+  /*
+    Zone centrale volontairement généreuse.
+    Les couronnes restent parfaitement centrées.
+  */
+  top:calc(env(safe-area-inset-top) + 175px);
+  left:50%;
+  width:min(96vw,520px);
+  height:min(96vw,520px);
+  transform:translateX(-50%);
 }
 
-/* ================= CORE ================= */
-
-#core{
-    position:relative;
-    flex:1;
-    min-height:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
+/* canvas is the entire visual system */
 #visual{
-    width:min(96vw,720px);
-    height:min(96vw,720px);
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
 }
 
-canvas{
-    width:100%;
-    height:100%;
-    display:block;
+/* =========================================================
+   CORE LABEL
+========================================================= */
+
+.coreLabel{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:8;
+  text-align:center;
+  pointer-events:none;
+  text-shadow:0 0 12px rgba(100,240,255,.75);
 }
 
-/* ================= VOICE ================= */
-
-#voice{
-    position:absolute;
-    bottom:7%;
-    left:50%;
-    transform:translateX(-50%);
-    width:92%;
-    text-align:center;
-    border-top:1px solid rgba(38,213,235,.35);
-    border-bottom:1px solid rgba(38,213,235,.28);
-    padding:10px;
+.coreLabel .main{
+  font-size:15px;
+  letter-spacing:.48em;
+  padding-left:.48em;
 }
 
-#state{
-    font-size:8px;
-    letter-spacing:.34em;
-    color:#5e8b95;
+.coreLabel .sub{
+  margin-top:8px;
+  font-size:8px;
+  letter-spacing:.35em;
+  color:rgba(170,239,246,.62);
 }
 
-#text{
-    margin-top:7px;
-    font-size:16px;
-    letter-spacing:.11em;
-    color:#c8f7fc;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+/* =========================================================
+   AUDIO / TRANSCRIPT
+========================================================= */
+
+#voicePanel{
+  position:absolute;
+  z-index:20;
+  top:calc(env(safe-area-inset-top) + 710px);
+  left:7%;
+  right:7%;
+  height:76px;
+  border-top:1px solid rgba(55,226,249,.34);
+  border-bottom:1px solid rgba(55,226,249,.34);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
 }
 
-/* ================= METER ================= */
-
-#meter{
-    position:absolute;
-    bottom:14%;
-    left:50%;
-    transform:translateX(-50%);
-    height:24px;
-    display:flex;
-    align-items:flex-end;
-    gap:3px;
+.voiceState{
+  font-size:9px;
+  letter-spacing:.34em;
+  color:rgba(126,219,231,.58);
+  margin-bottom:8px;
 }
 
-.bar{
-    width:3px;
-    height:4px;
-    background:#25e7ff;
-    box-shadow:0 0 8px #25e7ff;
+#transcript{
+  max-width:90%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:17px;
+  letter-spacing:.08em;
+  color:#e4fbff;
 }
 
-/* ================= BUTTONS ================= */
+/* =========================================================
+   BUTTONS
+========================================================= */
 
 .controls{
-    flex:none;
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
+  position:absolute;
+  z-index:30;
+  left:6%;
+  right:6%;
+  bottom:calc(env(safe-area-inset-bottom) + 25px);
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
 }
 
 button{
-    height:66px;
-    border:1px solid rgba(35,225,248,.62);
-    background:rgba(3,27,34,.65);
-    color:#c6f5f9;
-    font:inherit;
-    font-size:9px;
-    letter-spacing:.17em;
+  height:76px;
+  border:1px solid rgba(48,229,255,.62);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(20,111,131,.18),
+      rgba(2,24,32,.48)
+    );
+  color:#d9fbff;
+  font:inherit;
+  letter-spacing:.2em;
+  font-size:10px;
+  box-shadow:
+    inset 0 0 20px rgba(40,210,240,.04),
+    0 0 12px rgba(30,190,220,.06);
 }
 
 button:active{
-    background:rgba(25,100,112,.3);
+  transform:scale(.97);
+  background:rgba(30,180,205,.16);
 }
 
 button.active{
-    border-color:#5cf4ff;
-    box-shadow:
-        0 0 25px rgba(35,225,248,.22),
-        inset 0 0 25px rgba(35,225,248,.08);
+  border-color:#7df6ff;
+  box-shadow:
+    0 0 18px rgba(53,232,255,.42),
+    inset 0 0 25px rgba(53,232,255,.12);
 }
 
-.icon{
-    display:block;
-    font-size:17px;
-    margin-bottom:7px;
-    color:#35eaff;
+.micDot{
+  display:block;
+  width:10px;
+  height:10px;
+  margin:0 auto 8px;
+  border-radius:50%;
+  background:var(--cyan);
+  box-shadow:0 0 15px var(--cyan);
 }
 
-@media(max-height:720px){
-    header{height:54px}
-    .logo{font-size:25px}
-    .title{margin-top:3px}
-    .title-sub{margin-top:7px}
-    button{height:55px}
-}
+/* =========================================================
+   SMALL DEVICES
+========================================================= */
 
-@media(max-width:390px){
-    .status{gap:8px;font-size:7px}
-    .logo{font-size:24px}
-    .title-main{font-size:9px}
+@media(max-height:760px){
+  #coreStage{
+    top:calc(env(safe-area-inset-top) + 145px);
+    width:88vw;
+    height:88vw;
+  }
+
+  #voicePanel{
+    top:calc(env(safe-area-inset-top) + 590px);
+  }
+
+  .controls{
+    bottom:calc(env(safe-area-inset-bottom) + 12px);
+  }
+
+  button{
+    height:62px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div id="bg"></div>
-
-<div id="app">
+<div id="background"></div>
 
 <header>
-    <div class="logo">JARVIS</div>
+  <div class="logo">JARVIS</div>
 
-    <div class="status">
-        <span><i class="dot"></i>ONLINE</span>
-        <span><i class="dot"></i>SECURE</span>
-        <span><i class="dot"></i>VOICE</span>
-    </div>
+  <div class="status">
+    <span><i></i>ONLINE</span>
+    <span><i></i>SECURE</span>
+    <span><i></i>VOICE</span>
+  </div>
 </header>
 
 <div class="title">
-    <div class="title-main">
-        VOICE CORE · CRYSTALLINE MATRIX · 3 AXIS
-    </div>
-
-    <div class="title-sub">
-        HOLOGRAPHIC CONCENTRIC SYSTEM · AUDIO REACTIVE
-    </div>
+  VOICE CORE · CRYSTALLINE MATRIX · 3 AXIS
 </div>
 
-<div id="core">
+<div class="subtitle">
+  HOLOGRAPHIC CONCENTRIC SYSTEM · AUDIO REACTIVE
+</div>
 
-    <div id="visual">
-        <canvas id="canvas"></canvas>
-    </div>
+<div id="coreStage">
+  <canvas id="visual"></canvas>
 
-    <div id="meter"></div>
+  <div class="coreLabel">
+    <div class="main">CORE</div>
+    <div class="sub">READY</div>
+  </div>
+</div>
 
-    <div id="voice">
-        <div id="state">VOICE SYSTEM · READY</div>
-        <div id="text">EN ATTENTE DE COMMANDE</div>
-    </div>
-
+<div id="voicePanel">
+  <div class="voiceState" id="voiceState">
+    VOICE SYSTEM · READY
+  </div>
+  <div id="transcript">EN ATTENTE DE COMMANDE</div>
 </div>
 
 <div class="controls">
 
-    <button id="mic">
-        <span class="icon">◉</span>
-        MICRO ACTIF
-    </button>
+  <button id="micButton">
+    <span class="micDot"></span>
+    MICRO ACTIF
+  </button>
 
-    <button id="send">
-        <span class="icon">↗</span>
-        ENVOYER<br>RACCOURCIS
-    </button>
+  <button id="shortcutButton">
+    ↗<br>
+    ENVOYER<br>
+    RACCOURCIS
+  </button>
 
-    <button id="speak">
-        <span class="icon">◌</span>
-        VOIX JARVIS
-    </button>
-
-</div>
+  <button id="speakButton">
+    ◌<br>
+    VOIX JARVIS
+  </button>
 
 </div>
 
 <script>
 
 /* =========================================================
-   JARVIS CRYSTALLINE CORE
+   JARVIS VISUAL ENGINE
+   Aucun framework externe.
+   Fonctionne directement dans GitHub Pages.
 ========================================================= */
 
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
+const canvas = document.getElementById("visual");
+const ctx = canvas.getContext("2d");
+
+const stage = document.getElementById("coreStage");
+const micButton = document.getElementById("micButton");
+const shortcutButton = document.getElementById("shortcutButton");
+const speakButton = document.getElementById("speakButton");
+
+const voiceState = document.getElementById("voiceState");
+const transcript = document.getElementById("transcript");
 
 let W,H,DPR;
+let time = 0;
+
+let audioContext = null;
+let analyser = null;
+let microphone = null;
+let audioData = null;
+
+let listening = false;
+let level = 0;
+let targetLevel = 0;
+
+let recognition = null;
+let lastTranscript = "";
+
+/* =========================================================
+   RESIZE
+========================================================= */
 
 function resize(){
 
-    const r=canvas.getBoundingClientRect();
+  DPR = Math.min(window.devicePixelRatio || 1,2);
 
-    W=r.width;
-    H=r.height;
+  W = stage.clientWidth;
+  H = stage.clientHeight;
 
-    DPR=Math.min(devicePixelRatio||1,2);
+  canvas.width = W * DPR;
+  canvas.height = H * DPR;
 
-    canvas.width=W*DPR;
-    canvas.height=H*DPR;
+  canvas.style.width = W+"px";
+  canvas.style.height = H+"px";
 
-    ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
 }
 
 window.addEventListener("resize",resize);
 resize();
 
-
 /* =========================================================
    AUDIO
 ========================================================= */
 
-let audioLevel=0;
-let targetAudio=0;
-let listening=false;
+async function startAudio(){
 
-let analyser=null;
-let audioData=null;
+  try{
 
-async function startMic(){
+    audioContext =
+      new (window.AudioContext ||
+           window.webkitAudioContext)();
 
-    try{
+    const stream =
+      await navigator.mediaDevices.getUserMedia({
+        audio:{
+          echoCancellation:true,
+          noiseSuppression:true,
+          autoGainControl:true
+        }
+      });
 
-        const stream=
-            await navigator.mediaDevices
-            .getUserMedia({audio:true});
+    microphone =
+      audioContext.createMediaStreamSource(stream);
 
-        const AC=
-            window.AudioContext||
-            window.webkitAudioContext;
+    analyser =
+      audioContext.createAnalyser();
 
-        const audioContext=new AC();
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = .72;
 
-        analyser=
-            audioContext.createAnalyser();
+    audioData =
+      new Uint8Array(analyser.fftSize);
 
-        analyser.fftSize=512;
-        analyser.smoothingTimeConstant=.72;
+    microphone.connect(analyser);
 
-        const source=
-            audioContext
-            .createMediaStreamSource(stream);
+    listening = true;
 
-        source.connect(analyser);
+    micButton.classList.add("active");
 
-        audioData=
-            new Uint8Array(analyser.fftSize);
+    voiceState.textContent =
+      "VOICE SYSTEM · LISTENING";
 
-        listening=true;
+    startRecognition();
 
-        document
-            .getElementById("mic")
-            .classList.add("active");
+  }catch(error){
 
-        document
-            .getElementById("state")
-            .textContent="VOICE SYSTEM · LISTENING";
+    voiceState.textContent =
+      "MICROPHONE · PERMISSION REQUIRED";
 
-        readAudio();
-
-    }catch(e){
-
-        document
-            .getElementById("text")
-            .textContent="AUTORISATION MICRO REQUISE";
-    }
+    console.log(error);
+  }
 }
 
-function readAudio(){
+/* =========================================================
+   SPEECH RECOGNITION
+========================================================= */
 
-    if(!analyser)return;
+function startRecognition(){
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if(!SpeechRecognition){
+
+    voiceState.textContent =
+      "VOICE SYSTEM · AUDIO READY";
+
+    return;
+  }
+
+  recognition =
+    new SpeechRecognition();
+
+  recognition.lang = "fr-FR";
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onstart = ()=>{
+    voiceState.textContent =
+      "VOICE SYSTEM · LISTENING";
+  };
+
+  recognition.onresult = event =>{
+
+    let text = "";
+
+    for(
+      let i = event.resultIndex;
+      i < event.results.length;
+      i++
+    ){
+
+      text +=
+        event.results[i][0].transcript;
+    }
+
+    text = text.trim();
+
+    if(text){
+
+      lastTranscript = text;
+      transcript.textContent = text;
+
+      voiceState.textContent =
+        "VOICE SYSTEM · COMMAND RECEIVED";
+    }
+  };
+
+  recognition.onerror = ()=>{
+    voiceState.textContent =
+      "VOICE SYSTEM · READY";
+  };
+
+  recognition.onend = ()=>{
+
+    if(listening){
+
+      try{
+        recognition.start();
+      }catch(e){}
+    }
+  };
+
+  try{
+    recognition.start();
+  }catch(e){}
+}
+
+/* =========================================================
+   MICROPHONE BUTTON
+========================================================= */
+
+micButton.addEventListener("click",async()=>{
+
+  if(!listening){
+
+    await startAudio();
+
+  }else{
+
+    listening = false;
+
+    micButton.classList.remove("active");
+
+    voiceState.textContent =
+      "VOICE SYSTEM · READY";
+
+    if(recognition){
+
+      try{
+        recognition.stop();
+      }catch(e){}
+    }
+  }
+});
+
+/* =========================================================
+   AUDIO LEVEL
+========================================================= */
+
+function updateAudio(){
+
+  if(!analyser || !audioData){
+
+    targetLevel =
+      listening
+      ? .08 + Math.sin(time*.001)*.025
+      : 0;
+
+  }else{
 
     analyser.getByteTimeDomainData(audioData);
 
-    let sum=0;
+    let sum = 0;
 
     for(let i=0;i<audioData.length;i++){
 
-        const v=(audioData[i]-128)/128;
-        sum+=v*v;
+      const v =
+        (audioData[i]-128)/128;
+
+      sum += v*v;
     }
 
-    const rms=Math.sqrt(sum/audioData.length);
+    const rms =
+      Math.sqrt(sum/audioData.length);
 
-    /*
-       Amplification volontaire :
-       la dilatation doit être évidente
-       même avec une voix normale.
-    */
+    targetLevel =
+      Math.min(1,rms*5.5);
+  }
 
-    targetAudio=Math.min(1,rms*7);
+  /*
+    Attack rapide.
+    Retour plus lent.
+    Cela donne le mouvement "physique"
+    demandé lorsque la voix arrive.
+  */
 
-    requestAnimationFrame(readAudio);
+  if(targetLevel > level){
+
+    level +=
+      (targetLevel-level)*.34;
+
+  }else{
+
+    level +=
+      (targetLevel-level)*.075;
+  }
 }
-
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-function P(cx,cy,r,a){
+function polar(cx,cy,r,a){
 
-    return {
-        x:cx+Math.cos(a)*r,
-        y:cy+Math.sin(a)*r
-    };
+  return {
+    x:cx+Math.cos(a)*r,
+    y:cy+Math.sin(a)*r
+  };
 }
 
-function glowArc(
-    cx,cy,r,a1,a2,color,width,alpha
-){
+function glow(color,blur){
 
-    ctx.save();
+  ctx.shadowColor=color;
+  ctx.shadowBlur=blur;
+}
 
-    ctx.strokeStyle=color;
-    ctx.globalAlpha=alpha;
-    ctx.lineWidth=width;
+function noGlow(){
 
-    ctx.shadowColor=color;
-    ctx.shadowBlur=width*5;
+  ctx.shadowBlur=0;
+}
+
+/* =========================================================
+   BACKGROUND PARTICLES
+========================================================= */
+
+const particles = [];
+
+for(let i=0;i<90;i++){
+
+  particles.push({
+    x:Math.random(),
+    y:Math.random(),
+    r:.4+Math.random()*1.2,
+    a:.12+Math.random()*.38
+  });
+}
+
+function drawParticles(){
+
+  for(const p of particles){
 
     ctx.beginPath();
 
-    ctx.arc(
-        cx,cy,r,a1,a2
-    );
-
-    ctx.stroke();
-
-    ctx.restore();
-}
-
-
-/* =========================================================
-   PARTICLES
-========================================================= */
-
-const particles=[];
-
-for(let i=0;i<75;i++){
-
-    particles.push({
-        angle:Math.random()*Math.PI*2,
-        radius:.55+Math.random()*.5,
-        size:.4+Math.random()*1.3,
-        speed:.00002+Math.random()*.00008,
-        phase:Math.random()*10
-    });
-}
-
-function drawParticles(cx,cy,R,time){
-
-    ctx.save();
-
-    particles.forEach(p=>{
-
-        const a=
-            p.angle+
-            time*p.speed;
-
-        const r=
-            R*p.radius*
-            (1+audioLevel*.08);
-
-        const q=P(cx,cy,r,a);
-
-        const alpha=
-            .12+
-            .22*
-            (.5+
-            .5*Math.sin(
-                time*.002+p.phase
-            ));
-
-        ctx.fillStyle=
-            `rgba(75,220,240,${alpha})`;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            q.x,
-            q.y,
-            p.size,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-    });
-
-    ctx.restore();
-}
-
-
-/* =========================================================
-   FOUR AIRY RINGS
-========================================================= */
-
-function drawRings(cx,cy,R,time){
-
-    /*
-       Les quatre couronnes sont FIXES
-       autour du centre.
-
-       Elles s'écartent uniquement
-       radialement avec la voix.
-    */
-
-    const expansion=
-        audioLevel*.13;
-
-    const radii=[
-        .31,
-        .43,
-        .55,
-        .67
-    ];
-
-    radii.forEach((base,i)=>{
-
-        const r=
-            R*(base+expansion);
-
-        const dir=
-            i%2===0?1:-1;
-
-        const rot=
-            time*.00015*
-            (1+i*.35)*
-            dir;
-
-
-        /* halo très discret */
-
-        glowArc(
-            cx,cy,r,
-            0,Math.PI*2,
-            "#20ddf5",
-            1.2+audioLevel*1.2,
-            .18+audioLevel*.18
-        );
-
-
-        /* cercle holographique principal */
-
-        glowArc(
-            cx,cy,r,
-            0,Math.PI*2,
-            "#27e6ff",
-            1.7+audioLevel*1.1,
-            .62
-        );
-
-
-        /* deuxième ligne */
-
-        ctx.save();
-
-        ctx.strokeStyle=
-            "rgba(100,239,249,.28)";
-
-        ctx.lineWidth=.65;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            cx,
-            cy,
-            r-7,
-            0,
-            Math.PI*2
-        );
-
-        ctx.stroke();
-
-        ctx.restore();
-
-
-        /* graduations */
-
-        const count=96;
-
-        ctx.save();
-
-        for(let n=0;n<count;n++){
-
-            const a=
-                rot+
-                n/count*Math.PI*2;
-
-            let len=4;
-
-            let alpha=.42;
-
-            if(n%12===0){
-                len=13;
-                alpha=.85;
-            }
-            else if(n%4===0){
-                len=8;
-                alpha=.62;
-            }
-
-            const a1=P(cx,cy,r,a);
-            const a2=P(cx,cy,r-len,a);
-
-            ctx.strokeStyle=
-                `rgba(188,247,252,${alpha})`;
-
-            ctx.lineWidth=
-                n%12===0?1.2:.55;
-
-            ctx.beginPath();
-
-            ctx.moveTo(a1.x,a1.y);
-            ctx.lineTo(a2.x,a2.y);
-
-            ctx.stroke();
-        }
-
-        ctx.restore();
-
-
-        /* arcs techniques */
-
-        const arcData=[
-            [0.25,.62,"#c59b45"],
-            [2.05,2.47,"#35ddff"],
-            [3.48,3.92,"#6654d5"],
-            [4.65,5.08,"#b48b42"]
-        ];
-
-        arcData.forEach((a,j)=>{
-
-            /*
-               Les arcs internes tournent
-               dans le sens opposé.
-            */
-
-            const reverse=
-                -rot*1.7;
-
-            glowArc(
-                cx,
-                cy,
-                r-14,
-                a[0]+reverse,
-                a[1]+reverse,
-                a[2],
-                1.15+audioLevel*.7,
-                .72
-            );
-        });
-
-
-        /* petits points lumineux */
-
-        for(let n=0;n<12;n++){
-
-            const a=
-                rot+
-                n/12*Math.PI*2;
-
-            const p=P(
-                cx,
-                cy,
-                r,
-                a
-            );
-
-            ctx.fillStyle=
-                n%3===0
-                ? "#d7b55c"
-                : "#38eaff";
-
-            ctx.shadowColor=
-                ctx.fillStyle;
-
-            ctx.shadowBlur=8;
-
-            ctx.beginPath();
-
-            ctx.arc(
-                p.x,
-                p.y,
-                n%3===0?2.2:1.7,
-                0,
-                Math.PI*2
-            );
-
-            ctx.fill();
-        }
-    });
-}
-
-
-/* =========================================================
-   TRANSLUCENT GEODE
-========================================================= */
-
-function drawGeode(cx,cy,R,time){
-
-    /*
-       Géode plus grande.
-       Aucun trait radial dominant.
-       Les facettes sont translucides.
-    */
-
-    const pulse=
-        1+
-        audioLevel*.22+
-        Math.sin(time*.003)*.012;
-
-    R*=pulse;
-
-    const N=26;
-
-    const v=[];
-
-    for(let i=0;i<N;i++){
-
-        const a=
-            i/N*Math.PI*2;
-
-        const irregular=
-            1+
-            Math.sin(i*2.17)*.07+
-            Math.sin(i*5.71)*.035;
-
-        v.push(
-            P(
-                cx,
-                cy,
-                R*irregular,
-                a
-            )
-        );
-    }
-
-
-    /* halo externe */
-
-    const halo=
-        ctx.createRadialGradient(
-            cx,cy,R*.15,
-            cx,cy,R*1.35
-        );
-
-    halo.addColorStop(
-        0,
-        "rgba(55,235,255,.22)"
-    );
-
-    halo.addColorStop(
-        .45,
-        "rgba(30,180,205,.08)"
-    );
-
-    halo.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle=halo;
-
-    ctx.beginPath();
+    ctx.fillStyle=
+      `rgba(80,210,230,${p.a})`;
 
     ctx.arc(
-        cx,cy,R*1.35,
-        0,Math.PI*2
+      p.x*W,
+      p.y*H,
+      p.r,
+      0,
+      Math.PI*2
     );
 
     ctx.fill();
-
-
-    /* corps translucide */
-
-    const glass=
-        ctx.createRadialGradient(
-            cx-R*.35,
-            cy-R*.42,
-            R*.04,
-            cx,
-            cy,
-            R
-        );
-
-    glass.addColorStop(
-        0,
-        "rgba(190,250,255,.34)"
-    );
-
-    glass.addColorStop(
-        .22,
-        "rgba(77,220,239,.22)"
-    );
-
-    glass.addColorStop(
-        .58,
-        "rgba(20,130,154,.11)"
-    );
-
-    glass.addColorStop(
-        .82,
-        "rgba(5,48,62,.08)"
-    );
-
-    glass.addColorStop(
-        1,
-        "rgba(0,10,16,.03)"
-    );
-
-    ctx.save();
-
-    ctx.beginPath();
-
-    v.forEach((p,i)=>{
-
-        if(i===0)
-            ctx.moveTo(p.x,p.y);
-        else
-            ctx.lineTo(p.x,p.y);
-    });
-
-    ctx.closePath();
-
-    ctx.fillStyle=glass;
-    ctx.fill();
-
-    ctx.restore();
-
-
-    /* facettes internes */
-
-    ctx.save();
-
-    for(let layer=1;layer<=4;layer++){
-
-        const ratio=
-            layer/5;
-
-        const rr=
-            R*ratio;
-
-        const count=
-            11+layer*3;
-
-        for(let i=0;i<count;i++){
-
-            const a=
-                i/count*Math.PI*2+
-                layer*.41;
-
-            const p1=
-                P(
-                    cx,
-                    cy,
-                    rr,
-                    a
-                );
-
-            const p2=
-                P(
-                    cx,
-                    cy,
-                    rr*.83,
-                    a+.42
-                );
-
-            /*
-               Lignes extrêmement fines,
-               transparentes, seulement pour
-               suggérer les plans cristallins.
-            */
-
-            ctx.strokeStyle=
-                `rgba(
-                    110,
-                    239,
-                    255,
-                    ${.07+audioLevel*.12}
-                )`;
-
-            ctx.lineWidth=.45;
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                p1.x,p1.y
-            );
-
-            ctx.lineTo(
-                p2.x,p2.y
-            );
-
-            ctx.stroke();
-        }
-    }
-
-    ctx.restore();
-
-
-    /* arêtes de la géode */
-
-    ctx.save();
-
-    for(let i=0;i<N;i++){
-
-        const a=v[i];
-        const b=v[(i+1)%N];
-
-        const brightness=
-            .18+
-            Math.abs(
-                Math.sin(i*1.83)
-            )*.45+
-            audioLevel*.35;
-
-        ctx.strokeStyle=
-            `rgba(
-                125,
-                245,
-                255,
-                ${brightness}
-            )`;
-
-        ctx.lineWidth=
-            .7+
-            audioLevel*.7;
-
-        ctx.shadowColor="#36eaff";
-        ctx.shadowBlur=
-            4+
-            audioLevel*8;
-
-        ctx.beginPath();
-
-        ctx.moveTo(a.x,a.y);
-        ctx.lineTo(b.x,b.y);
-
-        ctx.stroke();
-    }
-
-    ctx.restore();
-
-
-    /* réfraction lumineuse */
-
-    const lights=[
-        [-.36,-.30,.22],
-        [.34,-.16,.16],
-        [-.25,.31,.12],
-        [.28,.27,.09]
-    ];
-
-    lights.forEach((l,i)=>{
-
-        const x=cx+l[0]*R;
-        const y=cy+l[1]*R;
-        const rr=l[2]*R;
-
-        const g=
-            ctx.createRadialGradient(
-                x,y,0,
-                x,y,rr
-            );
-
-        g.addColorStop(
-            0,
-            `rgba(
-                225,
-                255,
-                255,
-                ${.28+audioLevel*.25}
-            )`
-        );
-
-        g.addColorStop(
-            .22,
-            `rgba(
-                50,
-                224,
-                247,
-                ${.12+audioLevel*.12}
-            )`
-        );
-
-        g.addColorStop(
-            1,
-            "rgba(0,0,0,0)"
-        );
-
-        ctx.fillStyle=g;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            x,y,rr,
-            0,Math.PI*2
-        );
-
-        ctx.fill();
-    });
-
-
-    /* lumière qui balaie les facettes */
-
-    const sweep=
-        time*.0007;
-
-    for(let i=0;i<7;i++){
-
-        const a=
-            sweep+
-            i*.86;
-
-        const p=
-            P(
-                cx,
-                cy,
-                R*.72,
-                a
-            );
-
-        const g=
-            ctx.createRadialGradient(
-                p.x,p.y,0,
-                p.x,p.y,R*.18
-            );
-
-        g.addColorStop(
-            0,
-            "rgba(180,250,255,.20)"
-        );
-
-        g.addColorStop(
-            1,
-            "rgba(0,0,0,0)"
-        );
-
-        ctx.fillStyle=g;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            p.x,
-            p.y,
-            R*.18,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-    }
-
-
-    /* centre */
-
-    const coreGlow=
-        ctx.createRadialGradient(
-            cx,cy,0,
-            cx,cy,R*.34
-        );
-
-    coreGlow.addColorStop(
-        0,
-        "rgba(185,250,255,.30)"
-    );
-
-    coreGlow.addColorStop(
-        .25,
-        "rgba(40,220,244,.12)"
-    );
-
-    coreGlow.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle=coreGlow;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,cy,R*.34,
-        0,Math.PI*2
-    );
-
-    ctx.fill();
-
-
-    /* CORE */
-
-    ctx.save();
-
-    ctx.textAlign="center";
-    ctx.textBaseline="middle";
-
-    ctx.font="13px sans-serif";
-
-    ctx.fillStyle="#e0fbff";
-
-    ctx.shadowColor="#39ecff";
-    ctx.shadowBlur=12;
-
-    ctx.fillText(
-        "CORE",
-        cx,
-        cy-3
-    );
-
-    ctx.font="7px monospace";
-
-    ctx.fillStyle="#75aab3";
-    ctx.shadowBlur=0;
-
-    ctx.fillText(
-        listening?"LISTENING":"READY",
-        cx,
-        cy+13
-    );
-
-    ctx.restore();
+  }
 }
 
-
 /* =========================================================
-   MAIN RENDER
+   CORE — LIQUID FACETED GLASS
 ========================================================= */
 
-let rotation=0;
+function drawCore(cx,cy,baseR){
 
-function render(time){
+  /*
+    La sphère ne contient PAS de galaxie,
+    PAS de fils internes,
+    PAS de wireframe.
+    
+    Seulement :
+    - volume liquide
+    - facettes translucides
+    - lumière réfractée
+    - bords lumineux
+  */
 
-    ctx.clearRect(
-        0,0,W,H
+  const pulse =
+    1 + level*.16 + Math.sin(time*.003)*.015;
+
+  const r =
+    baseR*pulse;
+
+  /* halo */
+
+  const halo =
+    ctx.createRadialGradient(
+      cx,cy,0,
+      cx,cy,r*1.7
     );
 
-    /*
-       IMPORTANT :
-       visualisation plus grande et
-       beaucoup moins compacte.
-    */
+  halo.addColorStop(
+    0,
+    `rgba(46,224,255,${.20+level*.20})`
+  );
 
-    const cx=W/2;
-    const cy=H/2;
+  halo.addColorStop(
+    .42,
+    `rgba(24,138,178,${.10+level*.10})`
+  );
 
-    const R=
-        Math.min(W,H)*.455;
+  halo.addColorStop(
+    1,
+    "rgba(0,0,0,0)"
+  );
 
+  ctx.fillStyle=halo;
 
-    /* smoothing audio */
+  ctx.beginPath();
+  ctx.arc(cx,cy,r*1.7,0,Math.PI*2);
+  ctx.fill();
 
-    audioLevel+=
-        (targetAudio-audioLevel)*.16;
+  /* liquid glass body */
 
-
-    /* environnement */
-
-    drawParticles(
-        cx,cy,R,time
+  const glass =
+    ctx.createRadialGradient(
+      cx-r*.3,
+      cy-r*.35,
+      r*.05,
+      cx,
+      cy,
+      r
     );
 
+  glass.addColorStop(
+    0,
+    `rgba(170,250,255,${.22+level*.10})`
+  );
 
-    /*
-       quatre anneaux aérés
-    */
+  glass.addColorStop(
+    .22,
+    `rgba(35,180,215,${.18+level*.08})`
+  );
 
-    drawRings(
-        cx,cy,R,time
-    );
+  glass.addColorStop(
+    .58,
+    "rgba(5,70,91,.16)"
+  );
 
+  glass.addColorStop(
+    .84,
+    "rgba(2,24,34,.10)"
+  );
 
-    /*
-       géode translucide
-    */
+  glass.addColorStop(
+    1,
+    "rgba(0,12,20,.04)"
+  );
 
-    drawGeode(
+  /*
+    polygon irrégulier,
+    plus géode que sphère.
+  */
+
+  const points=16;
+  const verts=[];
+
+  for(let i=0;i<points;i++){
+
+    const a =
+      i/points*Math.PI*2;
+
+    const deformation =
+      1 +
+      Math.sin(i*2.37)*.045 +
+      Math.sin(i*4.11)*.025;
+
+    verts.push(
+      polar(
         cx,
         cy,
-        R*.265,
-        time
+        r*deformation,
+        a
+      )
+    );
+  }
+
+  ctx.beginPath();
+
+  verts.forEach((p,i)=>{
+
+    if(i===0) ctx.moveTo(p.x,p.y);
+    else ctx.lineTo(p.x,p.y);
+
+  });
+
+  ctx.closePath();
+
+  ctx.fillStyle=glass;
+
+  glow("rgba(40,230,255,.55)",20);
+
+  ctx.fill();
+
+  noGlow();
+
+  /* =====================================================
+     FACET SURFACES
+     Pas de traits : uniquement des surfaces transparentes.
+  ===================================================== */
+
+  const facetCount=18;
+
+  for(let i=0;i<facetCount;i++){
+
+    const a1 =
+      Math.random()*Math.PI*2;
+
+    const a2 =
+      a1+.35+Math.random()*.8;
+
+    const rr =
+      r*(.38+Math.random()*.55);
+
+    const p1=polar(cx,cy,r*.05,a1);
+    const p2=polar(cx,cy,rr,a1);
+    const p3=polar(cx,cy,rr,a2);
+    const p4=polar(cx,cy,r*.05,a2);
+
+    const hue =
+      i%4===0
+      ? "80,220,255"
+      : i%4===1
+      ? "100,170,255"
+      : i%4===2
+      ? "160,120,255"
+      : "70,240,220";
+
+    ctx.beginPath();
+
+    ctx.moveTo(p1.x,p1.y);
+    ctx.lineTo(p2.x,p2.y);
+    ctx.lineTo(p3.x,p3.y);
+    ctx.lineTo(p4.x,p4.y);
+    ctx.closePath();
+
+    ctx.fillStyle=
+      `rgba(${hue},${.025+level*.035})`;
+
+    ctx.fill();
+  }
+
+  /* bright refracted edges */
+
+  ctx.save();
+
+  ctx.beginPath();
+
+  for(let i=0;i<verts.length;i++){
+
+    const p=verts[i];
+
+    if(i===0) ctx.moveTo(p.x,p.y);
+    else ctx.lineTo(p.x,p.y);
+  }
+
+  ctx.closePath();
+
+  ctx.strokeStyle=
+    `rgba(130,248,255,${.48+level*.32})`;
+
+  ctx.lineWidth=1.2+level*1.2;
+
+  ctx.shadowColor="#43ecff";
+  ctx.shadowBlur=14+level*24;
+
+  ctx.stroke();
+
+  ctx.restore();
+
+  /* moving internal light refractions */
+
+  const lights=5;
+
+  for(let i=0;i<lights;i++){
+
+    const a =
+      time*.00045*(i%2?-1:1)
+      +i*1.7;
+
+    const rr =
+      r*(.18+i*.12);
+
+    const p=polar(cx,cy,rr,a);
+
+    const g=
+      ctx.createRadialGradient(
+        p.x,p.y,0,
+        p.x,p.y,r*.20
+      );
+
+    g.addColorStop(
+      0,
+      `rgba(220,255,255,${.30+level*.25})`
     );
 
-
-    /*
-       rotation lente permanente.
-       Les anneaux restent centrés.
-    */
-
-    rotation+=
-        .00055+
-        audioLevel*.0025;
-
-
-    requestAnimationFrame(render);
-}
-
-requestAnimationFrame(render);
-
-
-/* =========================================================
-   AUDIO METER
-========================================================= */
-
-const meter=
-    document.getElementById("meter");
-
-const bars=[];
-
-for(let i=0;i<34;i++){
-
-    const b=
-        document.createElement("div");
-
-    b.className="bar";
-
-    meter.appendChild(b);
-
-    bars.push(b);
-}
-
-function meterAnimation(){
-
-    bars.forEach((b,i)=>{
-
-        const wave=
-            Math.abs(
-                Math.sin(
-                    performance.now()*.012+
-                    i*.65
-                )
-            );
-
-        const h=
-            listening
-            ? 4+
-              audioLevel*
-              (8+wave*23)
-            : 4;
-
-        b.style.height=h+"px";
-    });
-
-    requestAnimationFrame(
-        meterAnimation
+    g.addColorStop(
+      .15,
+      `rgba(50,230,255,${.12+level*.15})`
     );
+
+    g.addColorStop(
+      1,
+      "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle=g;
+
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,r*.20,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  /* specular highlight */
+
+  const spec =
+    ctx.createRadialGradient(
+      cx-r*.38,
+      cy-r*.45,
+      0,
+      cx-r*.38,
+      cy-r*.45,
+      r*.34
+    );
+
+  spec.addColorStop(
+    0,
+    "rgba(245,255,255,.72)"
+  );
+
+  spec.addColorStop(
+    .10,
+    "rgba(160,250,255,.25)"
+  );
+
+  spec.addColorStop(
+    1,
+    "rgba(0,0,0,0)"
+  );
+
+  ctx.fillStyle=spec;
+
+  ctx.beginPath();
+
+  ctx.arc(
+    cx-r*.38,
+    cy-r*.45,
+    r*.34,
+    0,
+    Math.PI*2
+  );
+
+  ctx.fill();
 }
 
-meterAnimation();
-
-
 /* =========================================================
-   BUTTONS
+   RINGS
 ========================================================= */
 
-document
-.getElementById("mic")
-.addEventListener(
-    "click",
-    startMic
-);
+const ringDefinitions=[
+  {
+    base:.30,
+    spread:.17,
+    speed:.00038,
+    accent:"#4deaff"
+  },
+  {
+    base:.46,
+    spread:.19,
+    speed:-.00031,
+    accent:"#54b7ff"
+  },
+  {
+    base:.63,
+    spread:.21,
+    speed:.00025,
+    accent:"#8f7cff"
+  },
+  {
+    base:.81,
+    spread:.23,
+    speed:-.00020,
+    accent:"#e0b15c"
+  }
+];
 
+/*
+  Informations inspirées visuellement
+  des couronnes de montres, objectifs
+  photographiques et instruments de précision :
+  
+  nombres, angles, valeurs, symboles,
+  focales, rapports, repères techniques.
+*/
 
-/* reconnaissance vocale */
+const labels=[
+  "000","015","030","045","060","075",
+  "090","105","120","135","150","165",
+  "180","195","210","225","240","255",
+  "270","285","300","315","330","345"
+];
 
-let recognition=null;
+function drawRing(cx,cy,ring,index){
 
-const SpeechRecognition=
-    window.SpeechRecognition||
-    window.webkitSpeechRecognition;
+  /*
+    DILATATION IMPORTANTE :
+    jusqu'à +23% pendant une voix forte.
+    Les quatre couronnes restent concentriques.
+  */
 
-if(SpeechRecognition){
+  const voiceExpansion =
+    level * (ring.spread*1.45);
 
-    recognition=
-        new SpeechRecognition();
+  const breathe =
+    Math.sin(time*.002+index)*.008;
 
-    recognition.lang="fr-FR";
-    recognition.continuous=true;
-    recognition.interimResults=true;
+  const radius =
+    Math.min(W*.48,
+      W*(ring.base+
+        voiceExpansion+
+        breathe)
+    );
 
-    recognition.onresult=e=>{
+  const rotation =
+    time*ring.speed;
 
-        let result="";
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(rotation);
 
-        for(
-            let i=e.resultIndex;
-            i<e.results.length;
-            i++
-        ){
+  /* outer luminous body */
 
-            result+=
-                e.results[i][0]
-                .transcript;
-        }
+  ctx.beginPath();
+  ctx.arc(0,0,radius,0,Math.PI*2);
 
-        if(result.trim()){
+  ctx.strokeStyle=
+    ring.accent;
 
-            document
-            .getElementById("text")
-            .textContent=
-                result.trim();
-        }
-    };
+  ctx.globalAlpha=.34+level*.35;
+  ctx.lineWidth=1.6+level*2.4;
+
+  ctx.shadowColor=ring.accent;
+  ctx.shadowBlur=8+level*18;
+
+  ctx.stroke();
+
+  ctx.shadowBlur=0;
+
+  /* second precision edge */
+
+  ctx.beginPath();
+
+  ctx.arc(
+    0,0,
+    radius-6-level*4,
+    0,Math.PI*2
+  );
+
+  ctx.strokeStyle=
+    "rgba(130,235,250,.55)";
+
+  ctx.lineWidth=.65;
+
+  ctx.stroke();
+
+  /* =====================================================
+     DENSE TECHNICAL BAND
+  ===================================================== */
+
+  const ticks=72;
+
+  for(let i=0;i<ticks;i++){
+
+    const a =
+      i/ticks*Math.PI*2;
+
+    const major =
+      i%6===0;
+
+    const medium =
+      i%3===0;
+
+    const inner =
+      radius-(major?16:medium?11:7);
+
+    const outer =
+      radius-(major?1:medium?4:5);
+
+    const p1=polar(0,0,inner,a);
+    const p2=polar(0,0,outer,a);
+
+    ctx.beginPath();
+    ctx.moveTo(p1.x,p1.y);
+    ctx.lineTo(p2.x,p2.y);
+
+    ctx.strokeStyle=
+      major
+      ? "rgba(225,250,255,.85)"
+      : "rgba(88,220,240,.55)";
+
+    ctx.lineWidth=
+      major?1.2:.55;
+
+    ctx.stroke();
+  }
+
+  /* =====================================================
+     CAMERA / WATCH INFORMATION
+  ===================================================== */
+
+  ctx.font =
+    `${Math.max(7,W*.020)}px monospace`;
+
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+
+  for(let i=0;i<labels.length;i++){
+
+    const a =
+      i/labels.length*Math.PI*2;
+
+    const rr =
+      radius-27;
+
+    const p=polar(0,0,rr,a);
+
+    ctx.save();
+
+    ctx.translate(p.x,p.y);
+    ctx.rotate(a+Math.PI/2);
+
+    ctx.fillStyle=
+      i%4===0
+      ? "rgba(222,247,252,.72)"
+      : "rgba(105,205,222,.46)";
+
+    ctx.fillText(
+      labels[i],
+      0,0
+    );
+
+    ctx.restore();
+  }
+
+  /* technical values */
+
+  const tech=[
+    "1:2.8",
+    "ISO 400",
+    "f/2.8",
+    "24mm",
+    "∞",
+    "1/125",
+    "EV +0.7",
+    "AF-C",
+    "12B",
+    "3.2V",
+    "Δ",
+    "R08"
+  ];
+
+  ctx.font =
+    `${Math.max(6,W*.016)}px monospace`;
+
+  for(let i=0;i<tech.length;i++){
+
+    const a =
+      i/tech.length*Math.PI*2
+      +.18;
+
+    const rr =
+      radius-46;
+
+    const p=polar(0,0,rr,a);
+
+    ctx.save();
+
+    ctx.translate(p.x,p.y);
+    ctx.rotate(a+Math.PI/2);
+
+    ctx.fillStyle=
+      i%3===0
+      ? "rgba(226,178,85,.62)"
+      : "rgba(151,221,236,.42)";
+
+    ctx.fillText(
+      tech[i],
+      0,0
+    );
+
+    ctx.restore();
+  }
+
+  /* =====================================================
+     ARCS — rotation inverse des couronnes
+  ===================================================== */
+
+  const arcSpeed =
+    time*ring.speed*-1.65;
+
+  for(let j=0;j<3;j++){
+
+    const rr =
+      radius-12-j*9;
+
+    const start =
+      arcSpeed+
+      j*2.0+
+      index*.6;
+
+    const length =
+      .42+j*.16;
+
+    ctx.beginPath();
+
+    ctx.arc(
+      0,0,
+      rr,
+      start,
+      start+length
+    );
+
+    ctx.strokeStyle=
+      j===0
+      ? ring.accent
+      : j===1
+      ? "rgba(230,180,85,.72)"
+      : "rgba(130,115,255,.65)";
+
+    ctx.lineWidth=
+      j===0
+      ? 2.0+level*2
+      : .9;
+
+    ctx.globalAlpha=
+      .72+level*.2;
+
+    ctx.stroke();
+  }
+
+  /* =====================================================
+     ACTIVE DATA NODES
+  ===================================================== */
+
+  for(let j=0;j<6;j++){
+
+    const a =
+      time*ring.speed*.7+
+      j*Math.PI/3+
+      index*.71;
+
+    const p=
+      polar(
+        0,
+        0,
+        radius-2,
+        a
+      );
+
+    ctx.beginPath();
+
+    ctx.arc(
+      p.x,
+      p.y,
+      2.2+level*2.5,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fillStyle=
+      j%4===0
+      ? "#e7bd63"
+      : ring.accent;
+
+    ctx.shadowColor=
+      ctx.fillStyle;
+
+    ctx.shadowBlur=
+      8+level*15;
+
+    ctx.fill();
+  }
+
+  ctx.restore();
 }
 
-document
-.getElementById("mic")
-.addEventListener(
-    "click",
-    ()=>{
-
-        if(recognition){
-
-            try{
-                recognition.start();
-            }catch(e){}
-        }
-    }
-);
-
-
 /* =========================================================
-   RACCOURCIS
+   CENTRAL AXIS LIGHT
 ========================================================= */
 
-document
-.getElementById("send")
-.addEventListener(
-    "click",
-    ()=>{
+function drawAxisLight(cx,cy){
 
-        const text=
-            document
-            .getElementById("text")
-            .textContent;
+  const pulse =
+    1+level*.7;
 
-        const url=
-            "shortcuts://run-shortcut"+
-            "?name="+
-            encodeURIComponent("JARVIS")+
-            "&input="+
-            encodeURIComponent(text);
+  const g=
+    ctx.createRadialGradient(
+      cx,cy,0,
+      cx,cy,55*pulse
+    );
 
-        location.href=url;
-    }
-);
+  g.addColorStop(
+    0,
+    `rgba(120,250,255,${.18+level*.25})`
+  );
 
+  g.addColorStop(
+    .35,
+    `rgba(50,210,255,${.08+level*.12})`
+  );
+
+  g.addColorStop(
+    1,
+    "rgba(0,0,0,0)"
+  );
+
+  ctx.fillStyle=g;
+
+  ctx.beginPath();
+  ctx.arc(cx,cy,55*pulse,0,Math.PI*2);
+  ctx.fill();
+}
 
 /* =========================================================
-   VOIX JARVIS
+   MAIN DRAW
 ========================================================= */
 
-document
-.getElementById("speak")
-.addEventListener(
-    "click",
-    ()=>{
+function draw(){
 
-        const text=
-            document
-            .getElementById("text")
-            .textContent;
+  time++;
 
-        if(
-            !text||
-            text==="EN ATTENTE DE COMMANDE"
-        )return;
+  updateAudio();
 
-        speechSynthesis.cancel();
+  ctx.clearRect(0,0,W,H);
 
-        const u=
-            new SpeechSynthesisUtterance(
-                text
-            );
+  drawParticles();
 
-        u.lang="fr-FR";
-        u.rate=.9;
-        u.pitch=.72;
+  const cx=W/2;
+  const cy=H/2;
 
-        u.onstart=()=>{
-            listening=true;
-            targetAudio=.32;
-            document
-            .getElementById("state")
-            .textContent=
-                "VOICE SYSTEM · SPEAKING";
-        };
+  /*
+    Couronnes dessinées AVANT la géode :
+    elles restent derrière le cœur.
+  */
 
-        u.onend=()=>{
-            listening=false;
-            targetAudio=0;
-            document
-            .getElementById("state")
-            .textContent=
-                "VOICE SYSTEM · READY";
-        };
+  for(
+    let i=ringDefinitions.length-1;
+    i>=0;
+    i--
+  ){
 
-        speechSynthesis.speak(u);
+    drawRing(
+      cx,
+      cy,
+      ringDefinitions[i],
+      i
+    );
+  }
+
+  drawAxisLight(cx,cy);
+
+  /*
+    Géode au-dessus des couronnes.
+    Transparence réelle : les couronnes
+    restent perceptibles autour mais pas
+    comme des traits traversant son volume.
+  */
+
+  drawCore(
+    cx,
+    cy,
+    W*.105
+  );
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+/* =========================================================
+   SPEECH SYNTHESIS
+========================================================= */
+
+speakButton.addEventListener("click",()=>{
+
+  if(!("speechSynthesis" in window)){
+
+    voiceState.textContent =
+      "VOICE SYNTHESIS · UNAVAILABLE";
+
+    return;
+  }
+
+  const text =
+    lastTranscript ||
+    "Je vous écoute.";
+
+  speechSynthesis.cancel();
+
+  const utterance =
+    new SpeechSynthesisUtterance(text);
+
+  utterance.lang="fr-FR";
+  utterance.rate=.92;
+  utterance.pitch=.78;
+  utterance.volume=1;
+
+  const voices =
+    speechSynthesis.getVoices();
+
+  const french =
+    voices.find(v =>
+      v.lang &&
+      v.lang.toLowerCase().startsWith("fr")
+    );
+
+  if(french){
+    utterance.voice=french;
+  }
+
+  voiceState.textContent =
+    "JARVIS · SPEAKING";
+
+  utterance.onend=()=>{
+    voiceState.textContent =
+      listening
+      ? "VOICE SYSTEM · LISTENING"
+      : "VOICE SYSTEM · READY";
+  };
+
+  speechSynthesis.speak(utterance);
+});
+
+/* =========================================================
+   RACCOURCIS iOS
+========================================================= */
+
+shortcutButton.addEventListener("click",()=>{
+
+  const text =
+    lastTranscript ||
+    transcript.textContent ||
+    "";
+
+  if(!text) return;
+
+  /*
+    Nom du raccourci à modifier ici si nécessaire.
+    Exemple : "JARVIS"
+  */
+
+  const shortcutName="JARVIS";
+
+  const url =
+    "shortcuts://run-shortcut" +
+    "?name="+encodeURIComponent(shortcutName)+
+    "&input="+encodeURIComponent(text);
+
+  window.location.href=url;
+
+  voiceState.textContent =
+    "COMMAND · SENT TO SHORTCUTS";
+});
+
+/* =========================================================
+   KEYBOARD / TOUCH FEEDBACK
+========================================================= */
+
+document.addEventListener(
+  "touchstart",
+  ()=>{
+    if(audioContext &&
+       audioContext.state==="suspended"){
+      audioContext.resume();
     }
+  },
+  {passive:true}
 );
 
 </script>
