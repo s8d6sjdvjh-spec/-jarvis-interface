@@ -2,2550 +2,2837 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#061117">
-<title>JARVIS — Holographic Core</title>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#020b10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>JARVIS — Voice Core</title>
 
 <style>
-:root{
-    --bg:#061117;
-    --cyan:#00dcff;
-    --cyan2:#68f2ff;
-    --blue:#008ca8;
-    --violet:#687cff;
-    --gold:#c39a4b;
-    --white:#e7fbff;
-    --voice:0;
+:root {
+    --bg: #020a0f;
+    --cyan: #19e6ff;
+    --cyan2: #6ff4ff;
+    --blue: #087fa4;
+    --gold: #c9a45a;
+    --white: #dffcff;
+    --dim: #426d78;
+    --grid: rgba(42, 177, 201, .075);
+    --red: #ff5265;
+
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
 }
 
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html,
-body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-}
-
-body{
-    position:relative;
-    color:var(--white);
-    background:
-        radial-gradient(
-            ellipse at 50% 42%,
-            rgba(0,93,116,.25) 0%,
-            rgba(5,46,59,.18) 27%,
-            rgba(3,19,26,.45) 52%,
-            #02090d 100%
-        ),
-        #061117;
+body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--white);
     font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Helvetica Neue",
         Arial,
         sans-serif;
-    -webkit-font-smoothing:antialiased;
+    overflow: hidden;
+}
+
+body {
+    position: relative;
+}
+
+#app {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background:
+        radial-gradient(
+            ellipse at 50% 45%,
+            rgba(0, 108, 135, .12),
+            transparent 55%
+        ),
+        linear-gradient(
+            180deg,
+            #030d13 0%,
+            #020a0f 55%,
+            #02080d 100%
+        );
 }
 
 /* =========================================================
-   BACKGROUND
+   GRID
    ========================================================= */
 
-.background{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-}
+#grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .95;
 
-.background::before{
-    content:"";
-    position:absolute;
-    inset:0;
     background-image:
         linear-gradient(
-            rgba(69,164,181,.14) 1px,
+            rgba(45, 176, 201, .055) 1px,
             transparent 1px
         ),
         linear-gradient(
             90deg,
-            rgba(69,164,181,.14) 1px,
+            rgba(45, 176, 201, .055) 1px,
             transparent 1px
-        );
-    background-size:54px 54px;
-}
-
-.background::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background-image:
+        ),
         linear-gradient(
-            rgba(68,153,170,.045) 1px,
+            rgba(45, 176, 201, .025) 1px,
             transparent 1px
         ),
         linear-gradient(
             90deg,
-            rgba(68,153,170,.045) 1px,
+            rgba(45, 176, 201, .025) 1px,
             transparent 1px
         );
-    background-size:13.5px 13.5px;
+
+    background-size:
+        52px 52px,
+        52px 52px,
+        13px 13px,
+        13px 13px;
+
+    mask-image:
+        radial-gradient(
+            ellipse at center,
+            black 45%,
+            transparent 100%
+        );
 }
 
 /* =========================================================
    HEADER
    ========================================================= */
 
-.header{
-    position:absolute;
-    top:calc(env(safe-area-inset-top) + 5vh);
-    left:0;
-    right:0;
-    padding:0 6vw;
-    display:flex;
-    align-items:center;
-    z-index:100;
+.header {
+    position: absolute;
+    z-index: 20;
+    top: calc(24px + var(--safe-top));
+    left: 0;
+    width: 100%;
+    padding: 0 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    pointer-events: none;
 }
 
-.logo{
-    font-size:clamp(23px,6vw,35px);
-    font-weight:300;
-    letter-spacing:.48em;
-    color:#e5faff;
+.logo {
+    font-size: 30px;
+    font-weight: 300;
+    letter-spacing: .42em;
+    color: #e5fbff;
+    text-shadow: 0 0 18px rgba(45, 225, 255, .14);
 }
 
-.status{
-    margin-left:auto;
-    display:flex;
-    gap:13px;
-    align-items:center;
-    color:#66939c;
-    font-size:clamp(7px,2vw,10px);
-    letter-spacing:.22em;
+.status {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+    font-size: 9px;
+    letter-spacing: .32em;
+    color: #688e97;
 }
 
-.dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:var(--cyan);
+.statusItem {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.statusDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
     box-shadow:
-        0 0 6px var(--cyan),
-        0 0 15px rgba(0,220,255,.55);
+        0 0 8px var(--cyan),
+        0 0 20px rgba(25,230,255,.6);
 }
 
 /* =========================================================
-   LABELS
+   TITLES
    ========================================================= */
 
-.subtitle{
-    position:absolute;
-    top:calc(env(safe-area-inset-top) + 15.5vh);
-    left:0;
-    right:0;
-    text-align:center;
-    font-size:clamp(7px,2.3vw,11px);
-    letter-spacing:.43em;
-    color:rgba(94,170,182,.82);
-    z-index:80;
+.titleBlock {
+    position: absolute;
+    z-index: 20;
+
+    top: calc(105px + var(--safe-top));
+    left: 0;
+    width: 100%;
+
+    text-align: center;
+    pointer-events: none;
 }
 
-.system-label{
-    position:absolute;
-    top:calc(env(safe-area-inset-top) + 18vh);
-    left:0;
-    right:0;
-    text-align:center;
-    font-size:7px;
-    letter-spacing:.34em;
-    color:rgba(69,132,143,.65);
-    z-index:80;
+.title {
+    font-size: 11px;
+    letter-spacing: .42em;
+    color: #4f8995;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    margin-top: 12px;
+
+    font-size: 8px;
+    letter-spacing: .36em;
+    color: #315763;
+    text-transform: uppercase;
 }
 
 /* =========================================================
-   CORE STAGE
+   MAIN CANVAS
    ========================================================= */
 
-.core-stage{
-    position:absolute;
-    top:calc(env(safe-area-inset-top) + 19.5vh);
-    left:50%;
-    width:min(94vw,490px);
-    height:min(52vh,550px);
-    transform:translateX(-50%);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:visible;
-    z-index:20;
+#visual {
+    position: absolute;
+    z-index: 5;
+
+    left: 0;
+    top: calc(150px + var(--safe-top));
+
+    width: 100%;
+    height: 66vh;
+
+    display: block;
+
+    touch-action: manipulation;
 }
 
 /* =========================================================
-   ATMOSPHERIC HALO
+   VOICE PANEL
    ========================================================= */
 
-.halo{
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:94%;
-    aspect-ratio:1;
-    transform:translate(-50%,-50%);
-    border-radius:50%;
-    background:
-        radial-gradient(
-            circle,
-            rgba(0,225,255,.06) 0%,
-            rgba(0,211,255,.09) 25%,
-            rgba(0,139,170,.055) 45%,
-            transparent 72%
-        );
-    filter:
-        blur(
-            calc(
-                20px + var(--voice) * 17px
-            )
-        );
-    opacity:
-        calc(
-            .68 + var(--voice) * .30
-        );
-    transition:
-        opacity 40ms linear,
-        filter 40ms linear;
-}
+.voicePanel {
+    position: absolute;
+    z-index: 30;
 
-/* =========================================================
-   RING SYSTEM
-   ========================================================= */
+    left: 4%;
+    right: 4%;
+    bottom: calc(112px + var(--safe-bottom));
 
-.ring-system{
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:93%;
-    aspect-ratio:1;
-    transform:translate(-50%,-50%);
-    overflow:visible;
-    pointer-events:none;
-}
+    height: 72px;
 
-.voice-ring{
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:
-        translate(-50%,-50%)
-        scale(var(--ring-scale,1));
-    transform-origin:center;
-    transition:
-        transform 35ms cubic-bezier(.04,.94,.13,1);
-    will-change:transform;
-}
+    border-top: 1px solid rgba(28, 206, 235, .38);
+    border-bottom: 1px solid rgba(28, 206, 235, .22);
 
-/*
-   PLUS COMPACTES AU REPOS.
-
-   La voix les dilate vers l'ancien espace maximal.
-*/
-
-.ring-1{
-    width:94%;
-    height:94%;
-}
-
-.ring-2{
-    width:78%;
-    height:78%;
-}
-
-.ring-3{
-    width:61%;
-    height:61%;
-}
-
-.ring-4{
-    width:44%;
-    height:44%;
-}
-
-/* =========================================================
-   SVG
-   ========================================================= */
-
-.ring-svg{
-    width:100%;
-    height:100%;
-    overflow:visible;
-}
-
-/* =========================================================
-   ROTATION DES COURONNES
-   ========================================================= */
-
-.rotating-main{
-    transform-origin:250px 250px;
-    animation:
-        ringClockwise
-        28s
-        linear
-        infinite;
-}
-
-.rotating-main.slow{
-    animation-duration:43s;
-}
-
-.rotating-main.fast{
-    animation-duration:19s;
-}
-
-@keyframes ringClockwise{
-    from{
-        transform:rotate(0deg);
-    }
-    to{
-        transform:rotate(360deg);
-    }
-}
-
-/* =========================================================
-   CONTRE-ROTATION DES ARCS
-   ========================================================= */
-
-.counter-arcs{
-    transform-origin:250px 250px;
-    animation:
-        ringCounter
-        15s
-        linear
-        infinite
-}
-
-.counter-arcs.slow{
-    animation-duration:31s;
-}
-
-@keyframes ringCounter{
-    from{
-        transform:rotate(360deg);
-    }
-    to{
-        transform:rotate(0deg);
-    }
-}
-
-/* =========================================================
-   HOLOGRAPHIC RINGS
-   ========================================================= */
-
-.ring-halo{
-    fill:none;
-    stroke:rgba(0,218,255,.22);
-    stroke-width:9;
-    filter:blur(7px);
-}
-
-.ring-separator{
-    fill:none;
-    stroke:rgba(1,23,30,.94);
-    stroke-width:4;
-}
-
-.ring-thick{
-    fill:none;
-    stroke:rgba(61,229,246,.78);
-    stroke-width:2.6;
-    filter:
-        drop-shadow(
-            0 0 3px
-            rgba(89,241,255,.95)
-        )
-        drop-shadow(
-            0 0 9px
-            rgba(0,207,255,.42)
-        );
-}
-
-.ring-inner{
-    fill:none;
-    stroke:rgba(106,238,255,.50);
-    stroke-width:1.1;
-}
-
-.ring-dash{
-    fill:none;
-    stroke:rgba(36,190,215,.78);
-    stroke-width:1;
-    stroke-dasharray:2 7;
-}
-
-.ring-gold{
-    fill:none;
-    stroke:rgba(194,151,69,.78);
-    stroke-width:1.7;
-    filter:
-        drop-shadow(
-            0 0 4px
-            rgba(197,151,65,.35)
-        );
-}
-
-.ring-violet{
-    fill:none;
-    stroke:rgba(111,133,255,.65);
-    stroke-width:1;
-}
-
-.tick{
-    stroke:rgba(96,207,223,.68);
-    stroke-width:.8;
-}
-
-.tick-major{
-    stroke:rgba(218,248,252,.92);
-    stroke-width:1.55;
-    filter:
-        drop-shadow(
-            0 0 3px
-            rgba(99,232,248,.55)
-        );
-}
-
-.tick-gold{
-    stroke:rgba(201,156,70,.78);
-    stroke-width:1;
-}
-
-.ring-number{
-    fill:rgba(166,230,239,.80);
-    font-size:10px;
-    font-weight:300;
-    letter-spacing:.08em;
-}
-
-.ring-label{
-    fill:rgba(80,163,176,.74);
-    font-size:6.5px;
-    letter-spacing:.2em;
-}
-
-/* =========================================================
-   POLYGON ORB
-   ========================================================= */
-
-.orb{
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:clamp(82px,20vw,108px);
-    aspect-ratio:1;
-    transform:
-        translate(-50%,-50%)
-        scale(1);
-    z-index:40;
-    transition:
-        transform 32ms cubic-bezier(.03,.95,.12,1);
-}
-
-/*
-   Noyau sombre.
-*/
-
-.orb-core{
-    position:absolute;
-    inset:9%;
-    border-radius:50%;
-    background:
-        radial-gradient(
-            circle at 31% 26%,
-            #d9fbff 0%,
-            #4ee1f3 4%,
-            #0d8ba8 15%,
-            #064252 34%,
-            #021923 62%,
-            #01080c 100%
-        );
-    border:
-        1px solid
-        rgba(107,239,252,.86);
-    box-shadow:
-        inset -15px -18px 27px rgba(0,0,0,.82),
-        inset 9px 7px 20px rgba(100,232,247,.28),
-        0 0 17px rgba(0,220,255,.45),
-        0 0 60px rgba(0,153,187,.28);
-}
-
-/*
-   Couche polygonale.
-*/
-
-.polygon-shell{
-    position:absolute;
-    inset:0;
-    transform-origin:center;
-    animation:
-        polygonSpin
-        24s
-        linear
-        infinite;
-}
-
-@keyframes polygonSpin{
-    from{
-        transform:rotate(0deg);
-    }
-    to{
-        transform:rotate(360deg);
-    }
-}
-
-/*
-   Les facettes.
-*/
-
-.facet{
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:72%;
-    height:72%;
-    transform-origin:center;
-    border:1px solid rgba(83,232,249,.72);
-    clip-path:
-        polygon(
-            50% 0%,
-            93% 23%,
-            100% 68%,
-            67% 100%,
-            25% 89%,
-            0% 51%,
-            19% 15%
-        );
-    background:
-        linear-gradient(
-            135deg,
-            rgba(155,247,255,.15),
-            rgba(7,88,108,.05) 42%,
-            rgba(0,10,17,.32)
-        );
-    box-shadow:
-        0 0 8px
-        rgba(0,215,255,.16);
-    transition:
-        transform 45ms cubic-bezier(.04,.94,.12,1),
-        opacity 45ms linear;
-}
-
-/*
-   Chaque facette s'écarte légèrement
-   lorsque la voix augmente.
-*/
-
-.f1{
-    transform:
-        translate(-50%,-50%)
-        rotate(0deg)
-        translateY(
-            calc(
-                var(--voice) * -5px
-            )
-        )
-        scale(
-            calc(
-                1 + var(--voice) * .11
-            )
-        );
-}
-
-.f2{
-    transform:
-        translate(-50%,-50%)
-        rotate(51deg)
-        translateY(
-            calc(
-                var(--voice) * -6px
-            )
-        )
-        scale(
-            calc(
-                1 + var(--voice) * .13
-            )
-        );
-}
-
-.f3{
-    transform:
-        translate(-50%,-50%)
-        rotate(102deg)
-        translateY(
-            calc(
-                var(--voice) * -5px
-            )
-        )
-        scale(
-            calc(
-                1 + var(--voice) * .09
-            )
-        );
-}
-
-.f4{
-    transform:
-        translate(-50%,-50%)
-        rotate(153deg)
-        translateY(
-            calc(
-                var(--voice) * -7px
-            )
-        )
-        scale(
-            calc(
-                1 + var(--voice) * .12
-            )
-        );
-}
-
-.f5{
-    transform:
-        translate(-50%,-50%)
-        rotate(204deg)
-        translateY(
-            calc(
-                var(--voice) * -5px
-            )
-        )
-        scale(
-            calc(
-                1 + var(--voice) * .10
-            )
-        );
-}
-
-.f6{
-    transform:
-        translate(-50%,-50%)
-        rotate(255deg)
-        translateY(
-            calc(
-                var(--voice) * -6px
-            )
-        )
-        scale(
-            calc(
-                1 + var(--voice) * .12
-            )
-        );
-}
-
-.f7{
-    transform:
-        translate(-50%,-50%)
-        rotate(306deg)
-        translateY(
-            calc(
-                var(--voice) * -5px
-            )
-        )
-        scale(
-            calc(
-                1 + var(--voice) * .10
-            )
-        );
-}
-
-
-/* =========================================================
-   SECONDARY POLYGON
-   ========================================================= */
-
-.polygon-inner{
-    position:absolute;
-    inset:20%;
-    border:
-        1px solid
-        rgba(101,232,247,.55);
-    clip-path:
-        polygon(
-            50% 0%,
-            90% 20%,
-            100% 61%,
-            70% 100%,
-            28% 90%,
-            0% 51%,
-            15% 17%
-        );
-    transform:
-        rotate(23deg);
-    background:
-        rgba(10,118,142,.08);
-}
-
-
-/* =========================================================
-   ORB LIGHT
-   ========================================================= */
-
-.orb-light{
-    position:absolute;
-    left:18%;
-    top:14%;
-    width:18%;
-    height:18%;
-    border-radius:50%;
-    background:
-        rgba(232,254,255,.98);
-    filter:blur(4px);
-    box-shadow:
-        0 0 14px
-        rgba(123,242,255,.95),
-        0 0 31px
-        rgba(0,218,255,.62);
-}
-
-
-/* =========================================================
-   ORB TEXT
-   ========================================================= */
-
-.orb-text{
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    z-index:20;
-    pointer-events:none;
-}
-
-.core-title{
-    font-size:10px;
-    letter-spacing:.40em;
-    padding-left:.40em;
-    color:rgba(225,250,253,.95);
-}
-
-.core-state{
-    margin-top:6px;
-    font-size:6px;
-    letter-spacing:.30em;
-    padding-left:.30em;
-    color:rgba(81,187,201,.86);
-}
-
-
-/* =========================================================
-   AUDIO WAVE
-   ========================================================= */
-
-.audio-wave{
-    position:absolute;
-    bottom:1%;
-    left:50%;
-    width:55%;
-    height:34px;
-    transform:translateX(-50%);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:3px;
-    z-index:70;
-}
-
-.audio-bar{
-    width:2px;
-    height:4px;
-    background:var(--cyan);
-    box-shadow:
-        0 0 6px
-        rgba(0,220,255,.75);
-    transition:
-        height 30ms linear;
-}
-
-
-/* =========================================================
-   TRANSCRIPTION
-   ========================================================= */
-
-.voice-output{
-    position:absolute;
-    left:7vw;
-    right:7vw;
-    top:calc(env(safe-area-inset-top) + 70vh);
-    min-height:47px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:8px 18px;
-    border-left:
-        1px solid
-        rgba(0,214,240,.55);
-    border-right:
-        1px solid
-        rgba(0,214,240,.27);
     background:
         linear-gradient(
             90deg,
-            rgba(0,61,76,.08),
-            rgba(0,135,159,.12),
-            rgba(0,61,76,.08)
+            rgba(4,24,31,.20),
+            rgba(5,25,31,.42),
+            rgba(4,24,31,.20)
         );
-    z-index:90;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    pointer-events: none;
 }
 
-.voice-text{
-    text-align:center;
-    font-size:clamp(8px,2.4vw,11px);
-    letter-spacing:.17em;
-    color:rgba(177,234,241,.76);
-    text-transform:uppercase;
+.voiceText {
+    width: 90%;
+
+    text-align: center;
+
+    font-size: 11px;
+    letter-spacing: .28em;
+
+    color: rgba(169, 234, 242, .58);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    text-transform: uppercase;
 }
 
+.voiceText.active {
+    color: #d9fdff;
+    text-shadow:
+        0 0 10px rgba(25,230,255,.65),
+        0 0 24px rgba(25,230,255,.25);
+}
 
 /* =========================================================
-   BUTTONS
+   CONTROLS
    ========================================================= */
 
-.controls{
-    position:absolute;
-    left:5vw;
-    right:5vw;
-    bottom:
-        calc(
-            env(safe-area-inset-bottom)
-            + 5vh
+.controls {
+    position: absolute;
+    z-index: 40;
+
+    left: 5%;
+    right: 5%;
+    bottom: calc(28px + var(--safe-bottom));
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+button {
+    min-height: 58px;
+
+    border: 1px solid rgba(24, 211, 238, .65);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(6,31,39,.80),
+            rgba(2,16,22,.88)
         );
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    z-index:100;
-}
 
-.control{
-    height:55px;
-    border:
-        1px solid
-        rgba(0,199,224,.58);
-    background:
-        rgba(3,21,28,.78);
-    color:
-        rgba(159,226,234,.92);
-    font-family:inherit;
-    font-size:clamp(7px,2vw,9px);
-    letter-spacing:.18em;
-    cursor:pointer;
-}
+    color: #bcecf2;
 
-.control.active,
-.control:active{
-    border-color:
-        rgba(91,240,255,.98);
-    background:
-        rgba(0,104,126,.26);
+    font-size: 9px;
+    letter-spacing: .25em;
+
+    text-transform: uppercase;
+
+    cursor: pointer;
+
     box-shadow:
-        inset
-        0 0 18px
-        rgba(0,220,255,.10),
-        0 0 16px
-        rgba(0,220,255,.18);
-    color:#e4fbff;
+        inset 0 0 20px rgba(25,230,255,.035),
+        0 0 14px rgba(25,230,255,.04);
+
+    transition:
+        transform .15s ease,
+        background .15s ease,
+        box-shadow .15s ease;
 }
 
+button:active {
+    transform: scale(.97);
 
-@media(max-width:430px){
+    background:
+        rgba(14,75,87,.70);
 
-    .header{
-        padding-left:5.5vw;
-        padding-right:5.5vw;
+    box-shadow:
+        0 0 25px rgba(25,230,255,.25);
+}
+
+button.active {
+    border-color: var(--cyan);
+
+    color: #e8feff;
+
+    box-shadow:
+        inset 0 0 22px rgba(25,230,255,.10),
+        0 0 22px rgba(25,230,255,.18);
+}
+
+/* =========================================================
+   SMALL STATUS MARKER
+   ========================================================= */
+
+.corner {
+    position: absolute;
+    z-index: 25;
+
+    width: 22px;
+    height: 22px;
+
+    pointer-events: none;
+
+    border-color: rgba(25,230,255,.40);
+}
+
+.corner.tl {
+    left: 18px;
+    top: calc(92px + var(--safe-top));
+
+    border-left: 1px solid;
+    border-top: 1px solid;
+}
+
+.corner.tr {
+    right: 18px;
+    top: calc(92px + var(--safe-top));
+
+    border-right: 1px solid;
+    border-top: 1px solid;
+}
+
+.corner.bl {
+    left: 18px;
+    bottom: calc(95px + var(--safe-bottom));
+
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+}
+
+.corner.br {
+    right: 18px;
+    bottom: calc(95px + var(--safe-bottom));
+
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .header {
+        padding-left: 20px;
+        padding-right: 20px;
     }
 
-    .status{
-        gap:8px;
+    .logo {
+        font-size: 25px;
+        letter-spacing: .34em;
     }
 
-    .core-stage{
-        width:97vw;
+    .status {
+        gap: 10px;
+        font-size: 7px;
+        letter-spacing: .20em;
     }
 
-    .ring-system{
-        width:96%;
+    .title {
+        font-size: 9px;
+    }
+
+    .voicePanel {
+        height: 62px;
+    }
+
+    button {
+        min-height: 54px;
+        font-size: 8px;
     }
 }
 
+@media (min-width: 700px) {
+
+    #visual {
+        height: 70vh;
+    }
+
+    .controls {
+        left: 15%;
+        right: 15%;
+    }
+
+    .voicePanel {
+        left: 15%;
+        right: 15%;
+    }
+}
 </style>
 </head>
 
-
 <body>
 
+<div id="app">
 
-<div class="background"></div>
+    <div id="grid"></div>
 
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
 
-<header class="header">
+    <header class="header">
 
-    <div class="logo">
-        JARVIS
-    </div>
-
-    <div class="status">
-
-        <div>
-            <span class="dot"></span>
-            ONLINE
+        <div class="logo">
+            JARVIS
         </div>
 
-        <div>
-            <span class="dot"></span>
-            SECURE
+        <div class="status">
+
+            <div class="statusItem">
+                <span class="statusDot"></span>
+                ONLINE
+            </div>
+
+            <div class="statusItem">
+                <span class="statusDot"></span>
+                SECURE
+            </div>
+
+            <div class="statusItem">
+                <span class="statusDot"></span>
+                VOICE
+            </div>
+
         </div>
 
-        <div>
-            <span class="dot"></span>
-            VOICE
+    </header>
+
+    <div class="titleBlock">
+
+        <div class="title">
+            VOICE CORE · CRYSTALLINE MATRIX · 3 AXIS
+        </div>
+
+        <div class="subtitle">
+            HOLOGRAPHIC CONCENTRIC SYSTEM · AUDIO REACTIVE
         </div>
 
     </div>
 
-</header>
+    <canvas id="visual"></canvas>
 
+    <div class="voicePanel">
 
-<div class="subtitle">
-    VOICE CORE · CRYSTALLINE MATRIX · 3 AXIS
-</div>
+        <div
+            id="voiceText"
+            class="voiceText"
+        >
+            AUDIO LINK · TAP MICRO TO ACTIVATE
+        </div>
 
-
-<div class="system-label">
-    HOLOGRAPHIC CONCENTRIC SYSTEM · AUDIO REACTIVE
-</div>
-
-
-<main class="core-stage">
-
-
-<div
-    class="halo"
-    id="halo"
-></div>
-
-
-<!-- =====================================================
-     RINGS
-     ===================================================== -->
-
-<div
-    class="ring-system"
->
-
-
-<!-- =====================================================
-     RING 1
-     ===================================================== -->
-
-<div class="voice-ring ring-1">
-
-<svg
-    class="ring-svg"
-    viewBox="0 0 500 500"
->
-
-<circle
-    cx="250"
-    cy="250"
-    r="239"
-    class="ring-halo"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="239"
-    class="ring-thick"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="232"
-    class="ring-inner"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="224"
-    class="ring-dash"
-/>
-
-
-<g class="rotating-main">
-
-<circle
-    cx="250"
-    cy="250"
-    r="215"
-    class="ring-dash"
-/>
-
-<g id="ticks1"></g>
-
-<path
-    d="M250 11 A239 239 0 0 1 395 59"
-    class="ring-gold"
-/>
-
-<path
-    d="M105 442 A239 239 0 0 1 27 294"
-    class="ring-thick"
-/>
-
-<text
-    x="250"
-    y="30"
-    text-anchor="middle"
-    class="ring-number"
->
-270
-</text>
-
-<text
-    x="470"
-    y="254"
-    text-anchor="end"
-    class="ring-number"
->
-090
-</text>
-
-<text
-    x="250"
-    y="485"
-    text-anchor="middle"
-    class="ring-number"
->
-090
-</text>
-
-<text
-    x="30"
-    y="254"
-    class="ring-number"
->
-180
-</text>
-
-</g>
-
-
-<g class="counter-arcs">
-
-<path
-    d="M250 38 A212 212 0 0 0 100 100"
-    class="ring-violet"
-/>
-
-<path
-    d="M395 395 A205 205 0 0 0 470 300"
-    class="ring-gold"
-/>
-
-<path
-    d="M105 105 A208 208 0 0 1 55 190"
-    class="ring-inner"
-/>
-
-</g>
-
-
-<text
-    x="250"
-    y="48"
-    text-anchor="middle"
-    class="ring-label"
->
-PRIMARY VOICE VECTOR
-</text>
-
-</svg>
-
-</div>
-
-
-<!-- =====================================================
-     RING 2
-     ===================================================== -->
-
-<div class="voice-ring ring-2">
-
-<svg
-    class="ring-svg"
-    viewBox="0 0 500 500"
->
-
-<circle
-    cx="250"
-    cy="250"
-    r="201"
-    class="ring-halo"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="201"
-    class="ring-thick"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="192"
-    class="ring-inner"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="184"
-    class="ring-dash"
-/>
-
-
-<g class="rotating-main slow">
-
-<g id="ticks2"></g>
-
-<path
-    d="M250 49 A201 201 0 0 1 429 143"
-    class="ring-gold"
-/>
-
-<path
-    d="M71 357 A201 201 0 0 1 48 250"
-    class="ring-thick"
-/>
-
-<text
-    x="250"
-    y="68"
-    text-anchor="middle"
-    class="ring-number"
->
-12
-</text>
-
-<text
-    x="433"
-    y="254"
-    text-anchor="middle"
-    class="ring-number"
->
-06
-</text>
-
-</g>
-
-
-<g class="counter-arcs slow">
-
-<path
-    d="M250 74 A176 176 0 0 0 125 126"
-    class="ring-violet"
-/>
-
-<path
-    d="M375 374 A176 176 0 0 0 427 250"
-    class="ring-gold"
-/>
-
-</g>
-
-
-<text
-    x="250"
-    y="442"
-    text-anchor="middle"
-    class="ring-label"
->
-VOICE CHANNEL
-</text>
-
-</svg>
-
-</div>
-
-
-<!-- =====================================================
-     RING 3
-     ===================================================== -->
-
-<div class="voice-ring ring-3">
-
-<svg
-    class="ring-svg"
-    viewBox="0 0 500 500"
->
-
-<circle
-    cx="250"
-    cy="250"
-    r="159"
-    class="ring-halo"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="159"
-    class="ring-thick"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="150"
-    class="ring-inner"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="141"
-    class="ring-dash"
-/>
-
-
-<g class="rotating-main fast">
-
-<g id="ticks3"></g>
-
-<path
-    d="M250 91 A159 159 0 0 1 388 168"
-    class="ring-gold"
-/>
-
-<text
-    x="250"
-    y="106"
-    text-anchor="middle"
-    class="ring-number"
->
-08
-</text>
-
-<text
-    x="393"
-    y="254"
-    text-anchor="middle"
-    class="ring-number"
->
-04
-</text>
-
-</g>
-
-
-<g class="counter-arcs">
-
-<path
-    d="M250 112 A138 138 0 0 0 150 155"
-    class="ring-violet"
-/>
-
-<path
-    d="M350 350 A141 141 0 0 0 389 250"
-    class="ring-inner"
-/>
-
-</g>
-
-
-<text
-    x="250"
-    y="408"
-    text-anchor="middle"
-    class="ring-label"
->
-SENSOR MATRIX
-</text>
-
-</svg>
-
-</div>
-
-
-<!-- =====================================================
-     RING 4
-     ===================================================== -->
-
-<div class="voice-ring ring-4">
-
-<svg
-    class="ring-svg"
-    viewBox="0 0 500 500"
->
-
-<circle
-    cx="250"
-    cy="250"
-    r="115"
-    class="ring-halo"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="115"
-    class="ring-thick"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="105"
-    class="ring-inner"
-/>
-
-<circle
-    cx="250"
-    cy="250"
-    r="96"
-    class="ring-dash"
-/>
-
-
-<g class="rotating-main">
-
-<g id="ticks4"></g>
-
-<path
-    d="M250 135 A115 115 0 0 1 350 190"
-    class="ring-gold"
-/>
-
-<text
-    x="250"
-    y="151"
-    text-anchor="middle"
-    class="ring-number"
->
-03
-</text>
-
-<text
-    x="365"
-    y="254"
-    text-anchor="middle"
-    class="ring-number"
->
-09
-</text>
-
-</g>
-
-
-<g class="counter-arcs">
-
-<path
-    d="M250 154 A96 96 0 0 0 181 181"
-    class="ring-violet"
-/>
-
-</g>
-
-</svg>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     POLYGON ORB
-     ===================================================== -->
-
-<div
-    class="orb"
-    id="orb"
->
-
-<div class="orb-core"></div>
-
-
-<div class="polygon-shell">
-
-    <div class="facet f1"></div>
-    <div class="facet f2"></div>
-    <div class="facet f3"></div>
-    <div class="facet f4"></div>
-    <div class="facet f5"></div>
-    <div class="facet f6"></div>
-    <div class="facet f7"></div>
-
-</div>
-
-
-<div class="polygon-inner"></div>
-
-
-<div class="orb-light"></div>
-
-
-<div class="orb-text">
-
-    <div class="core-title">
-        CORE
     </div>
 
-    <div
-        class="core-state"
-        id="coreState"
-    >
-        READY
+    <div class="controls">
+
+        <button id="micButton">
+            MICRO<br>ACTIF
+        </button>
+
+        <button id="shortcutButton">
+            ENVOYER<br>RACCOURCIS
+        </button>
+
+        <button id="speakButton">
+            VOIX<br>JARVIS
+        </button>
+
     </div>
 
 </div>
-
-</div>
-
-
-<div
-    class="audio-wave"
-    id="audioWave"
-></div>
-
-
-</main>
-
-
-<div class="voice-output">
-
-    <div
-        class="voice-text"
-        id="voiceText"
-    >
-        EN ATTENTE DE COMMANDE
-    </div>
-
-</div>
-
-
-<div class="controls">
-
-<button
-    class="control"
-    id="microButton"
->
-ACTIVER<br>MICRO
-</button>
-
-<button
-    class="control"
-    id="shortcutButton"
->
-ENVOYER<br>RACCOURCIS
-</button>
-
-<button
-    class="control"
-    id="speakButton"
->
-VOIX<br>JARVIS
-</button>
-
-</div>
-
 
 <script>
-
 /* =========================================================
-   JARVIS AUDIO ENGINE
+   JARVIS VOICE CORE
+   Canvas-only visual engine
+   No external dependency
    ========================================================= */
 
-const orb =
-    document.getElementById(
-        "orb"
-    );
+(() => {
 
-const coreState =
-    document.getElementById(
-        "coreState"
-    );
-
-const voiceText =
-    document.getElementById(
-        "voiceText"
-    );
-
-const microButton =
-    document.getElementById(
-        "microButton"
-    );
-
-const shortcutButton =
-    document.getElementById(
-        "shortcutButton"
-    );
-
-const speakButton =
-    document.getElementById(
-        "speakButton"
-    );
-
-const audioWave =
-    document.getElementById(
-        "audioWave"
-    );
-
-
-const rings =
-    [
-        ...document.querySelectorAll(
-            ".voice-ring"
-        )
-    ];
-
-
-let audioContext =
-    null;
-
-let analyser =
-    null;
-
-let microphoneSource =
-    null;
-
-let microphoneStream =
-    null;
-
-let audioActive =
-    false;
-
-let animationRunning =
-    false;
-
-
-let visualLevel =
-    0;
-
-let targetLevel =
-    0;
-
-
-let recognition =
-    null;
-
-let finalTranscript =
-    "";
-
-
-/* =========================================================
-   AUDIO BARS
-   ========================================================= */
-
-for(
-    let i=0;
-    i<31;
-    i++
-){
-
-    const bar =
-        document.createElement(
-            "div"
-        );
-
-    bar.className =
-        "audio-bar";
-
-    audioWave.appendChild(
-        bar
-    );
-}
-
-
-const bars =
-    [
-        ...document.querySelectorAll(
-            ".audio-bar"
-        )
-    ];
-
-
-/* =========================================================
-   TICKS
-   ========================================================= */
-
-function createTicks(
-    id,
-    count,
-    radius,
-    majorEvery
-){
-
-    const group =
-        document.getElementById(
-            id
-        );
-
-    if(!group){
-        return;
-    }
-
-
-    const ns =
-        "http://www.w3.org/2000/svg";
-
-
-    for(
-        let i=0;
-        i<count;
-        i++
-    ){
-
-        const angle =
-            i /
-            count *
-            Math.PI *
-            2;
-
-
-        const major =
-            i %
-            majorEvery ===
-            0;
-
-
-        const inner =
-            radius -
-            (
-                major
-                ? 14
-                : 7
-            );
-
-
-        const x1 =
-            250 +
-            Math.cos(angle) *
-            inner;
-
-
-        const y1 =
-            250 +
-            Math.sin(angle) *
-            inner;
-
-
-        const x2 =
-            250 +
-            Math.cos(angle) *
-            radius;
-
-
-        const y2 =
-            250 +
-            Math.sin(angle) *
-            radius;
-
-
-        const line =
-            document.createElementNS(
-                ns,
-                "line"
-            );
-
-
-        line.setAttribute(
-            "x1",
-            x1
-        );
-
-        line.setAttribute(
-            "y1",
-            y1
-        );
-
-        line.setAttribute(
-            "x2",
-            x2
-        );
-
-        line.setAttribute(
-            "y2",
-            y2
-        );
-
-
-        line.setAttribute(
-            "class",
-            major
-            ? "tick-major"
-            : (
-                i % 3 === 0
-                ? "tick-gold"
-                : "tick"
-            )
-        );
-
-
-        group.appendChild(
-            line
-        );
-    }
-}
-
-
-createTicks(
-    "ticks1",
-    112,
-    237,
-    8
-);
-
-createTicks(
-    "ticks2",
-    96,
-    200,
-    8
-);
-
-createTicks(
-    "ticks3",
-    80,
-    158,
-    8
-);
-
-createTicks(
-    "ticks4",
-    64,
-    114,
-    8
-);
-
-
-/* =========================================================
-   MICROPHONE
-   ========================================================= */
-
-async function startMicrophone(){
-
-    if(audioActive){
-        return;
-    }
-
-
-    try{
-
-        microphoneStream =
-            await navigator
-            .mediaDevices
-            .getUserMedia({
-                audio:{
-                    echoCancellation:true,
-                    noiseSuppression:true,
-                    autoGainControl:true
-                }
-            });
-
-
-        audioContext =
-            new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
-
-
-        analyser =
-            audioContext
-            .createAnalyser();
-
-
-        analyser.fftSize =
-            256;
-
-        analyser.smoothingTimeConstant =
-            .38;
-
-
-        microphoneSource =
-            audioContext
-            .createMediaStreamSource(
-                microphoneStream
-            );
-
-
-        microphoneSource.connect(
-            analyser
-        );
-
-
-        audioActive =
-            true;
-
-
-        microButton.classList.add(
-            "active"
-        );
-
-
-        microButton.innerHTML =
-            "MICRO<br>ACTIF";
-
-
-        coreState.textContent =
-            "LISTENING";
-
-
-        startVisualEngine();
-
-        startRecognition();
-
-    }catch(error){
-
-        console.error(
-            error
-        );
-
-        voiceText.textContent =
-            "ACCÈS MICROPHONE REFUSÉ";
-
-        coreState.textContent =
-            "MIC ERROR";
-    }
-}
-
-
-/* =========================================================
-   STOP
-   ========================================================= */
-
-function stopMicrophone(){
-
-    if(
-        microphoneStream
-    ){
-
-        microphoneStream
-        .getTracks()
-        .forEach(
-            track =>
-                track.stop()
-        );
-    }
-
-
-    if(
-        microphoneSource
-    ){
-
-        microphoneSource.disconnect();
-
-        microphoneSource =
-            null;
-    }
-
-
-    if(
-        audioContext
-    ){
-
-        audioContext.close();
-
-        audioContext =
-            null;
-    }
-
-
-    analyser =
-        null;
-
-    audioActive =
-        false;
-
-    visualLevel =
-        0;
-
-    targetLevel =
-        0;
-
-
-    rings.forEach(
-        ring =>
-            ring.style.setProperty(
-                "--ring-scale",
-                "1"
-            )
-    );
-
-
-    document.documentElement
-        .style
-        .setProperty(
-            "--voice",
-            "0"
-        );
-
-
-    orb.style.transform =
-        "translate(-50%,-50%) scale(1)";
-
-
-    microButton.classList.remove(
-        "active"
-    );
-
-    microButton.innerHTML =
-        "ACTIVER<br>MICRO";
-
-
-    coreState.textContent =
-        "READY";
-}
-
-
-/* =========================================================
-   VISUAL ENGINE
-   ========================================================= */
-
-function startVisualEngine(){
-
-    if(animationRunning){
-        return;
-    }
-
-
-    animationRunning =
-        true;
-
-
-    requestAnimationFrame(
-        updateVisuals
-    );
-}
-
-
-function updateVisuals(){
-
-    if(
-        !audioActive ||
-        !analyser
-    ){
-
-        animationRunning =
-            false;
-
-        return;
-    }
-
-
-    const data =
-        new Uint8Array(
-            analyser.frequencyBinCount
-        );
-
-
-    analyser.getByteFrequencyData(
-        data
-    );
-
-
-    let sum =
-        0;
-
-    let count =
-        0;
-
-
-    for(
-        let i=2;
-        i<46;
-        i++
-    ){
-
-        sum +=
-            data[i];
-
-        count++;
-    }
-
-
-    const average =
-        sum / count;
-
-
-    targetLevel =
-        Math.min(
-            average / 70,
-            1
-        );
-
-
-    /*
-       ATTAQUE RAPIDE.
-    */
-
-    if(
-        targetLevel >
-        visualLevel
-    ){
-
-        visualLevel +=
-            (
-                targetLevel -
-                visualLevel
-            ) *
-            .48;
-
-    }else{
-
-        visualLevel +=
-            (
-                targetLevel -
-                visualLevel
-            ) *
-            .16;
-    }
-
-
-    if(
-        visualLevel <
-        .015
-    ){
-
-        visualLevel =
-            0;
-    }
-
-
-    document.documentElement
-        .style
-        .setProperty(
-            "--voice",
-            visualLevel
-        );
-
+    "use strict";
 
     /* =====================================================
-       RINGS
+       DOM
+       ===================================================== */
 
-       Au repos : compacts.
+    const canvas = document.getElementById("visual");
+    const ctx = canvas.getContext("2d");
 
-       À voix maximale :
-       retour presque exactement à l'espace
-       occupé par la version précédente.
-    ===================================================== */
+    const voiceText =
+        document.getElementById("voiceText");
 
+    const micButton =
+        document.getElementById("micButton");
 
-    const maximumExpansion =
-        .075;
+    const shortcutButton =
+        document.getElementById("shortcutButton");
 
-
-    const scales = [
-
-        1 +
-        visualLevel *
-        maximumExpansion,
-
-        1 +
-        visualLevel *
-        maximumExpansion,
-
-        1 +
-        visualLevel *
-        maximumExpansion,
-
-        1 +
-        visualLevel *
-        maximumExpansion
-    ];
-
-
-    rings.forEach(
-        (
-            ring,
-            index
-        ) => {
-
-            ring.style.setProperty(
-                "--ring-scale",
-                scales[index]
-            );
-        }
-    );
-
-
-    /* =====================================================
-       ORB BEAT
-    ===================================================== */
-
-
-    const orbScale =
-        1 +
-        visualLevel *
-        .18;
-
-
-    orb.style.transform =
-        `
-        translate(-50%,-50%)
-        scale(${orbScale})
-        `;
-
-
-    /* =====================================================
-       AUDIO BARS
-    ===================================================== */
-
-    bars.forEach(
-        (
-            bar,
-            index
-        ) => {
-
-            const position =
-                index /
-                (
-                    bars.length -
-                    1
-                );
-
-
-            const frequency =
-                Math.floor(
-                    position *
-                    55
-                );
-
-
-            const value =
-                data[
-                    frequency
-                ] || 0;
-
-
-            const local =
-                value /
-                255;
-
-
-            const height =
-                3 +
-                local *
-                28 *
-                (
-                    .5 +
-                    visualLevel *
-                    2
-                );
-
-
-            bar.style.height =
-                `${height}px`;
-        }
-    );
-
-
-    /* =====================================================
-       ORB LIGHT
-    ===================================================== */
-
-    const glow =
-        18 +
-        visualLevel *
-        48;
-
-
-    const deep =
-        60 +
-        visualLevel *
-        145;
-
-
-    const core =
-        0.45 +
-        visualLevel *
-        .3;
-
-
-    orb.querySelector(
-        ".orb-core"
-    ).style.boxShadow = `
-
-        inset
-        -15px -18px 27px
-        rgba(0,0,0,.82),
-
-        inset
-        9px 7px 20px
-        rgba(100,232,247,.30),
-
-        0 0 ${glow}px
-        rgba(0,220,255,${core}),
-
-        0 0 ${deep}px
-        rgba(0,153,187,.34)
-    `;
+    const speakButton =
+        document.getElementById("speakButton");
 
 
     /* =====================================================
        STATE
-    ===================================================== */
+       ===================================================== */
 
-    coreState.textContent =
-        visualLevel > .06
-        ? "LISTENING"
-        : "READY";
+    let width = 0;
+    let height = 0;
+    let cx = 0;
+    let cy = 0;
 
-
-    requestAnimationFrame(
-        updateVisuals
+    let dpr = Math.min(
+        window.devicePixelRatio || 1,
+        2
     );
-}
+
+    let time = 0;
+
+    let audioLevel = 0;
+    let targetAudio = 0;
+
+    let voiceActive = false;
+
+    let currentTranscript = "";
+
+    let recognition = null;
+
+    let recognitionSupported = false;
+
+    let speaking = false;
 
 
-/* =========================================================
-   SPEECH RECOGNITION
-   ========================================================= */
+    /* =====================================================
+       RING CONFIGURATION
+       ===================================================== */
 
-function startRecognition(){
+    /*
+       Les quatre couronnes sont FIXES.
+       Elles ne partent jamais sur les côtés.
 
-    const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
+       Leur rayon est calculé proportionnellement
+       à la largeur disponible.
+
+       La voix agit uniquement sur :
+       - épaisseur
+       - luminosité
+       - écartement contrôlé
+       - rotation interne
+       - densité
+       - halo
+    */
+
+    const ringDefinitions = [
+
+        {
+            radius: .17,
+            thickness: 2.0,
+            speed: .075,
+            direction: 1,
+            color: "cyan"
+        },
+
+        {
+            radius: .285,
+            thickness: 2.2,
+            speed: .052,
+            direction: -1,
+            color: "cyan"
+        },
+
+        {
+            radius: .405,
+            thickness: 2.0,
+            speed: .038,
+            direction: 1,
+            color: "mixed"
+        },
+
+        {
+            radius: .525,
+            thickness: 2.4,
+            speed: .022,
+            direction: -1,
+            color: "cyan"
+        }
+
+    ];
 
 
-    if(
-        !SpeechRecognition
-    ){
+    /* =====================================================
+       RESIZE
+       ===================================================== */
 
-        voiceText.textContent =
-            "RECONNAISSANCE VOCALE INDISPONIBLE";
+    function resize() {
 
-        return;
+        const rect =
+            canvas.getBoundingClientRect();
+
+        width = rect.width;
+        height = rect.height;
+
+        dpr = Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+        canvas.width =
+            Math.floor(width * dpr);
+
+        canvas.height =
+            Math.floor(height * dpr);
+
+        ctx.setTransform(
+            dpr,
+            0,
+            0,
+            dpr,
+            0,
+            0
+        );
+
+        /*
+           La composition reste centrée dans la
+           partie supérieure du téléphone.
+        */
+
+        cx = width * .5;
+
+        cy = height * .47;
+    }
+
+    window.addEventListener(
+        "resize",
+        resize,
+        { passive: true }
+    );
+
+    resize();
+
+
+    /* =====================================================
+       UTILITY
+       ===================================================== */
+
+    function lerp(a, b, amount) {
+
+        return a + (b - a) * amount;
     }
 
 
-    recognition =
-        new SpeechRecognition();
+    function clamp(value, min, max) {
+
+        return Math.max(
+            min,
+            Math.min(max, value)
+        );
+    }
 
 
-    recognition.lang =
-        "fr-FR";
+    function polar(
+        centerX,
+        centerY,
+        radius,
+        angle
+    ) {
+
+        return {
+
+            x:
+                centerX +
+                Math.cos(angle) * radius,
+
+            y:
+                centerY +
+                Math.sin(angle) * radius
+
+        };
+    }
 
 
-    recognition.continuous =
-        true;
+    function cyanAlpha(alpha) {
+
+        return `rgba(25,230,255,${alpha})`;
+    }
 
 
-    recognition.interimResults =
-        true;
+    function whiteAlpha(alpha) {
+
+        return `rgba(220,250,255,${alpha})`;
+    }
 
 
-    recognition.onresult =
-        event => {
+    function goldAlpha(alpha) {
 
-            let interim =
-                "";
-
-            let finalText =
-                "";
+        return `rgba(201,164,90,${alpha})`;
+    }
 
 
-            for(
-                let i =
-                    event.resultIndex;
+    /* =====================================================
+       BACKGROUND ATMOSPHERE
+       ===================================================== */
 
-                i <
-                    event.results.length;
+    function drawAtmosphere() {
 
+        const radius =
+            Math.min(width, height) * .60;
+
+        const gradient =
+            ctx.createRadialGradient(
+                cx,
+                cy,
+                0,
+                cx,
+                cy,
+                radius
+            );
+
+        gradient.addColorStop(
+            0,
+            "rgba(0,125,155,.12)"
+        );
+
+        gradient.addColorStop(
+            .35,
+            "rgba(0,75,100,.075)"
+        );
+
+        gradient.addColorStop(
+            1,
+            "rgba(0,0,0,0)"
+        );
+
+        ctx.fillStyle = gradient;
+
+        ctx.fillRect(
+            0,
+            0,
+            width,
+            height
+        );
+    }
+
+
+    /* =====================================================
+       CENTRAL RADIAL GRID
+       IMPORTANT:
+       The grid DOES NOT disappear at the centre.
+       ===================================================== */
+
+    function drawCentralGrid() {
+
+        const maxRadius =
+            Math.min(width, height) * .53;
+
+        ctx.save();
+
+        /*
+           Radial lines.
+        */
+
+        for (
+            let i = 0;
+            i < 48;
+            i++
+        ) {
+
+            const angle =
+                (Math.PI * 2 / 48) * i;
+
+            const p =
+                polar(
+                    cx,
+                    cy,
+                    maxRadius,
+                    angle
+                );
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                cx,
+                cy
+            );
+
+            ctx.lineTo(
+                p.x,
+                p.y
+            );
+
+            ctx.strokeStyle =
+                "rgba(37,164,185,.045)";
+
+            ctx.lineWidth = .55;
+
+            ctx.stroke();
+        }
+
+
+        /*
+           Concentric construction grid.
+        */
+
+        for (
+            let i = 1;
+            i <= 18;
+            i++
+        ) {
+
+            const radius =
+                maxRadius *
+                (i / 18);
+
+            ctx.beginPath();
+
+            ctx.arc(
+                cx,
+                cy,
+                radius,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.strokeStyle =
+                i % 3 === 0
+                    ? "rgba(37,164,185,.065)"
+                    : "rgba(37,164,185,.028)";
+
+            ctx.lineWidth =
+                i % 3 === 0 ? .8 : .45;
+
+            ctx.stroke();
+        }
+
+
+        /*
+           Cartesian engineering lines.
+           Elles passent réellement derrière
+           la géode.
+        */
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            cx - maxRadius,
+            cy
+        );
+
+        ctx.lineTo(
+            cx + maxRadius,
+            cy
+        );
+
+        ctx.moveTo(
+            cx,
+            cy - maxRadius
+        );
+
+        ctx.lineTo(
+            cx,
+            cy + maxRadius
+        );
+
+        ctx.strokeStyle =
+            "rgba(52,196,218,.065)";
+
+        ctx.lineWidth = .7;
+
+        ctx.stroke();
+
+
+        ctx.restore();
+    }
+
+
+    /* =====================================================
+       OUTER INFORMATION FIELD
+       ===================================================== */
+
+    function drawOuterInformationField() {
+
+        const base =
+            Math.min(width, height) * .525;
+
+        ctx.save();
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const labels = [
+            "N",
+            "E",
+            "S",
+            "W"
+        ];
+
+        labels.forEach(
+            (label, index) => {
+
+                const angle =
+                    -Math.PI / 2 +
+                    index *
+                    Math.PI / 2;
+
+                const p =
+                    polar(
+                        cx,
+                        cy,
+                        base + 14,
+                        angle
+                    );
+
+                ctx.font =
+                    "13px -apple-system, sans-serif";
+
+                ctx.fillStyle =
+                    "rgba(209,250,255,.82)";
+
+                ctx.fillText(
+                    label,
+                    p.x,
+                    p.y
+                );
+            }
+        );
+
+
+        /*
+           Grande échelle 0–360°.
+        */
+
+        for (
+            let deg = 0;
+            deg < 360;
+            deg += 15
+        ) {
+
+            const angle =
+                deg * Math.PI / 180 -
+                Math.PI / 2;
+
+            const outer =
+                base + 4;
+
+            const inner =
+                deg % 45 === 0
+                    ? base - 12
+                    : base - 6;
+
+            const p1 =
+                polar(
+                    cx,
+                    cy,
+                    inner,
+                    angle
+                );
+
+            const p2 =
+                polar(
+                    cx,
+                    cy,
+                    outer,
+                    angle
+                );
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                p1.x,
+                p1.y
+            );
+
+            ctx.lineTo(
+                p2.x,
+                p2.y
+            );
+
+            ctx.strokeStyle =
+                deg % 45 === 0
+                    ? "rgba(220,250,255,.72)"
+                    : "rgba(46,184,207,.45)";
+
+            ctx.lineWidth =
+                deg % 45 === 0
+                    ? 1.25
+                    : .7;
+
+            ctx.stroke();
+
+
+            /*
+               Numéros.
+            */
+
+            if (deg % 30 === 0) {
+
+                const textRadius =
+                    base - 27;
+
+                const tp =
+                    polar(
+                        cx,
+                        cy,
+                        textRadius,
+                        angle
+                    );
+
+                ctx.font =
+                    "8px monospace";
+
+                ctx.fillStyle =
+                    "rgba(128,206,219,.72)";
+
+                ctx.fillText(
+                    String(deg).padStart(3, "0"),
+                    tp.x,
+                    tp.y
+                );
+            }
+        }
+
+        ctx.restore();
+    }
+
+
+    /* =====================================================
+       RING BASE
+       ===================================================== */
+
+    function drawRingBase(
+        radius,
+        thickness,
+        glow
+    ) {
+
+        ctx.save();
+
+        /*
+           Halo.
+        */
+
+        ctx.shadowBlur =
+            18 + glow * 30;
+
+        ctx.shadowColor =
+            `rgba(25,230,255,${.32 + glow * .45})`;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            cx,
+            cy,
+            radius,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.strokeStyle =
+            `rgba(25,230,255,${.42 + glow * .32})`;
+
+        ctx.lineWidth =
+            thickness +
+            glow * 2.2;
+
+        ctx.stroke();
+
+
+        /*
+           Corps holographique.
+        */
+
+        ctx.shadowBlur = 0;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            cx,
+            cy,
+            radius,
+            0,
+            Math.PI * 2
+        );
+
+        const gradient =
+            ctx.createLinearGradient(
+                cx - radius,
+                cy - radius,
+                cx + radius,
+                cy + radius
+            );
+
+        gradient.addColorStop(
+            0,
+            "rgba(94,246,255,.90)"
+        );
+
+        gradient.addColorStop(
+            .35,
+            "rgba(18,159,187,.70)"
+        );
+
+        gradient.addColorStop(
+            .65,
+            "rgba(35,220,238,.88)"
+        );
+
+        gradient.addColorStop(
+            1,
+            "rgba(19,90,108,.55)"
+        );
+
+        ctx.strokeStyle =
+            gradient;
+
+        ctx.lineWidth =
+            thickness;
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+
+    /* =====================================================
+       RING GRADUATIONS
+       ===================================================== */
+
+    function drawRingGraduations(
+        radius,
+        ringIndex,
+        rotation,
+        glow
+    ) {
+
+        ctx.save();
+
+        const tickCount =
+            96 +
+            ringIndex * 32;
+
+        const inner =
+            radius - 7;
+
+        const outer =
+            radius + 7 +
+            glow * 5;
+
+        for (
+            let i = 0;
+            i < tickCount;
+            i++
+        ) {
+
+            const angle =
+                rotation +
+                i *
+                Math.PI * 2 /
+                tickCount;
+
+            const major =
+                i % 12 === 0;
+
+            const medium =
+                i % 4 === 0;
+
+            const start =
+                major
+                    ? radius - 12
+                    : medium
+                        ? radius - 8
+                        : inner;
+
+            const end =
+                major
+                    ? radius + 10
+                    : medium
+                        ? radius + 6
+                        : outer;
+
+            const p1 =
+                polar(
+                    cx,
+                    cy,
+                    start,
+                    angle
+                );
+
+            const p2 =
+                polar(
+                    cx,
+                    cy,
+                    end,
+                    angle
+                );
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                p1.x,
+                p1.y
+            );
+
+            ctx.lineTo(
+                p2.x,
+                p2.y
+            );
+
+            ctx.strokeStyle =
+                major
+                    ? `rgba(220,250,255,${.82 + glow * .15})`
+                    : medium
+                        ? `rgba(63,216,235,${.58 + glow * .18})`
+                        : `rgba(35,153,176,${.38 + glow * .12})`;
+
+            ctx.lineWidth =
+                major
+                    ? 1.15
+                    : medium
+                        ? .8
+                        : .5;
+
+            ctx.stroke();
+        }
+
+        ctx.restore();
+    }
+
+
+    /* =====================================================
+       DATA BETWEEN RINGS
+       ===================================================== */
+
+    function drawRingData(
+        innerRadius,
+        outerRadius,
+        ringIndex,
+        rotation,
+        glow
+    ) {
+
+        ctx.save();
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        /*
+           Petits points techniques.
+        */
+
+        const dotCount =
+            40 + ringIndex * 14;
+
+        for (
+            let i = 0;
+            i < dotCount;
+            i++
+        ) {
+
+            const angle =
+                rotation +
+                i *
+                Math.PI * 2 /
+                dotCount;
+
+            const wave =
+                Math.sin(
+                    i * 1.71 +
+                    ringIndex
+                ) * 2.4;
+
+            const radius =
+                lerp(
+                    innerRadius + 8,
+                    outerRadius - 8,
+                    .5 +
+                    wave / 12
+                );
+
+            const p =
+                polar(
+                    cx,
+                    cy,
+                    radius,
+                    angle
+                );
+
+            const size =
+                i % 7 === 0
+                    ? 2
+                    : .8;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                p.x,
+                p.y,
+                size,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                i % 9 === 0
+                    ? goldAlpha(.75)
+                    : cyanAlpha(.48 + glow * .25);
+
+            ctx.fill();
+        }
+
+
+        /*
+           Informations textuelles.
+        */
+
+        const information = [
+            "AX-03",
+            "CORE",
+            "VOICE",
+            "SYNC",
+            "042",
+            "082",
+            "117",
+            "204",
+            "315",
+            "LOCK",
+            "AUDIO",
+            "SYS"
+        ];
+
+        for (
+            let i = 0;
+            i < information.length;
+            i++
+        ) {
+
+            const angle =
+                rotation +
+                i *
+                Math.PI * 2 /
+                information.length;
+
+            const radius =
+                (innerRadius +
+                outerRadius) *
+                .5;
+
+            const p =
+                polar(
+                    cx,
+                    cy,
+                    radius,
+                    angle
+                );
+
+            ctx.save();
+
+            ctx.translate(
+                p.x,
+                p.y
+            );
+
+            ctx.rotate(
+                angle +
+                Math.PI / 2
+            );
+
+            ctx.font =
+                "7px monospace";
+
+            ctx.fillStyle =
+                i % 5 === 0
+                    ? goldAlpha(.74)
+                    : whiteAlpha(.48);
+
+            ctx.fillText(
+                information[
+                    (i + ringIndex * 3)
+                    % information.length
+                ],
+                0,
+                0
+            );
+
+            ctx.restore();
+        }
+
+
+        /*
+           Petits artefacts rectangulaires.
+        */
+
+        for (
+            let i = 0;
+            i < 24;
+            i++
+        ) {
+
+            const angle =
+                rotation +
+                i *
+                Math.PI * 2 / 24;
+
+            const radius =
+                innerRadius +
+                (outerRadius - innerRadius) *
+                (0.25 +
+                 ((i * 37) % 70) / 100);
+
+            const p =
+                polar(
+                    cx,
+                    cy,
+                    radius,
+                    angle
+                );
+
+            const w =
+                i % 4 === 0
+                    ? 7
+                    : 3;
+
+            const h =
+                i % 3 === 0
+                    ? 2
+                    : 4;
+
+            ctx.fillStyle =
+                i % 6 === 0
+                    ? goldAlpha(.62)
+                    : cyanAlpha(.44);
+
+            ctx.fillRect(
+                p.x - w / 2,
+                p.y - h / 2,
+                w,
+                h
+            );
+        }
+
+        ctx.restore();
+    }
+
+
+    /* =====================================================
+       PARALLEL INTERNAL ARCS
+       ===================================================== */
+
+    function drawParallelArcs(
+        radius,
+        ringIndex,
+        rotation,
+        glow
+    ) {
+
+        ctx.save();
+
+        /*
+           Plusieurs arcs suivent exactement
+           la géométrie circulaire des couronnes.
+        */
+
+        const arcSets = [
+            {
+                offset: -18,
+                width: 1.1,
+                alpha: .72
+            },
+            {
+                offset: -11,
+                width: .7,
+                alpha: .44
+            },
+            {
+                offset: 11,
+                width: .8,
+                alpha: .52
+            },
+            {
+                offset: 18,
+                width: 1.0,
+                alpha: .62
+            }
+        ];
+
+        arcSets.forEach(
+            (arc, index) => {
+
+                const r =
+                    radius +
+                    arc.offset;
+
+                const span =
+                    .35 +
+                    index * .13;
+
+                const start =
+                    rotation +
+                    index * 1.31;
+
+                const end =
+                    start +
+                    span;
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    cx,
+                    cy,
+                    r,
+                    start,
+                    end
+                );
+
+                ctx.strokeStyle =
+                    index === 3
+                        ? goldAlpha(
+                            arc.alpha
+                        )
+                        : cyanAlpha(
+                            arc.alpha +
+                            glow * .12
+                        );
+
+                ctx.lineWidth =
+                    arc.width +
+                    glow * .5;
+
+                ctx.stroke();
+            }
+        );
+
+        ctx.restore();
+    }
+
+
+    /* =====================================================
+       SPECIAL DATA ARCS
+       ===================================================== */
+
+    function drawDataArcs(
+        radius,
+        rotation,
+        ringIndex,
+        glow
+    ) {
+
+        ctx.save();
+
+        const segments = [
+            {
+                start: .20,
+                length: .62,
+                color: "cyan"
+            },
+            {
+                start: 2.15,
+                length: .38,
+                color: "gold"
+            },
+            {
+                start: 3.40,
+                length: .48,
+                color: "blue"
+            },
+            {
+                start: 5.00,
+                length: .29,
+                color: "cyan"
+            }
+        ];
+
+        segments.forEach(
+            (segment, i) => {
+
+                const start =
+                    rotation +
+                    segment.start;
+
+                const end =
+                    start +
+                    segment.length;
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    cx,
+                    cy,
+                    radius,
+                    start,
+                    end
+                );
+
+                let color;
+
+                if (
+                    segment.color === "gold"
+                ) {
+                    color =
+                        `rgba(201,164,90,${.78 + glow * .18})`;
+                }
+                else if (
+                    segment.color === "blue"
+                ) {
+                    color =
+                        `rgba(72,130,255,${.62 + glow * .18})`;
+                }
+                else {
+                    color =
+                        `rgba(25,230,255,${.78 + glow * .18})`;
+                }
+
+                ctx.shadowBlur =
+                    8 + glow * 15;
+
+                ctx.shadowColor =
+                    color;
+
+                ctx.strokeStyle =
+                    color;
+
+                ctx.lineWidth =
+                    i === 0
+                        ? 2.1 + glow * 1.2
+                        : 1.2 + glow * .8;
+
+                ctx.stroke();
+            }
+        );
+
+        ctx.restore();
+    }
+
+
+    /* =====================================================
+       CENTRAL GEO / POLYGON
+       ===================================================== */
+
+    function drawGeode() {
+
+        /*
+           La géode reste beaucoup plus petite que
+           l'ensemble des couronnes.
+
+           Elle n'est PAS une sphère parfaite.
+
+           Elle est constituée de facettes polygonales
+           irrégulières, avec plusieurs couches.
+        */
+
+        const baseRadius =
+            Math.min(width, height) * .105;
+
+        const pulse =
+            audioLevel * .045;
+
+        const radius =
+            baseRadius *
+            (1 + pulse);
+
+        ctx.save();
+
+        /*
+           Halo.
+        */
+
+        const halo =
+            ctx.createRadialGradient(
+                cx,
+                cy,
+                radius * .05,
+                cx,
+                cy,
+                radius * 2.4
+            );
+
+        halo.addColorStop(
+            0,
+            `rgba(25,230,255,${.30 + audioLevel * .20})`
+        );
+
+        halo.addColorStop(
+            .25,
+            `rgba(25,190,220,${.14 + audioLevel * .12})`
+        );
+
+        halo.addColorStop(
+            1,
+            "rgba(0,0,0,0)"
+        );
+
+        ctx.fillStyle = halo;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            cx,
+            cy,
+            radius * 2.4,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+
+        /*
+           Structure externe.
+        */
+
+        const points = 14;
+
+        const vertices = [];
+
+        for (
+            let i = 0;
+            i < points;
+            i++
+        ) {
+
+            const angle =
+                i *
+                Math.PI * 2 /
+                points -
+                Math.PI / 2;
+
+            const irregular =
+                0.88 +
+                .12 *
+                Math.sin(
+                    i * 2.73
+                );
+
+            vertices.push(
+                polar(
+                    cx,
+                    cy,
+                    radius *
+                    irregular,
+                    angle
+                )
+            );
+        }
+
+
+        /*
+           Facettes.
+        */
+
+        for (
+            let i = 0;
+            i < points;
+            i++
+        ) {
+
+            const next =
+                (i + 1) % points;
+
+            const a =
+                vertices[i];
+
+            const b =
+                vertices[next];
+
+            const innerAngle =
+                i *
+                Math.PI * 2 /
+                points -
+                Math.PI / 2 +
+                Math.PI / points;
+
+            const innerRadius =
+                radius *
+                (.35 +
+                 audioLevel * .08);
+
+            const c =
+                polar(
+                    cx,
+                    cy,
+                    innerRadius *
+                    (.90 +
+                     .08 *
+                     Math.sin(i * 3.1)),
+                    innerAngle
+                );
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                cx,
+                cy
+            );
+
+            ctx.lineTo(
+                a.x,
+                a.y
+            );
+
+            ctx.lineTo(
+                c.x,
+                c.y
+            );
+
+            ctx.closePath();
+
+            const hue =
+                i % 4 === 0
+                    ? `rgba(36,218,238,${.20 + audioLevel * .12})`
+                    : i % 5 === 0
+                        ? `rgba(201,164,90,${.16 + audioLevel * .10})`
+                        : `rgba(54,139,157,${.16 + audioLevel * .08})`;
+
+            ctx.fillStyle = hue;
+
+            ctx.fill();
+
+            ctx.strokeStyle =
+                `rgba(86,226,240,${.30 + audioLevel * .22})`;
+
+            ctx.lineWidth = .7;
+
+            ctx.stroke();
+        }
+
+
+        /*
+           Facettes internes.
+        */
+
+        for (
+            let layer = 1;
+            layer <= 3;
+            layer++
+        ) {
+
+            const r =
+                radius *
+                (1 -
+                 layer * .19);
+
+            const n =
+                10 + layer * 2;
+
+            ctx.beginPath();
+
+            for (
+                let i = 0;
+                i < n;
                 i++
-            ){
+            ) {
 
-                const result =
-                    event.results[i];
+                const angle =
+                    i *
+                    Math.PI * 2 /
+                    n +
+                    layer * .31;
 
+                const distortion =
+                    1 +
+                    .07 *
+                    Math.sin(
+                        i * 4.3 +
+                        layer
+                    );
 
-                const text =
-                    result[0]
-                    .transcript;
+                const p =
+                    polar(
+                        cx,
+                        cy,
+                        r * distortion,
+                        angle
+                    );
 
-
-                if(
-                    result.isFinal
-                ){
-
-                    finalText +=
-                        text +
-                        " ";
-
-                }else{
-
-                    interim +=
-                        text;
+                if (i === 0) {
+                    ctx.moveTo(
+                        p.x,
+                        p.y
+                    );
+                }
+                else {
+                    ctx.lineTo(
+                        p.x,
+                        p.y
+                    );
                 }
             }
 
+            ctx.closePath();
 
-            if(finalText){
+            ctx.strokeStyle =
+                `rgba(94,240,255,${.24 + audioLevel * .18})`;
 
-                finalTranscript +=
-                    finalText;
-            }
+            ctx.lineWidth =
+                .55 + layer * .18;
 
-
-            const display =
-                (
-                    finalTranscript +
-                    interim
-                ).trim();
+            ctx.stroke();
+        }
 
 
-            if(display){
+        /*
+           Noyau central.
+        */
 
-                voiceText.textContent =
-                    display.toUpperCase();
-            }
-        };
-
-
-    recognition.onerror =
-        error => {
-
-            console.log(
-                error
+        const core =
+            ctx.createRadialGradient(
+                cx - radius * .20,
+                cy - radius * .25,
+                1,
+                cx,
+                cy,
+                radius * .65
             );
-        };
+
+        core.addColorStop(
+            0,
+            "rgba(222,255,255,.88)"
+        );
+
+        core.addColorStop(
+            .08,
+            "rgba(42,221,239,.62)"
+        );
+
+        core.addColorStop(
+            .32,
+            "rgba(8,92,111,.44)"
+        );
+
+        core.addColorStop(
+            1,
+            "rgba(0,13,20,.90)"
+        );
+
+        ctx.fillStyle = core;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            cx,
+            cy,
+            radius * .48,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
 
 
-    recognition.onend =
-        () => {
+        /*
+           Texte central.
+        */
 
-            if(
-                audioActive
-            ){
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
 
-                setTimeout(
-                    () => {
+        ctx.font =
+            "11px -apple-system, sans-serif";
 
-                        try{
-                            recognition.start();
-                        }catch(e){}
+        ctx.fillStyle =
+            "rgba(221,252,255,.88)";
 
-                    },
-                    250
+        ctx.letterSpacing = "3px";
+
+        ctx.fillText(
+            "CORE",
+            cx,
+            cy - 3
+        );
+
+        ctx.font =
+            "6px monospace";
+
+        ctx.fillStyle =
+            "rgba(87,168,181,.80)";
+
+        ctx.fillText(
+            voiceActive
+                ? "LISTENING"
+                : "READY",
+            cx,
+            cy + 11
+        );
+
+        ctx.restore();
+    }
+
+
+    /* =====================================================
+       CENTRAL MICRO DATA
+       ===================================================== */
+
+    function drawCentralArtifacts() {
+
+        const r =
+            Math.min(width, height) * .13;
+
+        ctx.save();
+
+        for (
+            let i = 0;
+            i < 28;
+            i++
+        ) {
+
+            const angle =
+                i *
+                Math.PI * 2 /
+                28;
+
+            const radius =
+                r *
+                (.92 +
+                 .09 *
+                 Math.sin(i * 2.4));
+
+            const p =
+                polar(
+                    cx,
+                    cy,
+                    radius,
+                    angle
+                );
+
+            const size =
+                i % 5 === 0
+                    ? 2.4
+                    : 1;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                p.x,
+                p.y,
+                size,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                i % 7 === 0
+                    ? goldAlpha(.72)
+                    : cyanAlpha(.50);
+
+            ctx.fill();
+        }
+
+        ctx.restore();
+    }
+
+
+    /* =====================================================
+       VOICE WAVE
+       ===================================================== */
+
+    function drawVoiceWave() {
+
+        const radius =
+            Math.min(width, height) * .14;
+
+        ctx.save();
+
+        ctx.beginPath();
+
+        const samples = 72;
+
+        for (
+            let i = 0;
+            i <= samples;
+            i++
+        ) {
+
+            const angle =
+                i /
+                samples *
+                Math.PI * 2;
+
+            const wave =
+                Math.sin(
+                    i * 1.9 +
+                    time * 7
+                ) *
+                audioLevel *
+                4;
+
+            const r =
+                radius +
+                wave;
+
+            const p =
+                polar(
+                    cx,
+                    cy,
+                    r,
+                    angle
+                );
+
+            if (i === 0) {
+                ctx.moveTo(
+                    p.x,
+                    p.y
                 );
             }
+            else {
+                ctx.lineTo(
+                    p.x,
+                    p.y
+                );
+            }
+        }
+
+        ctx.closePath();
+
+        ctx.strokeStyle =
+            `rgba(90,240,255,${.16 + audioLevel * .38})`;
+
+        ctx.lineWidth =
+            .7 + audioLevel * 1.4;
+
+        ctx.shadowBlur =
+            10 + audioLevel * 15;
+
+        ctx.shadowColor =
+            "rgba(25,230,255,.45)";
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+
+    /* =====================================================
+       MAIN RENDER
+       ===================================================== */
+
+    function render() {
+
+        time += .016;
+
+        /*
+           Smooth audio response.
+        */
+
+        audioLevel =
+            lerp(
+                audioLevel,
+                targetAudio,
+                .13
+            );
+
+        /*
+           Decay target when not speaking.
+        */
+
+        if (!voiceActive) {
+
+            targetAudio =
+                lerp(
+                    targetAudio,
+                    0,
+                    .045
+                );
+        }
+
+
+        ctx.clearRect(
+            0,
+            0,
+            width,
+            height
+        );
+
+
+        drawAtmosphere();
+
+        drawCentralGrid();
+
+        drawOuterInformationField();
+
+
+        /*
+           Four fixed concentric rings.
+        */
+
+        ringDefinitions.forEach(
+            (ring, index) => {
+
+                const radius =
+                    Math.min(width, height) *
+                    ring.radius;
+
+                /*
+                   La voix ouvre légèrement les
+                   espaces sans casser la composition.
+                */
+
+                const voiceExpansion =
+                    audioLevel *
+                    7;
+
+                const actualRadius =
+                    radius +
+                    voiceExpansion *
+                    (index / 3);
+
+
+                const rotation =
+                    time *
+                    ring.speed *
+                    ring.direction;
+
+
+                const glow =
+                    audioLevel;
+
+
+                drawRingBase(
+                    actualRadius,
+                    ring.thickness,
+                    glow
+                );
+
+
+                /*
+                   Arcs parallèles.
+                */
+
+                drawParallelArcs(
+                    actualRadius,
+                    index,
+                    rotation,
+                    glow
+                );
+
+
+                /*
+                   Graduation.
+                */
+
+                drawRingGraduations(
+                    actualRadius,
+                    index,
+                    rotation,
+                    glow
+                );
+
+
+                /*
+                   Informations entre les anneaux.
+                */
+
+                const innerRadius =
+                    actualRadius -
+                    17;
+
+                const outerRadius =
+                    actualRadius +
+                    17;
+
+                drawRingData(
+                    innerRadius,
+                    outerRadius,
+                    index,
+                    rotation,
+                    glow
+                );
+
+
+                /*
+                   Arcs de données.
+                */
+
+                drawDataArcs(
+                    actualRadius,
+                    rotation,
+                    index,
+                    glow
+                );
+            }
+        );
+
+
+        /*
+           Artefacts centraux.
+        */
+
+        drawCentralArtifacts();
+
+        drawVoiceWave();
+
+        drawGeode();
+
+
+        /*
+           Animation suivante.
+        */
+
+        requestAnimationFrame(
+            render
+        );
+    }
+
+
+    render();
+
+
+    /* =====================================================
+       AUDIO INPUT
+       ===================================================== */
+
+    function setupRecognition() {
+
+        const SpeechRecognition =
+            window.SpeechRecognition ||
+            window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+
+            recognitionSupported = false;
+
+            voiceText.textContent =
+                "RECONNAISSANCE VOCALE NON DISPONIBLE";
+
+            return;
+        }
+
+        recognitionSupported = true;
+
+        recognition =
+            new SpeechRecognition();
+
+        recognition.lang =
+            "fr-FR";
+
+        recognition.continuous =
+            true;
+
+        recognition.interimResults =
+            true;
+
+        recognition.maxAlternatives =
+            1;
+
+
+        recognition.onstart = () => {
+
+            voiceActive = true;
+
+            micButton.classList.add(
+                "active"
+            );
+
+            voiceText.classList.add(
+                "active"
+            );
+
+            voiceText.textContent =
+                "ÉCOUTE EN COURS · PARLEZ";
         };
 
 
-    try{
+        recognition.onresult =
+            (event) => {
 
-        recognition.start();
+                let finalText = "";
 
-    }catch(error){
+                let interimText = "";
 
-        console.log(
-            error
-        );
+                for (
+                    let i =
+                        event.resultIndex;
+                    i < event.results.length;
+                    i++
+                ) {
+
+                    const result =
+                        event.results[i];
+
+                    const transcript =
+                        result[0].transcript;
+
+                    if (result.isFinal) {
+
+                        finalText +=
+                            transcript + " ";
+
+                    }
+                    else {
+
+                        interimText +=
+                            transcript;
+                    }
+                }
+
+
+                const combined =
+                    (
+                        finalText +
+                        interimText
+                    ).trim();
+
+
+                if (combined) {
+
+                    currentTranscript =
+                        combined;
+
+                    voiceText.textContent =
+                        combined;
+
+                    voiceText.classList.add(
+                        "active"
+                    );
+                }
+
+
+                /*
+                   L'amplitude visuelle suit
+                   l'activité vocale.
+                */
+
+                targetAudio =
+                    clamp(
+                        .35 +
+                        combined.length / 120,
+                        .30,
+                        1
+                    );
+            };
+
+
+        recognition.onerror =
+            (event) => {
+
+                console.log(
+                    "Speech recognition:",
+                    event.error
+                );
+
+                if (
+                    event.error ===
+                    "not-allowed"
+                ) {
+
+                    voiceText.textContent =
+                        "ACCÈS MICRO REFUSÉ";
+                }
+            };
+
+
+        recognition.onend = () => {
+
+            voiceActive = false;
+
+            micButton.classList.remove(
+                "active"
+            );
+
+            /*
+               Redémarre si le bouton est
+               toujours considéré actif.
+            */
+
+            if (
+                micButton.dataset.listening ===
+                "true"
+            ) {
+
+                try {
+
+                    recognition.start();
+
+                }
+                catch (_) {}
+
+            }
+            else {
+
+                targetAudio = 0;
+            }
+        };
     }
-}
+
+    setupRecognition();
 
 
-/* =========================================================
-   SHORTCUTS
-   ========================================================= */
+    /* =====================================================
+       MICRO BUTTON
+       ===================================================== */
 
-function sendToShortcuts(){
-
-    const command =
-        finalTranscript.trim();
-
-
-    if(
-        !command
-    ){
-
-        return;
-    }
-
-
-    const url =
-        "shortcuts://run-shortcut?name=" +
-        encodeURIComponent(
-            "JARVIS"
-        ) +
-        "&input=" +
-        encodeURIComponent(
-            command
-        );
-
-
-    window.location.href =
-        url;
-}
-
-
-/* =========================================================
-   SYNTHÈSE VOCALE
-   ========================================================= */
-
-function speakJarvis(){
-
-    if(
-        !("speechSynthesis" in window)
-    ){
-
-        return;
-    }
-
-
-    const text =
-        finalTranscript.trim() ||
-        "Je suis prêt. Quelle est votre commande ?";
-
-
-    window.speechSynthesis.cancel();
-
-
-    const utterance =
-        new SpeechSynthesisUtterance(
-            text
-        );
-
-
-    utterance.lang =
-        "fr-FR";
-
-    utterance.rate =
-        .9;
-
-    utterance.pitch =
-        .72;
-
-    utterance.volume =
-        .95;
-
-
-    const voices =
-        window.speechSynthesis
-        .getVoices();
-
-
-    const french =
-        voices.find(
-            voice =>
-                voice.lang
-                .toLowerCase()
-                .startsWith("fr")
-        );
-
-
-    if(french){
-
-        utterance.voice =
-            french;
-    }
-
-
-    utterance.onstart =
+    micButton.addEventListener(
+        "click",
         () => {
 
-            coreState.textContent =
-                "SPEAKING";
+            if (!recognitionSupported) {
+
+                voiceText.textContent =
+                    "RECONNAISSANCE VOCALE NON DISPONIBLE";
+
+                return;
+            }
+
+
+            if (
+                micButton.dataset.listening ===
+                "true"
+            ) {
+
+                micButton.dataset.listening =
+                    "false";
+
+                voiceActive = false;
+
+                try {
+
+                    recognition.stop();
+
+                }
+                catch (_) {}
+
+                voiceText.textContent =
+                    "AUDIO LINK · TAP MICRO TO ACTIVATE";
+
+                voiceText.classList.remove(
+                    "active"
+                );
+
+                targetAudio = 0;
+
+            }
+            else {
+
+                micButton.dataset.listening =
+                    "true";
+
+                try {
+
+                    recognition.start();
+
+                }
+                catch (_) {
+
+                    /*
+                       Sur certains navigateurs,
+                       start() peut être appelé
+                       pendant une session existante.
+                    */
+                }
+            }
+        }
+    );
+
+
+    /* =====================================================
+       SEND TO SHORTCUTS
+       ===================================================== */
+
+    shortcutButton.addEventListener(
+        "click",
+        () => {
+
+            if (!currentTranscript) {
+
+                voiceText.textContent =
+                    "AUCUNE COMMANDE À ENVOYER";
+
+                return;
+            }
+
+
+            /*
+               URL Scheme iOS.
+
+               Le raccourci peut être nommé :
+               JARVIS
+
+               Le texte reconnu est passé
+               comme paramètre input.
+            */
+
+            const encoded =
+                encodeURIComponent(
+                    currentTranscript
+                );
+
+
+            const shortcutURL =
+                "shortcuts://run-shortcut" +
+                "?name=JARVIS" +
+                "&input=" +
+                encoded;
+
+
+            window.location.href =
+                shortcutURL;
+
+
+            voiceText.textContent =
+                "COMMANDE TRANSMISE À RACCOURCIS";
+        }
+    );
+
+
+    /* =====================================================
+       SYNTHESIS VOICE
+       ===================================================== */
+
+    function speakJarvis() {
+
+        if (
+            !("speechSynthesis" in window)
+        ) {
+
+            voiceText.textContent =
+                "SYNTHÈSE VOCALE NON DISPONIBLE";
+
+            return;
+        }
+
+
+        const text =
+            currentTranscript ||
+            "Bonjour. JARVIS est opérationnel.";
+
+
+        window.speechSynthesis.cancel();
+
+
+        const utterance =
+            new SpeechSynthesisUtterance(
+                text
+            );
+
+        utterance.lang =
+            "fr-FR";
+
+        utterance.rate =
+            .92;
+
+        utterance.pitch =
+            .82;
+
+        utterance.volume =
+            1;
+
+
+        utterance.onstart = () => {
+
+            speaking = true;
 
             speakButton.classList.add(
                 "active"
             );
+
+            targetAudio = .55;
         };
 
 
-    utterance.onend =
-        () => {
+        utterance.onend = () => {
 
-            coreState.textContent =
-                "READY";
+            speaking = false;
 
             speakButton.classList.remove(
                 "active"
             );
+
+            targetAudio = 0;
         };
 
 
-    window.speechSynthesis.speak(
-        utterance
+        window.speechSynthesis.speak(
+            utterance
+        );
+    }
+
+
+    speakButton.addEventListener(
+        "click",
+        speakJarvis
     );
-}
 
 
-/* =========================================================
-   BUTTONS
-   ========================================================= */
+    /* =====================================================
+       TOUCH / TAP ON CORE
+       ===================================================== */
 
-microButton.addEventListener(
-    "click",
-    async () => {
+    canvas.addEventListener(
+        "click",
+        () => {
 
-        if(
-            audioActive
-        ){
+            targetAudio =
+                Math.max(
+                    targetAudio,
+                    .28
+                );
 
-            stopMicrophone();
+            setTimeout(
+                () => {
 
-        }else{
+                    targetAudio =
+                        Math.min(
+                            targetAudio,
+                            .08
+                        );
 
-            await startMicrophone();
+                },
+                350
+            );
         }
-    }
-);
+    );
 
 
-shortcutButton.addEventListener(
-    "click",
-    sendToShortcuts
-);
+    /* =====================================================
+       KEYBOARD SUPPORT
+       ===================================================== */
 
+    window.addEventListener(
+        "keydown",
+        (event) => {
 
-speakButton.addEventListener(
-    "click",
-    speakJarvis
-);
+            if (
+                event.code ===
+                "Space"
+            ) {
 
+                event.preventDefault();
 
-orb.addEventListener(
-    "click",
-    async () => {
+                micButton.click();
+            }
 
-        if(
-            !audioActive
-        ){
+            if (
+                event.key === "Enter"
+            ) {
 
-            await startMicrophone();
-
-        }else{
-
-            speakJarvis();
+                speakButton.click();
+            }
         }
-    }
-);
+    );
 
 
-/* =========================================================
-   INITIAL
-   ========================================================= */
+    /* =====================================================
+       VISUAL VOICE PULSE
+       ===================================================== */
 
-coreState.textContent =
-    "READY";
+    setInterval(
+        () => {
 
-voiceText.textContent =
-    "EN ATTENTE DE COMMANDE";
+            if (voiceActive) {
 
+                /*
+                   Variation permanente pendant
+                   la parole afin d'éviter une
+                   animation mécanique trop parfaite.
+                */
+
+                targetAudio =
+                    clamp(
+                        targetAudio +
+                        (
+                            Math.random() -
+                            .5
+                        ) *
+                        .20,
+                        .25,
+                        1
+                    );
+            }
+
+        },
+        90
+    );
+
+
+    /* =====================================================
+       INITIAL STATE
+       ===================================================== */
+
+    voiceText.textContent =
+        "AUDIO LINK · TAP MICRO TO ACTIVATE";
+
+})();
 </script>
 
 </body>
