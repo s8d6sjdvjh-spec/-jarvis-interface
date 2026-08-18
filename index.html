@@ -2,41 +2,20 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1,
-               maximum-scale=1,
-               viewport-fit=cover">
-
-<meta name="theme-color" content="#02090d">
-<meta name="apple-mobile-web-app-capable" content="yes">
-
-<title>JARVIS — Voice Core</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#061117">
+<title>JARVIS — Holographic Core</title>
 
 <style>
-
-/* =========================================================
-   JARVIS — VOICE CORE
-   VERSION : FIXED CONCENTRIC RINGS
-   ========================================================= */
-
 :root{
-    --bg:#02080c;
-    --cyan:#00d9ff;
-    --cyan-soft:#55e9ff;
-    --cyan-dim:#16768a;
-    --cyan-dark:#073744;
-
-    --white:#dffaff;
-    --silver:#a9c6cc;
-    --blue:#087d9a;
-    --gold:#8b6b35;
-    --red:#ff435d;
-
-    --panel:rgba(2,15,21,.72);
-
-    --ring-opacity:.72;
-    --voice-level:0;
+    --bg:#061117;
+    --cyan:#00dcff;
+    --cyan2:#68f2ff;
+    --blue:#008ca8;
+    --violet:#687cff;
+    --gold:#c39a4b;
+    --white:#e7fbff;
+    --voice:0;
 }
 
 *{
@@ -53,248 +32,191 @@ body{
 }
 
 body{
+    position:relative;
+    color:var(--white);
     background:
         radial-gradient(
             ellipse at 50% 42%,
-            rgba(0,75,96,.16) 0%,
-            rgba(0,20,30,.08) 28%,
-            rgba(0,0,0,0) 58%
+            rgba(0,93,116,.25) 0%,
+            rgba(5,46,59,.18) 27%,
+            rgba(3,19,26,.45) 52%,
+            #02090d 100%
         ),
-        #02080c;
-
-    color:var(--white);
-
+        #061117;
     font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Helvetica Neue",
         Arial,
         sans-serif;
-
     -webkit-font-smoothing:antialiased;
-
-    position:relative;
 }
 
 /* =========================================================
-   BACKGROUND GRID
+   BACKGROUND
    ========================================================= */
 
-.background-grid{
+.background{
     position:absolute;
     inset:0;
+    pointer-events:none;
+}
 
+.background::before{
+    content:"";
+    position:absolute;
+    inset:0;
     background-image:
         linear-gradient(
-            rgba(44,128,147,.075) 1px,
+            rgba(69,164,181,.14) 1px,
             transparent 1px
         ),
         linear-gradient(
             90deg,
-            rgba(44,128,147,.075) 1px,
+            rgba(69,164,181,.14) 1px,
             transparent 1px
         );
-
-    background-size:
-        72px 72px;
-
-    opacity:.55;
-
-    pointer-events:none;
+    background-size:54px 54px;
 }
 
-.background-grid::after{
+.background::after{
     content:"";
-
     position:absolute;
     inset:0;
-
-    background:
-        radial-gradient(
-            circle at center,
-            transparent 0%,
-            rgba(0,0,0,.08) 45%,
-            rgba(0,0,0,.58) 100%
+    background-image:
+        linear-gradient(
+            rgba(68,153,170,.045) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(68,153,170,.045) 1px,
+            transparent 1px
         );
+    background-size:13.5px 13.5px;
 }
 
 /* =========================================================
-   TOP HEADER
+   HEADER
    ========================================================= */
 
 .header{
     position:absolute;
-
-    top:
-        calc(
-            env(safe-area-inset-top) + 5.3vh
-        );
-
+    top:calc(env(safe-area-inset-top) + 5vh);
     left:0;
     right:0;
-
-    height:70px;
-
+    padding:0 6vw;
     display:flex;
     align-items:center;
-
-    padding:
-        0 6.2vw;
-
-    z-index:20;
+    z-index:100;
 }
 
 .logo{
-    font-size:
-        clamp(22px,6vw,34px);
-
+    font-size:clamp(23px,6vw,35px);
     font-weight:300;
-
-    letter-spacing:
-        .48em;
-
-    color:#e2f8fc;
-
-    white-space:nowrap;
+    letter-spacing:.48em;
+    color:#e5faff;
 }
 
 .status{
     margin-left:auto;
-
     display:flex;
-    gap:18px;
-
+    gap:13px;
     align-items:center;
-
-    color:#557b84;
-
-    font-size:
-        clamp(8px,2.1vw,11px);
-
-    letter-spacing:.30em;
-
-    text-transform:uppercase;
+    color:#66939c;
+    font-size:clamp(7px,2vw,10px);
+    letter-spacing:.22em;
 }
 
-.status-item{
-    display:flex;
-    align-items:center;
-    gap:7px;
-}
-
-.status-dot{
-    width:8px;
-    height:8px;
-
+.dot{
+    width:7px;
+    height:7px;
     border-radius:50%;
-
     background:var(--cyan);
-
     box-shadow:
         0 0 6px var(--cyan),
-        0 0 15px rgba(0,217,255,.55);
-
-    animation:
-        statusPulse 2.4s ease-in-out infinite;
-}
-
-.status-item:nth-child(2)
-.status-dot{
-    animation-delay:.4s;
-}
-
-.status-item:nth-child(3)
-.status-dot{
-    animation-delay:.8s;
-}
-
-@keyframes statusPulse{
-
-    0%,100%{
-        opacity:.55;
-        transform:scale(.85);
-    }
-
-    50%{
-        opacity:1;
-        transform:scale(1);
-    }
+        0 0 15px rgba(0,220,255,.55);
 }
 
 /* =========================================================
-   SUBTITLE
+   LABELS
    ========================================================= */
 
 .subtitle{
     position:absolute;
-
-    top:
-        calc(
-            env(safe-area-inset-top) + 15.5vh
-        );
-
+    top:calc(env(safe-area-inset-top) + 15.5vh);
     left:0;
     right:0;
-
     text-align:center;
+    font-size:clamp(7px,2.3vw,11px);
+    letter-spacing:.43em;
+    color:rgba(94,170,182,.82);
+    z-index:80;
+}
 
-    font-size:
-        clamp(8px,2.5vw,12px);
-
-    letter-spacing:
-        .46em;
-
-    color:
-        rgba(103,169,180,.70);
-
-    text-transform:uppercase;
-
-    z-index:15;
+.system-label{
+    position:absolute;
+    top:calc(env(safe-area-inset-top) + 18vh);
+    left:0;
+    right:0;
+    text-align:center;
+    font-size:7px;
+    letter-spacing:.34em;
+    color:rgba(69,132,143,.65);
+    z-index:80;
 }
 
 /* =========================================================
-   MAIN CORE AREA
+   CORE STAGE
    ========================================================= */
 
 .core-stage{
-
     position:absolute;
-
-    /*
-       Partie supérieure de l'écran.
-       Le cœur occupe environ 20% de la hauteur totale.
-    */
-
-    top:
-        calc(
-            env(safe-area-inset-top) + 20vh
-        );
-
+    top:calc(env(safe-area-inset-top) + 19.5vh);
     left:50%;
-
-    width:
-        min(
-            88vw,
-            470px
-        );
-
-    height:
-        min(
-            52vh,
-            560px
-        );
-
-    transform:
-        translateX(-50%);
-
+    width:min(94vw,490px);
+    height:min(52vh,550px);
+    transform:translateX(-50%);
     display:flex;
-
     align-items:center;
     justify-content:center;
-
-    z-index:10;
-
     overflow:visible;
+    z-index:20;
+}
+
+/* =========================================================
+   ATMOSPHERIC HALO
+   ========================================================= */
+
+.halo{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:94%;
+    aspect-ratio:1;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(0,225,255,.06) 0%,
+            rgba(0,211,255,.09) 25%,
+            rgba(0,139,170,.055) 45%,
+            transparent 72%
+        );
+    filter:
+        blur(
+            calc(
+                20px + var(--voice) * 17px
+            )
+        );
+    opacity:
+        calc(
+            .68 + var(--voice) * .30
+        );
+    transition:
+        opacity 40ms linear,
+        filter 40ms linear;
 }
 
 /* =========================================================
@@ -302,86 +224,53 @@ body{
    ========================================================= */
 
 .ring-system{
-
     position:absolute;
-
     left:50%;
     top:50%;
-
-    width:92%;
-    aspect-ratio:1/1;
-
-    transform:
-        translate(-50%,-50%);
-
+    width:93%;
+    aspect-ratio:1;
+    transform:translate(-50%,-50%);
     overflow:visible;
-
     pointer-events:none;
 }
 
-/*
-   IMPORTANT :
-
-   Les couronnes sont fixes.
-   Leur centre ne change JAMAIS.
-
-   Elles peuvent uniquement subir
-   une dilatation autour de leur centre.
-*/
-
 .voice-ring{
-
     position:absolute;
-
     left:50%;
     top:50%;
-
     transform:
         translate(-50%,-50%)
-        scale(var(--voice-scale,1));
-
-    transform-origin:
-        center center;
-
+        scale(var(--ring-scale,1));
+    transform-origin:center;
     transition:
-        transform 38ms
-        cubic-bezier(.08,.92,.18,1);
-
+        transform 35ms cubic-bezier(.04,.94,.13,1);
     will-change:transform;
-
-    overflow:visible;
 }
 
-/* =========================================================
-   FOUR RING SIZES
-   ========================================================= */
+/*
+   PLUS COMPACTES AU REPOS.
+
+   La voix les dilate vers l'ancien espace maximal.
+*/
 
 .ring-1{
-    width:100%;
-    height:100%;
-
-    --voice-scale:1;
+    width:94%;
+    height:94%;
 }
 
 .ring-2{
-    width:84%;
-    height:84%;
-
-    --voice-scale:1;
+    width:78%;
+    height:78%;
 }
 
 .ring-3{
-    width:67%;
-    height:67%;
-
-    --voice-scale:1;
+    width:61%;
+    height:61%;
 }
 
 .ring-4{
-    width:49%;
-    height:49%;
-
-    --voice-scale:1;
+    width:44%;
+    height:44%;
 }
 
 /* =========================================================
@@ -389,530 +278,585 @@ body{
    ========================================================= */
 
 .ring-svg{
-
     width:100%;
     height:100%;
-
     overflow:visible;
 }
 
-.ring-main{
-    fill:none;
-
-    stroke:
-        rgba(31,185,211,.72);
-
-    stroke-width:1.15;
-
-    filter:
-        drop-shadow(
-            0 0 4px
-            rgba(0,210,255,.22)
-        );
-}
-
-.ring-secondary{
-    fill:none;
-
-    stroke:
-        rgba(24,112,133,.55);
-
-    stroke-width:.8;
-}
-
-.ring-dim{
-    fill:none;
-
-    stroke:
-        rgba(19,86,103,.45);
-
-    stroke-width:.65;
-}
-
-.ring-gold{
-    fill:none;
-
-    stroke:
-        rgba(161,118,50,.68);
-
-    stroke-width:1;
-}
-
-.tick{
-    stroke:
-        rgba(116,218,232,.65);
-
-    stroke-width:1;
-}
-
-.tick-major{
-    stroke:
-        rgba(204,242,247,.90);
-
-    stroke-width:1.5;
-}
-
-.ring-number{
-
-    fill:
-        rgba(156,225,235,.78);
-
-    font-size:10px;
-
-    font-weight:300;
-
-    letter-spacing:.08em;
-}
-
-.ring-label{
-
-    fill:
-        rgba(83,155,166,.72);
-
-    font-size:7px;
-
-    letter-spacing:.22em;
-}
-
 /* =========================================================
-   ORB
+   ROTATION DES COURONNES
    ========================================================= */
 
-.orb{
-
-    position:absolute;
-
-    left:50%;
-    top:50%;
-
-    width:
-        clamp(
-            82px,
-            20vw,
-            108px
-        );
-
-    aspect-ratio:1/1;
-
-    transform:
-        translate(-50%,-50%)
-        scale(1);
-
-    border-radius:50%;
-
-    background:
-
-        radial-gradient(
-            circle at 35% 30%,
-            rgba(131,246,255,.92) 0%,
-            rgba(26,181,212,.72) 7%,
-            rgba(5,88,111,.68) 23%,
-            rgba(2,30,42,.96) 53%,
-            rgba(0,8,13,1) 78%
-        );
-
-    border:
-        1px solid
-        rgba(84,219,235,.82);
-
-    box-shadow:
-
-        inset
-        -18px -18px 35px
-        rgba(0,0,0,.78),
-
-        inset
-        10px 8px 25px
-        rgba(71,227,247,.22),
-
-        0 0 22px
-        rgba(0,210,255,.35),
-
-        0 0 70px
-        rgba(0,122,163,.25);
-
-    transition:
-
-        transform 35ms
-        cubic-bezier(.05,.92,.16,1),
-
-        box-shadow 45ms
-        ease-out;
-
-    z-index:8;
-
-    will-change:
-        transform,
-        box-shadow;
-}
-
-/* =========================================================
-   ORB INTERNAL GEODE STRUCTURE
-   ========================================================= */
-
-.orb::before{
-
-    content:"";
-
-    position:absolute;
-
-    inset:9%;
-
-    border-radius:50%;
-
-    background:
-
-        conic-gradient(
-            from 12deg,
-            transparent 0deg,
-            rgba(77,232,255,.28) 17deg,
-            transparent 29deg,
-            rgba(13,105,128,.35) 47deg,
-            transparent 65deg,
-            rgba(86,220,235,.20) 83deg,
-            transparent 110deg,
-            rgba(37,142,164,.34) 140deg,
-            transparent 170deg,
-            rgba(70,214,232,.20) 205deg,
-            transparent 240deg,
-            rgba(24,123,146,.30) 275deg,
-            transparent 310deg,
-            rgba(78,222,239,.22) 340deg,
-            transparent 360deg
-        );
-
-    opacity:.75;
-
-    mix-blend-mode:screen;
-
+.rotating-main{
+    transform-origin:250px 250px;
     animation:
-        orbStructure 16s linear infinite;
+        ringClockwise
+        28s
+        linear
+        infinite;
 }
 
-@keyframes orbStructure{
+.rotating-main.slow{
+    animation-duration:43s;
+}
 
+.rotating-main.fast{
+    animation-duration:19s;
+}
+
+@keyframes ringClockwise{
     from{
         transform:rotate(0deg);
     }
-
     to{
         transform:rotate(360deg);
     }
 }
 
-.orb::after{
+/* =========================================================
+   CONTRE-ROTATION DES ARCS
+   ========================================================= */
 
-    content:"";
-
-    position:absolute;
-
-    width:20%;
-    height:20%;
-
-    left:21%;
-    top:17%;
-
-    border-radius:50%;
-
-    background:
-        rgba(196,250,255,.92);
-
-    filter:
-        blur(5px);
-
-    opacity:.82;
-
-    box-shadow:
-        0 0 18px
-        rgba(92,236,255,.95);
+.counter-arcs{
+    transform-origin:250px 250px;
+    animation:
+        ringCounter
+        15s
+        linear
+        infinite
 }
 
-.orb-core-text{
+.counter-arcs.slow{
+    animation-duration:31s;
+}
 
+@keyframes ringCounter{
+    from{
+        transform:rotate(360deg);
+    }
+    to{
+        transform:rotate(0deg);
+    }
+}
+
+/* =========================================================
+   HOLOGRAPHIC RINGS
+   ========================================================= */
+
+.ring-halo{
+    fill:none;
+    stroke:rgba(0,218,255,.22);
+    stroke-width:9;
+    filter:blur(7px);
+}
+
+.ring-separator{
+    fill:none;
+    stroke:rgba(1,23,30,.94);
+    stroke-width:4;
+}
+
+.ring-thick{
+    fill:none;
+    stroke:rgba(61,229,246,.78);
+    stroke-width:2.6;
+    filter:
+        drop-shadow(
+            0 0 3px
+            rgba(89,241,255,.95)
+        )
+        drop-shadow(
+            0 0 9px
+            rgba(0,207,255,.42)
+        );
+}
+
+.ring-inner{
+    fill:none;
+    stroke:rgba(106,238,255,.50);
+    stroke-width:1.1;
+}
+
+.ring-dash{
+    fill:none;
+    stroke:rgba(36,190,215,.78);
+    stroke-width:1;
+    stroke-dasharray:2 7;
+}
+
+.ring-gold{
+    fill:none;
+    stroke:rgba(194,151,69,.78);
+    stroke-width:1.7;
+    filter:
+        drop-shadow(
+            0 0 4px
+            rgba(197,151,65,.35)
+        );
+}
+
+.ring-violet{
+    fill:none;
+    stroke:rgba(111,133,255,.65);
+    stroke-width:1;
+}
+
+.tick{
+    stroke:rgba(96,207,223,.68);
+    stroke-width:.8;
+}
+
+.tick-major{
+    stroke:rgba(218,248,252,.92);
+    stroke-width:1.55;
+    filter:
+        drop-shadow(
+            0 0 3px
+            rgba(99,232,248,.55)
+        );
+}
+
+.tick-gold{
+    stroke:rgba(201,156,70,.78);
+    stroke-width:1;
+}
+
+.ring-number{
+    fill:rgba(166,230,239,.80);
+    font-size:10px;
+    font-weight:300;
+    letter-spacing:.08em;
+}
+
+.ring-label{
+    fill:rgba(80,163,176,.74);
+    font-size:6.5px;
+    letter-spacing:.2em;
+}
+
+/* =========================================================
+   POLYGON ORB
+   ========================================================= */
+
+.orb{
     position:absolute;
+    left:50%;
+    top:50%;
+    width:clamp(82px,20vw,108px);
+    aspect-ratio:1;
+    transform:
+        translate(-50%,-50%)
+        scale(1);
+    z-index:40;
+    transition:
+        transform 32ms cubic-bezier(.03,.95,.12,1);
+}
 
+/*
+   Noyau sombre.
+*/
+
+.orb-core{
+    position:absolute;
+    inset:9%;
+    border-radius:50%;
+    background:
+        radial-gradient(
+            circle at 31% 26%,
+            #d9fbff 0%,
+            #4ee1f3 4%,
+            #0d8ba8 15%,
+            #064252 34%,
+            #021923 62%,
+            #01080c 100%
+        );
+    border:
+        1px solid
+        rgba(107,239,252,.86);
+    box-shadow:
+        inset -15px -18px 27px rgba(0,0,0,.82),
+        inset 9px 7px 20px rgba(100,232,247,.28),
+        0 0 17px rgba(0,220,255,.45),
+        0 0 60px rgba(0,153,187,.28);
+}
+
+/*
+   Couche polygonale.
+*/
+
+.polygon-shell{
+    position:absolute;
     inset:0;
+    transform-origin:center;
+    animation:
+        polygonSpin
+        24s
+        linear
+        infinite;
+}
 
+@keyframes polygonSpin{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+/*
+   Les facettes.
+*/
+
+.facet{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:72%;
+    height:72%;
+    transform-origin:center;
+    border:1px solid rgba(83,232,249,.72);
+    clip-path:
+        polygon(
+            50% 0%,
+            93% 23%,
+            100% 68%,
+            67% 100%,
+            25% 89%,
+            0% 51%,
+            19% 15%
+        );
+    background:
+        linear-gradient(
+            135deg,
+            rgba(155,247,255,.15),
+            rgba(7,88,108,.05) 42%,
+            rgba(0,10,17,.32)
+        );
+    box-shadow:
+        0 0 8px
+        rgba(0,215,255,.16);
+    transition:
+        transform 45ms cubic-bezier(.04,.94,.12,1),
+        opacity 45ms linear;
+}
+
+/*
+   Chaque facette s'écarte légèrement
+   lorsque la voix augmente.
+*/
+
+.f1{
+    transform:
+        translate(-50%,-50%)
+        rotate(0deg)
+        translateY(
+            calc(
+                var(--voice) * -5px
+            )
+        )
+        scale(
+            calc(
+                1 + var(--voice) * .11
+            )
+        );
+}
+
+.f2{
+    transform:
+        translate(-50%,-50%)
+        rotate(51deg)
+        translateY(
+            calc(
+                var(--voice) * -6px
+            )
+        )
+        scale(
+            calc(
+                1 + var(--voice) * .13
+            )
+        );
+}
+
+.f3{
+    transform:
+        translate(-50%,-50%)
+        rotate(102deg)
+        translateY(
+            calc(
+                var(--voice) * -5px
+            )
+        )
+        scale(
+            calc(
+                1 + var(--voice) * .09
+            )
+        );
+}
+
+.f4{
+    transform:
+        translate(-50%,-50%)
+        rotate(153deg)
+        translateY(
+            calc(
+                var(--voice) * -7px
+            )
+        )
+        scale(
+            calc(
+                1 + var(--voice) * .12
+            )
+        );
+}
+
+.f5{
+    transform:
+        translate(-50%,-50%)
+        rotate(204deg)
+        translateY(
+            calc(
+                var(--voice) * -5px
+            )
+        )
+        scale(
+            calc(
+                1 + var(--voice) * .10
+            )
+        );
+}
+
+.f6{
+    transform:
+        translate(-50%,-50%)
+        rotate(255deg)
+        translateY(
+            calc(
+                var(--voice) * -6px
+            )
+        )
+        scale(
+            calc(
+                1 + var(--voice) * .12
+            )
+        );
+}
+
+.f7{
+    transform:
+        translate(-50%,-50%)
+        rotate(306deg)
+        translateY(
+            calc(
+                var(--voice) * -5px
+            )
+        )
+        scale(
+            calc(
+                1 + var(--voice) * .10
+            )
+        );
+}
+
+
+/* =========================================================
+   SECONDARY POLYGON
+   ========================================================= */
+
+.polygon-inner{
+    position:absolute;
+    inset:20%;
+    border:
+        1px solid
+        rgba(101,232,247,.55);
+    clip-path:
+        polygon(
+            50% 0%,
+            90% 20%,
+            100% 61%,
+            70% 100%,
+            28% 90%,
+            0% 51%,
+            15% 17%
+        );
+    transform:
+        rotate(23deg);
+    background:
+        rgba(10,118,142,.08);
+}
+
+
+/* =========================================================
+   ORB LIGHT
+   ========================================================= */
+
+.orb-light{
+    position:absolute;
+    left:18%;
+    top:14%;
+    width:18%;
+    height:18%;
+    border-radius:50%;
+    background:
+        rgba(232,254,255,.98);
+    filter:blur(4px);
+    box-shadow:
+        0 0 14px
+        rgba(123,242,255,.95),
+        0 0 31px
+        rgba(0,218,255,.62);
+}
+
+
+/* =========================================================
+   ORB TEXT
+   ========================================================= */
+
+.orb-text{
+    position:absolute;
+    inset:0;
     display:flex;
-
     flex-direction:column;
-
     align-items:center;
     justify-content:center;
-
-    z-index:5;
-
+    z-index:20;
     pointer-events:none;
 }
 
 .core-title{
-
-    font-size:11px;
-
-    letter-spacing:
-        .42em;
-
-    padding-left:.42em;
-
-    color:
-        rgba(216,250,255,.94);
+    font-size:10px;
+    letter-spacing:.40em;
+    padding-left:.40em;
+    color:rgba(225,250,253,.95);
 }
 
 .core-state{
-
-    margin-top:7px;
-
-    font-size:7px;
-
-    letter-spacing:
-        .34em;
-
-    padding-left:.34em;
-
-    color:
-        rgba(74,178,193,.78);
-
-    text-transform:uppercase;
+    margin-top:6px;
+    font-size:6px;
+    letter-spacing:.30em;
+    padding-left:.30em;
+    color:rgba(81,187,201,.86);
 }
 
+
 /* =========================================================
-   AUDIO VISUALIZER
+   AUDIO WAVE
    ========================================================= */
 
 .audio-wave{
-
     position:absolute;
-
-    bottom:2.5%;
-
+    bottom:1%;
     left:50%;
-
-    transform:
-        translateX(-50%);
-
-    width:62%;
-
+    width:55%;
     height:34px;
-
+    transform:translateX(-50%);
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     gap:3px;
-
-    opacity:.65;
-
-    z-index:12;
+    z-index:70;
 }
 
 .audio-bar{
-
     width:2px;
-
-    height:5px;
-
-    background:
-        var(--cyan);
-
+    height:4px;
+    background:var(--cyan);
     box-shadow:
         0 0 6px
-        rgba(0,217,255,.65);
-
-    transform-origin:center;
-
+        rgba(0,220,255,.75);
     transition:
-        height 45ms linear;
+        height 30ms linear;
 }
 
+
 /* =========================================================
-   VOICE TEXT
+   TRANSCRIPTION
    ========================================================= */
 
 .voice-output{
-
     position:absolute;
-
     left:7vw;
     right:7vw;
-
-    top:
-        calc(
-            env(safe-area-inset-top) + 71vh
-        );
-
-    min-height:46px;
-
+    top:calc(env(safe-area-inset-top) + 70vh);
+    min-height:47px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px 18px;
     border-left:
         1px solid
-        rgba(0,205,239,.55);
-
+        rgba(0,214,240,.55);
     border-right:
         1px solid
-        rgba(0,205,239,.25);
-
+        rgba(0,214,240,.27);
     background:
         linear-gradient(
             90deg,
-            rgba(0,70,87,.08),
-            rgba(0,120,145,.08),
-            rgba(0,70,87,.08)
+            rgba(0,61,76,.08),
+            rgba(0,135,159,.12),
+            rgba(0,61,76,.08)
         );
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    padding:8px 20px;
-
-    z-index:20;
+    z-index:90;
 }
 
 .voice-text{
-
-    color:
-        rgba(170,232,240,.72);
-
-    font-size:
-        clamp(8px,2.5vw,12px);
-
-    letter-spacing:
-        .18em;
-
     text-align:center;
-
+    font-size:clamp(8px,2.4vw,11px);
+    letter-spacing:.17em;
+    color:rgba(177,234,241,.76);
     text-transform:uppercase;
 }
 
+
 /* =========================================================
-   CONTROL PANEL
+   BUTTONS
    ========================================================= */
 
 .controls{
-
     position:absolute;
-
     left:5vw;
     right:5vw;
-
     bottom:
         calc(
-            env(safe-area-inset-bottom) + 8vh
+            env(safe-area-inset-bottom)
+            + 5vh
         );
-
     display:grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
+    grid-template-columns:repeat(3,1fr);
     gap:10px;
-
-    z-index:30;
+    z-index:100;
 }
 
 .control{
-
-    height:58px;
-
-    background:
-        rgba(2,16,22,.76);
-
+    height:55px;
     border:
         1px solid
-        rgba(0,194,222,.55);
-
-    color:
-        rgba(145,220,230,.88);
-
-    font-size:
-        clamp(8px,2.2vw,10px);
-
-    letter-spacing:
-        .20em;
-
-    text-transform:uppercase;
-
-    cursor:pointer;
-
-    -webkit-tap-highlight-color:
-        transparent;
-
-    transition:
-        background .15s ease,
-        border-color .15s ease,
-        box-shadow .15s ease;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    text-align:center;
-}
-
-.control:active{
-
+        rgba(0,199,224,.58);
     background:
-        rgba(0,100,120,.32);
-
-    border-color:
-        rgba(73,230,255,.95);
-
-    box-shadow:
-        0 0 20px
-        rgba(0,205,255,.22);
-}
-
-.control.active{
-
-    border-color:
-        var(--cyan);
-
+        rgba(3,21,28,.78);
     color:
-        #d8fbff;
+        rgba(159,226,234,.92);
+    font-family:inherit;
+    font-size:clamp(7px,2vw,9px);
+    letter-spacing:.18em;
+    cursor:pointer;
+}
 
+.control.active,
+.control:active{
+    border-color:
+        rgba(91,240,255,.98);
+    background:
+        rgba(0,104,126,.26);
     box-shadow:
-        inset 0 0 18px
-        rgba(0,211,255,.08),
-
-        0 0 15px
-        rgba(0,211,255,.12);
+        inset
+        0 0 18px
+        rgba(0,220,255,.10),
+        0 0 16px
+        rgba(0,220,255,.18);
+    color:#e4fbff;
 }
 
-/* =========================================================
-   SMALL SYSTEM INDICATOR
-   ========================================================= */
-
-.system-readout{
-
-    position:absolute;
-
-    top:
-        calc(
-            env(safe-area-inset-top) + 18.8vh
-        );
-
-    left:0;
-    right:0;
-
-    text-align:center;
-
-    font-size:7px;
-
-    letter-spacing:
-        .38em;
-
-    color:
-        rgba(69,134,145,.68);
-
-    z-index:15;
-}
-
-/* =========================================================
-   MOBILE ADAPTATION
-   ========================================================= */
 
 @media(max-width:430px){
 
@@ -922,53 +866,15 @@ body{
     }
 
     .status{
-        gap:10px;
-    }
-
-    .status-item{
-        gap:5px;
-    }
-
-    .status-item span{
-        letter-spacing:.18em;
+        gap:8px;
     }
 
     .core-stage{
-        width:96vw;
-        height:51vh;
+        width:97vw;
     }
 
     .ring-system{
-        width:94%;
-    }
-
-    .voice-output{
-        top:
-            calc(
-                env(safe-area-inset-top) + 69vh
-            );
-    }
-
-    .controls{
-        bottom:
-            calc(
-                env(safe-area-inset-bottom) + 5.5vh
-            );
-    }
-
-    .control{
-        height:54px;
-        font-size:7.5px;
-    }
-}
-
-@media(min-height:800px){
-
-    .core-stage{
-        top:
-            calc(
-                env(safe-area-inset-top) + 20.5vh
-            );
+        width:96%;
     }
 }
 
@@ -978,16 +884,9 @@ body{
 
 <body>
 
-<!-- ======================================================
-     BACKGROUND
-     ====================================================== -->
 
-<div class="background-grid"></div>
+<div class="background"></div>
 
-
-<!-- ======================================================
-     HEADER
-     ====================================================== -->
 
 <header class="header">
 
@@ -997,19 +896,19 @@ body{
 
     <div class="status">
 
-        <div class="status-item">
-            <i class="status-dot"></i>
-            <span>ONLINE</span>
+        <div>
+            <span class="dot"></span>
+            ONLINE
         </div>
 
-        <div class="status-item">
-            <i class="status-dot"></i>
-            <span>SECURE</span>
+        <div>
+            <span class="dot"></span>
+            SECURE
         </div>
 
-        <div class="status-item">
-            <i class="status-dot"></i>
-            <span>VOICE</span>
+        <div>
+            <span class="dot"></span>
+            VOICE
         </div>
 
     </div>
@@ -1017,379 +916,513 @@ body{
 </header>
 
 
-<!-- ======================================================
-     SUBTITLE
-     ====================================================== -->
-
 <div class="subtitle">
     VOICE CORE · CRYSTALLINE MATRIX · 3 AXIS
 </div>
 
-<div class="system-readout">
-    CONCENTRIC SYSTEM · FIXED AXIS · VOICE REACTIVE
+
+<div class="system-label">
+    HOLOGRAPHIC CONCENTRIC SYSTEM · AUDIO REACTIVE
 </div>
 
 
-<!-- ======================================================
-     CORE
-     ====================================================== -->
-
 <main class="core-stage">
 
-    <!-- ================================================
-         FOUR FIXED CONCENTRIC RINGS
-         ================================================ -->
 
-    <div
-        class="ring-system"
-        id="ringSystem"
-    >
-
-        <!-- ================= RING 1 ================= -->
-
-        <div
-            class="voice-ring ring-1"
-        >
-
-            <svg
-                class="ring-svg"
-                viewBox="0 0 500 500"
-                aria-hidden="true"
-            >
-
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="246"
-                    class="ring-dim"
-                />
-
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="239"
-                    class="ring-main"
-                />
-
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="229"
-                    class="ring-secondary"
-                    stroke-dasharray="2 8"
-                />
-
-                <!-- ticks -->
-
-                <g id="ticks1"></g>
-
-                <!-- highlighted sectors -->
-
-                <path
-                    d="M250 11 A239 239 0 0 1 386 53"
-                    class="ring-gold"
-                />
-
-                <path
-                    d="M114 447 A239 239 0 0 1 28 290"
-                    class="ring-main"
-                    stroke-width="2"
-                />
-
-                <path
-                    d="M386 447 A239 239 0 0 0 472 290"
-                    class="ring-secondary"
-                    stroke-width="2"
-                />
-
-                <text
-                    x="250"
-                    y="28"
-                    text-anchor="middle"
-                    class="ring-number"
-                >
-                    270
-                </text>
-
-                <text
-                    x="470"
-                    y="256"
-                    text-anchor="end"
-                    class="ring-number"
-                >
-                    090
-                </text>
-
-                <text
-                    x="250"
-                    y="486"
-                    text-anchor="middle"
-                    class="ring-number"
-                >
-                    090
-                </text>
-
-                <text
-                    x="30"
-                    y="256"
-                    class="ring-number"
-                >
-                    180
-                </text>
-
-            </svg>
-
-        </div>
+<div
+    class="halo"
+    id="halo"
+></div>
 
 
-        <!-- ================= RING 2 ================= -->
+<!-- =====================================================
+     RINGS
+     ===================================================== -->
 
-        <div
-            class="voice-ring ring-2"
-        >
-
-            <svg
-                class="ring-svg"
-                viewBox="0 0 500 500"
-                aria-hidden="true"
-            >
-
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="210"
-                    class="ring-main"
-                />
-
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="201"
-                    class="ring-dim"
-                    stroke-dasharray="1 7"
-                />
-
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="190"
-                    class="ring-secondary"
-                />
-
-                <g id="ticks2"></g>
-
-                <path
-                    d="M250 40 A210 210 0 0 1 430 142"
-                    class="ring-main"
-                    stroke-width="2"
-                />
-
-                <path
-                    d="M70 358 A210 210 0 0 1 40 250"
-                    class="ring-gold"
-                    stroke-width="2"
-                />
-
-                <text
-                    x="250"
-                    y="55"
-                    text-anchor="middle"
-                    class="ring-label"
-                >
-                    JARVIS / VOICE CHANNEL
-                </text>
-
-                <text
-                    x="415"
-                    y="255"
-                    text-anchor="middle"
-                    class="ring-number"
-                >
-                    08
-                </text>
-
-                <text
-                    x="85"
-                    y="255"
-                    text-anchor="middle"
-                    class="ring-number"
-                >
-                    02
-                </text>
-
-            </svg>
-
-        </div>
+<div
+    class="ring-system"
+>
 
 
-        <!-- ================= RING 3 ================= -->
+<!-- =====================================================
+     RING 1
+     ===================================================== -->
 
-        <div
-            class="voice-ring ring-3"
-        >
+<div class="voice-ring ring-1">
 
-            <svg
-                class="ring-svg"
-                viewBox="0 0 500 500"
-                aria-hidden="true"
-            >
+<svg
+    class="ring-svg"
+    viewBox="0 0 500 500"
+>
 
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="168"
-                    class="ring-main"
-                />
+<circle
+    cx="250"
+    cy="250"
+    r="239"
+    class="ring-halo"
+/>
 
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="157"
-                    class="ring-secondary"
-                    stroke-dasharray="5 6"
-                />
+<circle
+    cx="250"
+    cy="250"
+    r="239"
+    class="ring-thick"
+/>
 
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="146"
-                    class="ring-dim"
-                />
+<circle
+    cx="250"
+    cy="250"
+    r="232"
+    class="ring-inner"
+/>
 
-                <g id="ticks3"></g>
-
-                <path
-                    d="M250 82 A168 168 0 0 1 395 166"
-                    class="ring-gold"
-                    stroke-width="2"
-                />
-
-                <path
-                    d="M105 334 A168 168 0 0 0 84 250"
-                    class="ring-main"
-                    stroke-width="2"
-                />
-
-                <text
-                    x="250"
-                    y="97"
-                    text-anchor="middle"
-                    class="ring-number"
-                >
-                    12
-                </text>
-
-                <text
-                    x="395"
-                    y="255"
-                    text-anchor="middle"
-                    class="ring-number"
-                >
-                    06
-                </text>
-
-            </svg>
-
-        </div>
+<circle
+    cx="250"
+    cy="250"
+    r="224"
+    class="ring-dash"
+/>
 
 
-        <!-- ================= RING 4 ================= -->
+<g class="rotating-main">
 
-        <div
-            class="voice-ring ring-4"
-        >
+<circle
+    cx="250"
+    cy="250"
+    r="215"
+    class="ring-dash"
+/>
 
-            <svg
-                class="ring-svg"
-                viewBox="0 0 500 500"
-                aria-hidden="true"
-            >
+<g id="ticks1"></g>
 
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="122"
-                    class="ring-main"
-                />
+<path
+    d="M250 11 A239 239 0 0 1 395 59"
+    class="ring-gold"
+/>
 
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="112"
-                    class="ring-secondary"
-                />
+<path
+    d="M105 442 A239 239 0 0 1 27 294"
+    class="ring-thick"
+/>
 
-                <circle
-                    cx="250"
-                    cy="250"
-                    r="101"
-                    class="ring-dim"
-                    stroke-dasharray="2 5"
-                />
+<text
+    x="250"
+    y="30"
+    text-anchor="middle"
+    class="ring-number"
+>
+270
+</text>
 
-                <g id="ticks4"></g>
+<text
+    x="470"
+    y="254"
+    text-anchor="end"
+    class="ring-number"
+>
+090
+</text>
 
-                <path
-                    d="M250 128 A122 122 0 0 1 355 188"
-                    class="ring-main"
-                    stroke-width="2"
-                />
+<text
+    x="250"
+    y="485"
+    text-anchor="middle"
+    class="ring-number"
+>
+090
+</text>
 
-                <path
-                    d="M145 312 A122 122 0 0 1 128 250"
-                    class="ring-gold"
-                    stroke-width="1.5"
-                />
+<text
+    x="30"
+    y="254"
+    class="ring-number"
+>
+180
+</text>
 
-            </svg>
+</g>
 
-        </div>
 
+<g class="counter-arcs">
+
+<path
+    d="M250 38 A212 212 0 0 0 100 100"
+    class="ring-violet"
+/>
+
+<path
+    d="M395 395 A205 205 0 0 0 470 300"
+    class="ring-gold"
+/>
+
+<path
+    d="M105 105 A208 208 0 0 1 55 190"
+    class="ring-inner"
+/>
+
+</g>
+
+
+<text
+    x="250"
+    y="48"
+    text-anchor="middle"
+    class="ring-label"
+>
+PRIMARY VOICE VECTOR
+</text>
+
+</svg>
+
+</div>
+
+
+<!-- =====================================================
+     RING 2
+     ===================================================== -->
+
+<div class="voice-ring ring-2">
+
+<svg
+    class="ring-svg"
+    viewBox="0 0 500 500"
+>
+
+<circle
+    cx="250"
+    cy="250"
+    r="201"
+    class="ring-halo"
+/>
+
+<circle
+    cx="250"
+    cy="250"
+    r="201"
+    class="ring-thick"
+/>
+
+<circle
+    cx="250"
+    cy="250"
+    r="192"
+    class="ring-inner"
+/>
+
+<circle
+    cx="250"
+    cy="250"
+    r="184"
+    class="ring-dash"
+/>
+
+
+<g class="rotating-main slow">
+
+<g id="ticks2"></g>
+
+<path
+    d="M250 49 A201 201 0 0 1 429 143"
+    class="ring-gold"
+/>
+
+<path
+    d="M71 357 A201 201 0 0 1 48 250"
+    class="ring-thick"
+/>
+
+<text
+    x="250"
+    y="68"
+    text-anchor="middle"
+    class="ring-number"
+>
+12
+</text>
+
+<text
+    x="433"
+    y="254"
+    text-anchor="middle"
+    class="ring-number"
+>
+06
+</text>
+
+</g>
+
+
+<g class="counter-arcs slow">
+
+<path
+    d="M250 74 A176 176 0 0 0 125 126"
+    class="ring-violet"
+/>
+
+<path
+    d="M375 374 A176 176 0 0 0 427 250"
+    class="ring-gold"
+/>
+
+</g>
+
+
+<text
+    x="250"
+    y="442"
+    text-anchor="middle"
+    class="ring-label"
+>
+VOICE CHANNEL
+</text>
+
+</svg>
+
+</div>
+
+
+<!-- =====================================================
+     RING 3
+     ===================================================== -->
+
+<div class="voice-ring ring-3">
+
+<svg
+    class="ring-svg"
+    viewBox="0 0 500 500"
+>
+
+<circle
+    cx="250"
+    cy="250"
+    r="159"
+    class="ring-halo"
+/>
+
+<circle
+    cx="250"
+    cy="250"
+    r="159"
+    class="ring-thick"
+/>
+
+<circle
+    cx="250"
+    cy="250"
+    r="150"
+    class="ring-inner"
+/>
+
+<circle
+    cx="250"
+    cy="250"
+    r="141"
+    class="ring-dash"
+/>
+
+
+<g class="rotating-main fast">
+
+<g id="ticks3"></g>
+
+<path
+    d="M250 91 A159 159 0 0 1 388 168"
+    class="ring-gold"
+/>
+
+<text
+    x="250"
+    y="106"
+    text-anchor="middle"
+    class="ring-number"
+>
+08
+</text>
+
+<text
+    x="393"
+    y="254"
+    text-anchor="middle"
+    class="ring-number"
+>
+04
+</text>
+
+</g>
+
+
+<g class="counter-arcs">
+
+<path
+    d="M250 112 A138 138 0 0 0 150 155"
+    class="ring-violet"
+/>
+
+<path
+    d="M350 350 A141 141 0 0 0 389 250"
+    class="ring-inner"
+/>
+
+</g>
+
+
+<text
+    x="250"
+    y="408"
+    text-anchor="middle"
+    class="ring-label"
+>
+SENSOR MATRIX
+</text>
+
+</svg>
+
+</div>
+
+
+<!-- =====================================================
+     RING 4
+     ===================================================== -->
+
+<div class="voice-ring ring-4">
+
+<svg
+    class="ring-svg"
+    viewBox="0 0 500 500"
+>
+
+<circle
+    cx="250"
+    cy="250"
+    r="115"
+    class="ring-halo"
+/>
+
+<circle
+    cx="250"
+    cy="250"
+    r="115"
+    class="ring-thick"
+/>
+
+<circle
+    cx="250"
+    cy="250"
+    r="105"
+    class="ring-inner"
+/>
+
+<circle
+    cx="250"
+    cy="250"
+    r="96"
+    class="ring-dash"
+/>
+
+
+<g class="rotating-main">
+
+<g id="ticks4"></g>
+
+<path
+    d="M250 135 A115 115 0 0 1 350 190"
+    class="ring-gold"
+/>
+
+<text
+    x="250"
+    y="151"
+    text-anchor="middle"
+    class="ring-number"
+>
+03
+</text>
+
+<text
+    x="365"
+    y="254"
+    text-anchor="middle"
+    class="ring-number"
+>
+09
+</text>
+
+</g>
+
+
+<g class="counter-arcs">
+
+<path
+    d="M250 154 A96 96 0 0 0 181 181"
+    class="ring-violet"
+/>
+
+</g>
+
+</svg>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     POLYGON ORB
+     ===================================================== -->
+
+<div
+    class="orb"
+    id="orb"
+>
+
+<div class="orb-core"></div>
+
+
+<div class="polygon-shell">
+
+    <div class="facet f1"></div>
+    <div class="facet f2"></div>
+    <div class="facet f3"></div>
+    <div class="facet f4"></div>
+    <div class="facet f5"></div>
+    <div class="facet f6"></div>
+    <div class="facet f7"></div>
+
+</div>
+
+
+<div class="polygon-inner"></div>
+
+
+<div class="orb-light"></div>
+
+
+<div class="orb-text">
+
+    <div class="core-title">
+        CORE
     </div>
 
-
-    <!-- ==================================================
-         ORB
-         ================================================== -->
-
     <div
-        class="orb"
-        id="orb"
+        class="core-state"
+        id="coreState"
     >
-
-        <div class="orb-core-text">
-
-            <div class="core-title">
-                CORE
-            </div>
-
-            <div
-                class="core-state"
-                id="coreState"
-            >
-                READY
-            </div>
-
-        </div>
-
+        READY
     </div>
 
+</div>
 
-    <!-- ==================================================
-         AUDIO WAVE
-         ================================================== -->
+</div>
 
-    <div
-        class="audio-wave"
-        id="audioWave"
-    ></div>
+
+<div
+    class="audio-wave"
+    id="audioWave"
+></div>
+
 
 </main>
 
-
-<!-- ======================================================
-     TRANSCRIPTION
-     ====================================================== -->
 
 <div class="voice-output">
 
@@ -1403,32 +1436,28 @@ body{
 </div>
 
 
-<!-- ======================================================
-     CONTROLS
-     ====================================================== -->
-
 <div class="controls">
 
-    <button
-        class="control"
-        id="microButton"
-    >
-        ACTIVER<br>MICRO
-    </button>
+<button
+    class="control"
+    id="microButton"
+>
+ACTIVER<br>MICRO
+</button>
 
-    <button
-        class="control"
-        id="shortcutButton"
-    >
-        ENVOYER<br>RACCOURCIS
-    </button>
+<button
+    class="control"
+    id="shortcutButton"
+>
+ENVOYER<br>RACCOURCIS
+</button>
 
-    <button
-        class="control"
-        id="speakButton"
-    >
-        VOIX<br>JARVIS
-    </button>
+<button
+    class="control"
+    id="speakButton"
+>
+VOIX<br>JARVIS
+</button>
 
 </div>
 
@@ -1436,124 +1465,124 @@ body{
 <script>
 
 /* =========================================================
-   JARVIS VOICE ENGINE
-   ========================================================= */
-
-
-/* =========================================================
-   DOM
+   JARVIS AUDIO ENGINE
    ========================================================= */
 
 const orb =
-    document.getElementById("orb");
+    document.getElementById(
+        "orb"
+    );
 
 const coreState =
-    document.getElementById("coreState");
+    document.getElementById(
+        "coreState"
+    );
 
 const voiceText =
-    document.getElementById("voiceText");
+    document.getElementById(
+        "voiceText"
+    );
 
 const microButton =
-    document.getElementById("microButton");
+    document.getElementById(
+        "microButton"
+    );
 
 const shortcutButton =
-    document.getElementById("shortcutButton");
+    document.getElementById(
+        "shortcutButton"
+    );
 
 const speakButton =
-    document.getElementById("speakButton");
+    document.getElementById(
+        "speakButton"
+    );
 
 const audioWave =
-    document.getElementById("audioWave");
-
-const ring1 =
-    document.querySelector(".ring-1");
-
-const ring2 =
-    document.querySelector(".ring-2");
-
-const ring3 =
-    document.querySelector(".ring-3");
-
-const ring4 =
-    document.querySelector(".ring-4");
+    document.getElementById(
+        "audioWave"
+    );
 
 
-/* =========================================================
-   AUDIO
-   ========================================================= */
-
-let audioContext = null;
-
-let analyser = null;
-
-let microphoneSource = null;
-
-let microphoneStream = null;
-
-let audioActive = false;
-
-let animationRunning = false;
+const rings =
+    [
+        ...document.querySelectorAll(
+            ".voice-ring"
+        )
+    ];
 
 
-/* =========================================================
-   VOICE
-   ========================================================= */
+let audioContext =
+    null;
 
-let recognition = null;
+let analyser =
+    null;
 
-let recognitionActive = false;
+let microphoneSource =
+    null;
 
-let finalTranscript = "";
+let microphoneStream =
+    null;
 
-let lastSpeechText =
-    "Bonjour. Je suis prêt.";
+let audioActive =
+    false;
+
+let animationRunning =
+    false;
 
 
-/* =========================================================
-   VISUAL STATE
-   ========================================================= */
+let visualLevel =
+    0;
 
-let visualVoiceLevel = 0;
+let targetLevel =
+    0;
 
-let targetVoiceLevel = 0;
 
-let lastAudioTime =
-    performance.now();
+let recognition =
+    null;
+
+let finalTranscript =
+    "";
 
 
 /* =========================================================
-   CREATE AUDIO WAVE
+   AUDIO BARS
    ========================================================= */
 
 for(
-    let i = 0;
-    i < 31;
+    let i=0;
+    i<31;
     i++
 ){
 
     const bar =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     bar.className =
         "audio-bar";
 
-    audioWave.appendChild(bar);
+    audioWave.appendChild(
+        bar
+    );
 }
 
-const audioBars =
-    Array.from(
-        document.querySelectorAll(
+
+const bars =
+    [
+        ...document.querySelectorAll(
             ".audio-bar"
         )
-    );
+    ];
 
 
 /* =========================================================
-   GENERATE TICKS
+   TICKS
    ========================================================= */
 
 function createTicks(
-    elementId,
+    id,
     count,
     radius,
     majorEvery
@@ -1561,68 +1590,76 @@ function createTicks(
 
     const group =
         document.getElementById(
-            elementId
+            id
         );
 
     if(!group){
         return;
     }
 
-    const cx = 250;
-    const cy = 250;
+
+    const ns =
+        "http://www.w3.org/2000/svg";
+
 
     for(
-        let i = 0;
-        i < count;
+        let i=0;
+        i<count;
         i++
     ){
 
         const angle =
-            (
-                i / count
-            ) *
+            i /
+            count *
             Math.PI *
             2;
 
-        const isMajor =
-            i % majorEvery === 0;
 
-        const outer =
-            radius;
+        const major =
+            i %
+            majorEvery ===
+            0;
+
 
         const inner =
             radius -
             (
-                isMajor
-                    ? 12
-                    : 6
+                major
+                ? 14
+                : 7
             );
 
+
         const x1 =
-            cx +
+            250 +
             Math.cos(angle) *
             inner;
+
 
         const y1 =
-            cy +
+            250 +
             Math.sin(angle) *
             inner;
 
+
         const x2 =
-            cx +
+            250 +
             Math.cos(angle) *
-            outer;
+            radius;
+
 
         const y2 =
-            cy +
+            250 +
             Math.sin(angle) *
-            outer;
+            radius;
+
 
         const line =
             document.createElementNS(
-                "http://www.w3.org/2000/svg",
+                ns,
                 "line"
             );
+
 
         line.setAttribute(
             "x1",
@@ -1644,49 +1681,57 @@ function createTicks(
             y2
         );
 
+
         line.setAttribute(
             "class",
-            isMajor
-                ? "tick-major"
+            major
+            ? "tick-major"
+            : (
+                i % 3 === 0
+                ? "tick-gold"
                 : "tick"
+            )
         );
 
-        group.appendChild(line);
+
+        group.appendChild(
+            line
+        );
     }
 }
 
 
 createTicks(
     "ticks1",
-    72,
-    238,
-    6
+    112,
+    237,
+    8
 );
 
 createTicks(
     "ticks2",
-    60,
-    210,
-    5
+    96,
+    200,
+    8
 );
 
 createTicks(
     "ticks3",
-    48,
-    168,
-    4
+    80,
+    158,
+    8
 );
 
 createTicks(
     "ticks4",
-    36,
-    122,
-    3
+    64,
+    114,
+    8
 );
 
 
 /* =========================================================
-   START MICROPHONE
+   MICROPHONE
    ========================================================= */
 
 async function startMicrophone(){
@@ -1695,17 +1740,19 @@ async function startMicrophone(){
         return;
     }
 
+
     try{
 
         microphoneStream =
-            await navigator.mediaDevices
-                .getUserMedia({
-                    audio:{
-                        echoCancellation:true,
-                        noiseSuppression:true,
-                        autoGainControl:true
-                    }
-                });
+            await navigator
+            .mediaDevices
+            .getUserMedia({
+                audio:{
+                    echoCancellation:true,
+                    noiseSuppression:true,
+                    autoGainControl:true
+                }
+            });
 
 
         audioContext =
@@ -1716,18 +1763,20 @@ async function startMicrophone(){
 
 
         analyser =
-            audioContext.createAnalyser();
+            audioContext
+            .createAnalyser();
 
 
         analyser.fftSize =
             256;
 
         analyser.smoothingTimeConstant =
-            .55;
+            .38;
 
 
         microphoneSource =
-            audioContext.createMediaStreamSource(
+            audioContext
+            .createMediaStreamSource(
                 microphoneStream
             );
 
@@ -1737,33 +1786,35 @@ async function startMicrophone(){
         );
 
 
-        audioActive = true;
+        audioActive =
+            true;
+
 
         microButton.classList.add(
             "active"
         );
 
+
         microButton.innerHTML =
             "MICRO<br>ACTIF";
+
 
         coreState.textContent =
             "LISTENING";
 
 
-        startVisualLoop();
+        startVisualEngine();
 
         startRecognition();
-
 
     }catch(error){
 
         console.error(
-            "Microphone error:",
             error
         );
 
         voiceText.textContent =
-            "MICROPHONE NON DISPONIBLE";
+            "ACCÈS MICROPHONE REFUSÉ";
 
         coreState.textContent =
             "MIC ERROR";
@@ -1772,7 +1823,7 @@ async function startMicrophone(){
 
 
 /* =========================================================
-   STOP MICROPHONE
+   STOP
    ========================================================= */
 
 function stopMicrophone(){
@@ -1782,11 +1833,11 @@ function stopMicrophone(){
     ){
 
         microphoneStream
-            .getTracks()
-            .forEach(
-                track =>
-                    track.stop()
-            );
+        .getTracks()
+        .forEach(
+            track =>
+                track.stop()
+        );
     }
 
 
@@ -1796,7 +1847,8 @@ function stopMicrophone(){
 
         microphoneSource.disconnect();
 
-        microphoneSource = null;
+        microphoneSource =
+            null;
     }
 
 
@@ -1806,50 +1858,43 @@ function stopMicrophone(){
 
         audioContext.close();
 
-        audioContext = null;
+        audioContext =
+            null;
     }
 
 
-    analyser = null;
+    analyser =
+        null;
 
-    audioActive = false;
+    audioActive =
+        false;
 
-    visualVoiceLevel = 0;
+    visualLevel =
+        0;
 
-    targetVoiceLevel = 0;
+    targetLevel =
+        0;
 
 
-    ring1.style.setProperty(
-        "--voice-scale",
-        "1"
+    rings.forEach(
+        ring =>
+            ring.style.setProperty(
+                "--ring-scale",
+                "1"
+            )
     );
 
-    ring2.style.setProperty(
-        "--voice-scale",
-        "1"
-    );
 
-    ring3.style.setProperty(
-        "--voice-scale",
-        "1"
-    );
-
-    ring4.style.setProperty(
-        "--voice-scale",
-        "1"
-    );
+    document.documentElement
+        .style
+        .setProperty(
+            "--voice",
+            "0"
+        );
 
 
     orb.style.transform =
         "translate(-50%,-50%) scale(1)";
-
-
-    orb.style.boxShadow = `
-        inset -18px -18px 35px rgba(0,0,0,.78),
-        inset 10px 8px 25px rgba(71,227,247,.22),
-        0 0 22px rgba(0,210,255,.35),
-        0 0 70px rgba(0,122,163,.25)
-    `;
 
 
     microButton.classList.remove(
@@ -1859,37 +1904,42 @@ function stopMicrophone(){
     microButton.innerHTML =
         "ACTIVER<br>MICRO";
 
+
     coreState.textContent =
         "READY";
 }
 
 
 /* =========================================================
-   VISUAL AUDIO LOOP
+   VISUAL ENGINE
    ========================================================= */
 
-function startVisualLoop(){
+function startVisualEngine(){
 
     if(animationRunning){
         return;
     }
 
-    animationRunning = true;
+
+    animationRunning =
+        true;
+
 
     requestAnimationFrame(
-        updateAudioVisuals
+        updateVisuals
     );
 }
 
 
-function updateAudioVisuals(){
+function updateVisuals(){
 
     if(
         !audioActive ||
         !analyser
     ){
 
-        animationRunning = false;
+        animationRunning =
+            false;
 
         return;
     }
@@ -1906,165 +1956,140 @@ function updateAudioVisuals(){
     );
 
 
-    /*
-       Bande principalement vocale.
-    */
+    let sum =
+        0;
 
-    let sum = 0;
-
-    let count = 0;
+    let count =
+        0;
 
 
     for(
-        let i = 2;
-        i < Math.min(
-            data.length,
-            42
-        );
+        let i=2;
+        i<46;
         i++
     ){
 
-        sum += data[i];
+        sum +=
+            data[i];
 
         count++;
     }
 
 
     const average =
-        count
-            ? sum / count
-            : 0;
+        sum / count;
 
 
-    targetVoiceLevel =
+    targetLevel =
         Math.min(
-            average / 76,
+            average / 70,
             1
         );
 
 
     /*
-       Attaque très rapide.
-       Relâchement contrôlé.
+       ATTAQUE RAPIDE.
     */
 
-    const now =
-        performance.now();
-
-    const delta =
-        Math.min(
-            (
-                now -
-                lastAudioTime
-            ) / 1000,
-            .05
-        );
-
-
-    lastAudioTime =
-        now;
-
-
     if(
-        targetVoiceLevel >
-        visualVoiceLevel
+        targetLevel >
+        visualLevel
     ){
 
-        visualVoiceLevel +=
+        visualLevel +=
             (
-                targetVoiceLevel -
-                visualVoiceLevel
+                targetLevel -
+                visualLevel
             ) *
-            Math.min(
-                delta * 38,
-                1
-            );
+            .48;
 
     }else{
 
-        visualVoiceLevel +=
+        visualLevel +=
             (
-                targetVoiceLevel -
-                visualVoiceLevel
+                targetLevel -
+                visualLevel
             ) *
-            Math.min(
-                delta * 15,
-                1
-            );
+            .16;
     }
 
 
     if(
-        visualVoiceLevel <
-        .025
+        visualLevel <
+        .015
     ){
 
-        visualVoiceLevel = 0;
+        visualLevel =
+            0;
     }
 
 
-    /*
-       ==============================================
-       COURONNES
-       ==============================================
-    */
+    document.documentElement
+        .style
+        .setProperty(
+            "--voice",
+            visualLevel
+        );
 
 
-    const s1 =
+    /* =====================================================
+       RINGS
+
+       Au repos : compacts.
+
+       À voix maximale :
+       retour presque exactement à l'espace
+       occupé par la version précédente.
+    ===================================================== */
+
+
+    const maximumExpansion =
+        .075;
+
+
+    const scales = [
+
         1 +
-        visualVoiceLevel *
-        .125;
+        visualLevel *
+        maximumExpansion,
 
-
-    const s2 =
         1 +
-        visualVoiceLevel *
-        .103;
+        visualLevel *
+        maximumExpansion,
 
-
-    const s3 =
         1 +
-        visualVoiceLevel *
-        .083;
+        visualLevel *
+        maximumExpansion,
 
-
-    const s4 =
         1 +
-        visualVoiceLevel *
-        .062;
+        visualLevel *
+        maximumExpansion
+    ];
 
 
-    ring1.style.setProperty(
-        "--voice-scale",
-        s1
+    rings.forEach(
+        (
+            ring,
+            index
+        ) => {
+
+            ring.style.setProperty(
+                "--ring-scale",
+                scales[index]
+            );
+        }
     );
 
-    ring2.style.setProperty(
-        "--voice-scale",
-        s2
-    );
 
-    ring3.style.setProperty(
-        "--voice-scale",
-        s3
-    );
+    /* =====================================================
+       ORB BEAT
+    ===================================================== */
 
-    ring4.style.setProperty(
-        "--voice-scale",
-        s4
-    );
-
-
-    /*
-       ==============================================
-       ORBE
-       ==============================================
-    */
 
     const orbScale =
         1 +
-        visualVoiceLevel *
-        .15;
+        visualLevel *
+        .18;
 
 
     orb.style.transform =
@@ -2074,33 +2099,11 @@ function updateAudioVisuals(){
         `;
 
 
-    const glow =
-        22 +
-        visualVoiceLevel *
-        44;
-
-
-    const deepGlow =
-        70 +
-        visualVoiceLevel *
-        120;
-
-
-    orb.style.boxShadow = `
-        inset -18px -18px 35px rgba(0,0,0,.78),
-        inset 10px 8px 25px rgba(71,227,247,.25),
-        0 0 ${glow}px rgba(0,220,255,.48),
-        0 0 ${deepGlow}px rgba(0,130,170,.30)
-    `;
-
-
-    /*
-       ==============================================
+    /* =====================================================
        AUDIO BARS
-       ==============================================
-    */
+    ===================================================== */
 
-    audioBars.forEach(
+    bars.forEach(
         (
             bar,
             index
@@ -2109,39 +2112,37 @@ function updateAudioVisuals(){
             const position =
                 index /
                 (
-                    audioBars.length -
+                    bars.length -
                     1
                 );
 
 
-            const frequencyIndex =
+            const frequency =
                 Math.floor(
                     position *
-                    Math.min(
-                        data.length,
-                        55
-                    )
+                    55
                 );
 
 
             const value =
                 data[
-                    frequencyIndex
+                    frequency
                 ] || 0;
 
 
             const local =
-                value / 255;
+                value /
+                255;
 
 
             const height =
-                4 +
+                3 +
                 local *
-                27 *
+                28 *
                 (
-                    .4 +
-                    visualVoiceLevel *
-                    1.8
+                    .5 +
+                    visualLevel *
+                    2
                 );
 
 
@@ -2151,29 +2152,60 @@ function updateAudioVisuals(){
     );
 
 
-    /*
-       ==============================================
+    /* =====================================================
+       ORB LIGHT
+    ===================================================== */
+
+    const glow =
+        18 +
+        visualLevel *
+        48;
+
+
+    const deep =
+        60 +
+        visualLevel *
+        145;
+
+
+    const core =
+        0.45 +
+        visualLevel *
+        .3;
+
+
+    orb.querySelector(
+        ".orb-core"
+    ).style.boxShadow = `
+
+        inset
+        -15px -18px 27px
+        rgba(0,0,0,.82),
+
+        inset
+        9px 7px 20px
+        rgba(100,232,247,.30),
+
+        0 0 ${glow}px
+        rgba(0,220,255,${core}),
+
+        0 0 ${deep}px
+        rgba(0,153,187,.34)
+    `;
+
+
+    /* =====================================================
        STATE
-       ==============================================
-    */
+    ===================================================== */
 
-    if(
-        visualVoiceLevel >
-        .075
-    ){
-
-        coreState.textContent =
-            "LISTENING";
-
-    }else{
-
-        coreState.textContent =
-            "READY";
-    }
+    coreState.textContent =
+        visualLevel > .06
+        ? "LISTENING"
+        : "READY";
 
 
     requestAnimationFrame(
-        updateAudioVisuals
+        updateVisuals
     );
 }
 
@@ -2189,10 +2221,12 @@ function startRecognition(){
         window.webkitSpeechRecognition;
 
 
-    if(!SpeechRecognition){
+    if(
+        !SpeechRecognition
+    ){
 
         voiceText.textContent =
-            "RECONNAISSANCE VOCALE NON DISPONIBLE";
+            "RECONNAISSANCE VOCALE INDISPONIBLE";
 
         return;
     }
@@ -2214,31 +2248,23 @@ function startRecognition(){
         true;
 
 
-    recognition.maxAlternatives =
-        1;
-
-
-    recognition.onstart =
-        () => {
-
-            recognitionActive =
-                true;
-        };
-
-
     recognition.onresult =
         event => {
 
-            let interim = "";
+            let interim =
+                "";
 
-            let finalText = "";
+            let finalText =
+                "";
 
 
             for(
                 let i =
                     event.resultIndex;
+
                 i <
                     event.results.length;
+
                 i++
             ){
 
@@ -2247,7 +2273,8 @@ function startRecognition(){
 
 
                 const text =
-                    result[0].transcript;
+                    result[0]
+                    .transcript;
 
 
                 if(
@@ -2255,7 +2282,8 @@ function startRecognition(){
                 ){
 
                     finalText +=
-                        text + " ";
+                        text +
+                        " ";
 
                 }else{
 
@@ -2291,7 +2319,6 @@ function startRecognition(){
         error => {
 
             console.log(
-                "Speech recognition:",
                 error
             );
         };
@@ -2299,15 +2326,6 @@ function startRecognition(){
 
     recognition.onend =
         () => {
-
-            recognitionActive =
-                false;
-
-
-            /*
-               Sur iOS/Safari, la reconnaissance
-               peut s'arrêter automatiquement.
-            */
 
             if(
                 audioActive
@@ -2317,9 +2335,7 @@ function startRecognition(){
                     () => {
 
                         try{
-
                             recognition.start();
-
                         }catch(e){}
 
                     },
@@ -2335,47 +2351,35 @@ function startRecognition(){
 
     }catch(error){
 
-        console.log(error);
+        console.log(
+            error
+        );
     }
 }
 
 
 /* =========================================================
-   SEND TO SHORTCUTS
+   SHORTCUTS
    ========================================================= */
 
 function sendToShortcuts(){
 
     const command =
-        (
-            finalTranscript ||
-            voiceText.textContent ||
-            ""
-        ).trim();
+        finalTranscript.trim();
 
 
-    if(!command){
+    if(
+        !command
+    ){
+
         return;
     }
-
-
-    /*
-       Première méthode :
-       tentative d'utilisation du schéma
-       shortcuts://
-
-       Le nom du raccourci peut être changé
-       ici.
-    */
-
-    const shortcutName =
-        "JARVIS";
 
 
     const url =
         "shortcuts://run-shortcut?name=" +
         encodeURIComponent(
-            shortcutName
+            "JARVIS"
         ) +
         "&input=" +
         encodeURIComponent(
@@ -2398,26 +2402,13 @@ function speakJarvis(){
         !("speechSynthesis" in window)
     ){
 
-        voiceText.textContent =
-            "SYNTHÈSE VOCALE NON DISPONIBLE";
-
         return;
     }
 
 
-    let text =
-        finalTranscript.trim();
-
-
-    if(!text){
-
-        text =
-            "Je suis prêt. Quelle est votre commande ?";
-    }
-
-
-    lastSpeechText =
-        text;
+    const text =
+        finalTranscript.trim() ||
+        "Je suis prêt. Quelle est votre commande ?";
 
 
     window.speechSynthesis.cancel();
@@ -2432,42 +2423,34 @@ function speakJarvis(){
     utterance.lang =
         "fr-FR";
 
-
     utterance.rate =
-        .91;
-
+        .9;
 
     utterance.pitch =
         .72;
-
 
     utterance.volume =
         .95;
 
 
-    /*
-       On cherche une voix française
-       si Safari en propose une.
-    */
-
     const voices =
         window.speechSynthesis
-            .getVoices();
+        .getVoices();
 
 
-    const frenchVoice =
+    const french =
         voices.find(
             voice =>
                 voice.lang
-                    .toLowerCase()
-                    .startsWith("fr")
+                .toLowerCase()
+                .startsWith("fr")
         );
 
 
-    if(frenchVoice){
+    if(french){
 
         utterance.voice =
-            frenchVoice;
+            french;
     }
 
 
@@ -2509,7 +2492,9 @@ microButton.addEventListener(
     "click",
     async () => {
 
-        if(audioActive){
+        if(
+            audioActive
+        ){
 
             stopMicrophone();
 
@@ -2523,45 +2508,23 @@ microButton.addEventListener(
 
 shortcutButton.addEventListener(
     "click",
-    () => {
-
-        sendToShortcuts();
-    }
+    sendToShortcuts
 );
 
 
 speakButton.addEventListener(
     "click",
-    () => {
-
-        speakJarvis();
-    }
+    speakJarvis
 );
 
-
-/* =========================================================
-   INITIALISE SYNTHESIS VOICES
-   ========================================================= */
-
-if(
-    "speechSynthesis" in window
-){
-
-    window.speechSynthesis
-        .getVoices();
-
-}
-
-
-/* =========================================================
-   DOUBLE TAP / TAP CORE
-   ========================================================= */
 
 orb.addEventListener(
     "click",
     async () => {
 
-        if(!audioActive){
+        if(
+            !audioActive
+        ){
 
             await startMicrophone();
 
@@ -2574,53 +2537,7 @@ orb.addEventListener(
 
 
 /* =========================================================
-   KEYBOARD — DEVELOPMENT ONLY
-   ========================================================= */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if(
-            event.code ===
-            "Space"
-        ){
-
-            event.preventDefault();
-
-            if(!audioActive){
-
-                startMicrophone();
-
-            }else{
-
-                speakJarvis();
-            }
-        }
-    }
-);
-
-
-/* =========================================================
-   RESIZE
-   ========================================================= */
-
-window.addEventListener(
-    "resize",
-    () => {
-
-        /*
-           Rien à recalculer :
-           tout est basé sur des dimensions relatives.
-
-           Le centre reste donc verrouillé.
-        */
-    }
-);
-
-
-/* =========================================================
-   INITIAL STATE
+   INITIAL
    ========================================================= */
 
 coreState.textContent =
