@@ -6,319 +6,647 @@
       content="width=device-width,
                initial-scale=1,
                maximum-scale=1,
-               user-scalable=no,
-               viewport-fit=cover">
+               viewport-fit=cover,
+               user-scalable=no">
 
 <meta name="theme-color" content="#02090d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<title>JARVIS — Geode Core</title>
+<title>JARVIS — Voice Core</title>
 
 <style>
-:root{
-    --bg:#02080c;
-    --grid:rgba(33,130,153,.15);
-    --cyan:#1fe5ff;
-    --cyan2:#72f4ff;
-    --blue:#238dff;
-    --gold:#c99b45;
-    --violet:#806cff;
-    --white:#dffcff;
-    --muted:#48717c;
-    --panel:rgba(2,16,22,.72);
+:root {
+    --bg: #02080c;
+    --grid: rgba(38, 142, 164, 0.11);
+    --grid-strong: rgba(54, 173, 194, 0.18);
+
+    --cyan: #28e6ff;
+    --cyan-soft: #7defff;
+    --cyan-dark: #08758a;
+
+    --blue: #319cff;
+    --violet: #8b73ff;
+    --gold: #c7a34d;
+    --white: #e8fbff;
+
+    --panel: rgba(2, 15, 21, 0.78);
 }
 
-*{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html,
-body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:var(--bg);
-    color:var(--white);
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--white);
     font-family:
-        "SF Pro Display",
-        "Helvetica Neue",
-        Arial,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
         sans-serif;
 }
 
-body{
-    position:relative;
+body {
+    position: relative;
 }
 
-#app{
-    position:relative;
-    width:100vw;
-    height:100dvh;
-    min-height:100vh;
-    overflow:hidden;
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+#background {
+    position: fixed;
+    inset: 0;
     background:
         radial-gradient(
-            circle at 50% 48%,
-            rgba(0,105,130,.12),
-            transparent 37%
+            circle at 50% 43%,
+            rgba(0, 133, 165, 0.16),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 50% 43%,
+            rgba(0, 62, 91, 0.20),
+            transparent 57%
         ),
         linear-gradient(
             180deg,
-            #030b10 0%,
+            #02080c 0%,
+            #031017 55%,
             #02080c 100%
         );
 }
 
-#hud{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    display:block;
+#grid {
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(41, 148, 169, 0.10) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(41, 148, 169, 0.10) 1px,
+            transparent 1px
+        );
+
+    background-size: 27px 27px;
+
+    opacity: 0.75;
 }
 
-.top{
-    position:absolute;
-    top:calc(env(safe-area-inset-top) + 18px);
-    left:0;
-    width:100%;
-    padding:0 7vw;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    z-index:10;
-    pointer-events:none;
+#grid::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(61, 190, 212, 0.08) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(61, 190, 212, 0.08) 1px,
+            transparent 1px
+        );
+
+    background-size: 135px 135px;
 }
 
-.logo{
-    font-size:clamp(25px,7vw,38px);
-    letter-spacing:.30em;
-    font-weight:300;
-    white-space:nowrap;
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.app {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
-.status{
-    display:flex;
-    gap:clamp(12px,3vw,24px);
-    align-items:center;
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header {
+    position: absolute;
+
+    top: calc(
+        env(safe-area-inset-top) + 32px
+    );
+
+    left: 0;
+    right: 0;
+
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 38px;
+
+    z-index: 20;
 }
 
-.statusItem{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    color:#71939d;
-    font-size:9px;
-    letter-spacing:.28em;
-    white-space:nowrap;
+.brand {
+    font-size: 31px;
+    font-weight: 300;
+
+    letter-spacing: 0.31em;
+
+    white-space: nowrap;
 }
 
-.statusDot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:var(--cyan);
+.status {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+    font-size: 10px;
+
+    letter-spacing: 0.31em;
+
+    color: rgba(196, 239, 247, 0.62);
+
+    white-space: nowrap;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--cyan);
+
     box-shadow:
-        0 0 5px var(--cyan),
-        0 0 15px rgba(31,229,255,.75);
+        0 0 7px var(--cyan),
+        0 0 18px rgba(40, 230, 255, 0.7);
+
+    animation:
+        statusPulse 2.2s ease-in-out infinite;
 }
 
-.heading{
-    position:absolute;
-    top:calc(env(safe-area-inset-top) + 104px);
-    width:100%;
-    text-align:center;
-    z-index:8;
-    pointer-events:none;
+.status-item:nth-child(2) .status-dot {
+    animation-delay: .4s;
 }
 
-.headingMain{
-    font-size:11px;
-    letter-spacing:.38em;
-    color:#5b8994;
+.status-item:nth-child(3) .status-dot {
+    animation-delay: .8s;
 }
 
-.headingSub{
-    margin-top:15px;
-    font-size:8px;
-    letter-spacing:.34em;
-    color:#315c67;
+@keyframes statusPulse {
+    0%,
+    100% {
+        opacity: .65;
+        transform: scale(.8);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.15);
+    }
 }
 
-.voiceText{
-    position:absolute;
-    left:8%;
-    right:8%;
-    top:calc(100% - 215px);
-    height:42px;
-    border-top:1px solid rgba(31,229,255,.32);
-    border-bottom:1px solid rgba(31,229,255,.18);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:10;
-    color:#4f8793;
-    font-size:9px;
-    letter-spacing:.25em;
-    text-align:center;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    background:rgba(0,15,21,.35);
+/* =========================================================
+   TITLES
+   ========================================================= */
+
+.subtitle {
+    position: absolute;
+
+    top: calc(
+        env(safe-area-inset-top) + 137px
+    );
+
+    left: 0;
+    right: 0;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    letter-spacing: 0.42em;
+
+    color: rgba(107, 210, 226, 0.63);
+
+    z-index: 15;
 }
 
-.voiceText.active{
-    color:#a5faff;
+.subsubtitle {
+    position: absolute;
+
+    top: calc(
+        env(safe-area-inset-top) + 170px
+    );
+
+    left: 0;
+    right: 0;
+
+    text-align: center;
+
+    font-size: 8px;
+
+    letter-spacing: 0.42em;
+
+    color: rgba(104, 184, 198, 0.38);
+
+    z-index: 15;
+}
+
+/* =========================================================
+   CORE AREA
+   ========================================================= */
+
+.core-area {
+    position: absolute;
+
+    left: 50%;
+
+    top: 43%;
+
+    width: min(94vw, 650px);
+    height: min(94vw, 650px);
+
+    transform:
+        translate(-50%, -50%);
+
+    z-index: 5;
+}
+
+/* =========================================================
+   CANVAS
+   ========================================================= */
+
+#visual {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+}
+
+/* =========================================================
+   CORE LABEL
+   ========================================================= */
+
+.core-label {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    pointer-events: none;
+
+    text-align: center;
+
+    z-index: 10;
+
     text-shadow:
-        0 0 8px rgba(31,229,255,.7);
+        0 0 10px rgba(62, 238, 255, .55);
 }
 
-.controls{
-    position:absolute;
-    left:4.5%;
-    right:4.5%;
-    bottom:calc(env(safe-area-inset-bottom) + 58px);
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
-    z-index:20;
+.core-title {
+    font-size: 13px;
+
+    letter-spacing: 0.44em;
+
+    margin-left: .44em;
+
+    color: rgba(225, 250, 255, .88);
 }
 
-.control{
-    min-height:62px;
-    border:1px solid rgba(31,229,255,.65);
+.core-state {
+    margin-top: 9px;
+
+    font-size: 7px;
+
+    letter-spacing: 0.38em;
+
+    color: rgba(106, 213, 228, .55);
+}
+
+/* =========================================================
+   VOICE PANEL
+   ========================================================= */
+
+.voice-panel {
+    position: absolute;
+
+    left: 50%;
+
+    top: calc(43% + min(47vw, 325px) + 38px);
+
+    transform: translateX(-50%);
+
+    width: min(88vw, 590px);
+
+    z-index: 15;
+
+    text-align: center;
+}
+
+.voice-wave {
+    height: 27px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    opacity: .8;
+}
+
+.wave-bar {
+    width: 2px;
+
+    height: 8px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #8ff8ff,
+            #04b7d1
+        );
+
+    box-shadow:
+        0 0 7px rgba(37, 226, 255, .55);
+
+    transform-origin: center;
+
+    transition:
+        height .055s linear;
+}
+
+.voice-text {
+    margin-top: 13px;
+
+    min-height: 25px;
+
+    padding: 7px 18px;
+
+    border-top:
+        1px solid rgba(46, 199, 221, .32);
+
+    border-bottom:
+        1px solid rgba(46, 199, 221, .32);
+
+    font-size: 11px;
+
+    letter-spacing: .25em;
+
+    color: rgba(206, 245, 251, .68);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.controls {
+    position: absolute;
+
+    bottom:
+        calc(
+            env(safe-area-inset-bottom) + 44px
+        );
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: min(92vw, 650px);
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+
+    z-index: 20;
+}
+
+.control {
+    height: 63px;
+
+    border:
+        1px solid
+        rgba(33, 210, 239, .58);
+
     background:
         linear-gradient(
             180deg,
-            rgba(8,31,39,.68),
-            rgba(1,13,18,.82)
+            rgba(4, 27, 36, .88),
+            rgba(1, 14, 20, .88)
         );
-    color:#9bdce4;
-    font-size:9px;
-    letter-spacing:.22em;
-    text-transform:uppercase;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    cursor:pointer;
-    box-shadow:
-        inset 0 0 20px rgba(0,180,220,.035),
-        0 0 10px rgba(0,190,220,.03);
+
+    color:
+        rgba(216, 249, 255, .84);
+
+    font-size: 10px;
+
+    letter-spacing: .28em;
+
+    cursor: pointer;
+
     transition:
-        transform .12s ease,
         background .2s ease,
-        box-shadow .2s ease;
+        border-color .2s ease,
+        box-shadow .2s ease,
+        transform .2s ease;
 }
 
-.control:active{
-    transform:scale(.97);
+.control:active {
+    transform: scale(.97);
 }
 
-.control.active{
-    border-color:#71f6ff;
-    color:#d9ffff;
+.control:hover {
+    border-color: var(--cyan);
+
     box-shadow:
-        0 0 15px rgba(31,229,255,.28),
-        inset 0 0 20px rgba(31,229,255,.10);
+        0 0 20px rgba(25, 220, 246, .15);
+
+    background:
+        rgba(5, 39, 49, .95);
 }
 
-.micIcon{
-    width:10px;
-    height:16px;
-    border:1px solid currentColor;
-    border-radius:7px;
-    margin-right:9px;
-    position:relative;
+.control.active {
+    border-color: #7af5ff;
+
+    box-shadow:
+        inset 0 0 22px rgba(25, 226, 250, .12),
+        0 0 24px rgba(22, 215, 240, .16);
+
+    color: #dffcff;
 }
 
-.micIcon::after{
-    content:"";
-    position:absolute;
-    width:16px;
-    height:9px;
-    left:50%;
-    bottom:-7px;
-    transform:translateX(-50%);
-    border:
-        1px solid currentColor;
-    border-top:0;
-    border-radius:0 0 9px 9px;
+/* =========================================================
+   SMALL STATUS CORNERS
+   ========================================================= */
+
+.corner {
+    position: absolute;
+
+    width: 26px;
+    height: 26px;
+
+    border-color:
+        rgba(73, 218, 238, .55);
+
+    z-index: 10;
+
+    pointer-events: none;
 }
 
-.transcript{
-    position:absolute;
-    left:7%;
-    right:7%;
-    bottom:calc(env(safe-area-inset-bottom) + 138px);
-    min-height:24px;
-    z-index:15;
-    text-align:center;
-    font-size:10px;
-    line-height:1.5;
-    color:#7fb9c3;
-    letter-spacing:.08em;
-    opacity:.85;
-    pointer-events:none;
+.corner.tl {
+    top: 18%;
+    left: 4%;
+
+    border-top: 1px solid;
+    border-left: 1px solid;
 }
 
-@media(max-width:390px){
+.corner.tr {
+    top: 18%;
+    right: 4%;
 
-    .top{
-        padding-left:6vw;
-        padding-right:6vw;
+    border-top: 1px solid;
+    border-right: 1px solid;
+}
+
+.corner.bl {
+    bottom: 18%;
+    left: 4%;
+
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+}
+
+.corner.br {
+    bottom: 18%;
+    right: 4%;
+
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .header {
+        padding:
+            0 26px;
     }
 
-    .status{
-        gap:9px;
+    .brand {
+        font-size: 27px;
     }
 
-    .statusItem{
-        font-size:7px;
-        letter-spacing:.20em;
+    .status {
+        gap: 11px;
+        font-size: 8px;
+        letter-spacing: .25em;
     }
 
-    .statusDot{
-        width:6px;
-        height:6px;
+    .subtitle {
+        font-size: 10px;
+        letter-spacing: .34em;
     }
 
-    .heading{
-        top:calc(env(safe-area-inset-top) + 98px);
+    .subsubtitle {
+        font-size: 7px;
+        letter-spacing: .30em;
     }
 
-    .headingMain{
-        font-size:9px;
+    .core-area {
+        width: 96vw;
+        height: 96vw;
+
+        top: 42%;
     }
 
-    .headingSub{
-        font-size:7px;
+    .voice-panel {
+        top:
+            calc(
+                42% + 48vw + 30px
+            );
     }
 
-    .control{
-        font-size:7px;
-        letter-spacing:.16em;
+    .controls {
+        bottom:
+            calc(
+                env(safe-area-inset-bottom) + 28px
+            );
+
+        width: calc(100vw - 36px);
+
+        gap: 8px;
+    }
+
+    .control {
+        height: 61px;
+
+        font-size: 8px;
+
+        letter-spacing: .22em;
+    }
+
+    .corner {
+        display: none;
     }
 }
 
-@media(min-width:700px){
+@media (max-height: 720px) {
 
-    .top{
-        padding-left:9vw;
-        padding-right:9vw;
+    .core-area {
+        top: 39%;
     }
 
-    .controls{
-        left:12%;
-        right:12%;
+    .voice-panel {
+        top:
+            calc(
+                39% + 47vw + 25px
+            );
     }
 
-    .voiceText{
-        left:12%;
-        right:12%;
+    .controls {
+        bottom:
+            calc(
+                env(safe-area-inset-bottom) + 14px
+            );
     }
 }
 </style>
@@ -326,80 +654,105 @@ body{
 
 <body>
 
-<div id="app">
+<div id="background">
+    <div id="grid"></div>
+</div>
 
-    <canvas id="hud"></canvas>
+<div class="app">
 
-    <div class="top">
-        <div class="logo">JARVIS</div>
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <header class="header">
+
+        <div class="brand">
+            JARVIS
+        </div>
 
         <div class="status">
 
-            <div class="statusItem">
-                <span class="statusDot"></span>
-                ONLINE
+            <div class="status-item">
+                <span class="status-dot"></span>
+                <span>ONLINE</span>
             </div>
 
-            <div class="statusItem">
-                <span class="statusDot"></span>
-                SECURE
+            <div class="status-item">
+                <span class="status-dot"></span>
+                <span>SECURE</span>
             </div>
 
-            <div class="statusItem">
-                <span class="statusDot"></span>
-                VOICE
+            <div class="status-item">
+                <span class="status-dot"></span>
+                <span>VOICE</span>
             </div>
 
         </div>
+
+    </header>
+
+    <div class="subtitle">
+        VOICE CORE · CRYSTALLINE MATRIX · 3 AXIS
     </div>
 
-    <div class="heading">
+    <div class="subsubtitle">
+        HOLOGRAPHIC CONCENTRIC SYSTEM · AUDIO REACTIVE
+    </div>
 
-        <div class="headingMain">
-            VOICE CORE · CRYSTALLINE MATRIX · 3 AXIS
+    <main class="core-area">
+
+        <canvas id="visual"></canvas>
+
+        <div class="core-label">
+
+            <div class="core-title">
+                CORE
+            </div>
+
+            <div
+                class="core-state"
+                id="coreState">
+                READY
+            </div>
+
         </div>
 
-        <div class="headingSub">
-            HOLOGRAPHIC CONCENTRIC SYSTEM · AUDIO REACTIVE
+    </main>
+
+    <section class="voice-panel">
+
+        <div
+            class="voice-wave"
+            id="voiceWave">
         </div>
 
-    </div>
+        <div
+            class="voice-text"
+            id="voiceText">
+            VOICE INPUT · READY
+        </div>
 
-    <div id="voiceText" class="voiceText">
-        SYSTEM READY · TAP MICRO TO LISTEN
-    </div>
-
-    <div id="transcript" class="transcript"></div>
+    </section>
 
     <div class="controls">
 
         <button
-            id="micButton"
             class="control"
-            type="button">
-
-            <span class="micIcon"></span>
-
+            id="microButton">
             MICRO<br>ACTIF
-
         </button>
 
         <button
-            id="shortcutButton"
             class="control"
-            type="button">
-
+            id="shortcutButton">
             ENVOYER<br>RACCOURCIS
-
         </button>
 
         <button
-            id="voiceButton"
             class="control"
-            type="button">
-
+            id="speakButton">
             VOIX<br>JARVIS
-
         </button>
 
     </div>
@@ -407,69 +760,37 @@ body{
 </div>
 
 <script>
+/* =========================================================
+   JARVIS VISUAL ENGINE
+   ========================================================= */
 
-/* ============================================================
-   JARVIS — GEODE CORE
-   Pure Canvas / HTML / CSS / JavaScript
-   No external 3D library.
-   ============================================================ */
+(() => {
+
+"use strict";
+
+/* =========================================================
+   CANVAS
+   ========================================================= */
 
 const canvas =
-    document.getElementById("hud");
+    document.getElementById("visual");
 
 const ctx =
     canvas.getContext("2d");
 
-const app =
-    document.getElementById("app");
-
-const voiceText =
-    document.getElementById("voiceText");
-
-const transcript =
-    document.getElementById("transcript");
-
-const micButton =
-    document.getElementById("micButton");
-
-const voiceButton =
-    document.getElementById("voiceButton");
-
-const shortcutButton =
-    document.getElementById("shortcutButton");
+const coreArea =
+    document.querySelector(".core-area");
 
 let W = 0;
 let H = 0;
+let CX = 0;
+let CY = 0;
 let DPR = 1;
 
-let cx = 0;
-let cy = 0;
+function resizeCanvas() {
 
-let baseRadius = 0;
-
-let audioContext = null;
-let analyser = null;
-let microphone = null;
-let audioData = null;
-
-let listening = false;
-let speechRecognition = null;
-
-let smoothAudio = 0;
-let peakAudio = 0;
-
-let lastTime = performance.now();
-
-let globalTime = 0;
-
-const TAU = Math.PI * 2;
-
-
-/* ============================================================
-   RESIZE
-   ============================================================ */
-
-function resize(){
+    const rect =
+        coreArea.getBoundingClientRect();
 
     DPR =
         Math.min(
@@ -477,8 +798,8 @@ function resize(){
             2
         );
 
-    W = window.innerWidth;
-    H = window.innerHeight;
+    W = rect.width;
+    H = rect.height;
 
     canvas.width =
         Math.floor(W * DPR);
@@ -501,1750 +822,49 @@ function resize(){
         0
     );
 
-    cx = W / 2;
-
-    /*
-       The visual occupies roughly the upper
-       56% of the iPhone screen.
-       Four rings remain safely inside
-       the lateral edges.
-    */
-
-    const available =
-        Math.min(
-            W * .94,
-            H * .58
-        );
-
-    baseRadius =
-        available * .435;
-
-    cy =
-        Math.min(
-            H * .48,
-            H * .44
-        );
+    CX = W / 2;
+    CY = H / 2;
 }
+
+resizeCanvas();
 
 window.addEventListener(
     "resize",
-    resize,
-    {passive:true}
+    resizeCanvas,
+    { passive: true }
 );
 
-resize();
-
-
-/* ============================================================
-   UTILITIES
-   ============================================================ */
-
-function clamp(v,min,max){
-    return Math.max(
-        min,
-        Math.min(max,v)
-    );
-}
-
-function lerp(a,b,t){
-    return a + (b-a)*t;
-}
-
-function polar(
-    radius,
-    angle
-){
-
-    return {
-        x:cx + Math.cos(angle)*radius,
-        y:cy + Math.sin(angle)*radius
-    };
-
-}
-
-function rgba(
-    r,
-    g,
-    b,
-    a
-){
-
-    return `rgba(${r},${g},${b},${a})`;
-
-}
-
-
-/* ============================================================
-   BACKGROUND GRID
-   ============================================================ */
-
-function drawBackground(){
-
-    ctx.fillStyle =
-        "#02080c";
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-
-    const small = 28;
-    const large = 140;
-
-    ctx.lineWidth = 1;
-
-    /*
-       Fine grid
-    */
-
-    ctx.strokeStyle =
-        "rgba(31,125,145,.10)";
-
-    ctx.beginPath();
-
-    for(
-        let x=0;
-        x<=W;
-        x+=small
-    ){
-
-        ctx.moveTo(x,0);
-        ctx.lineTo(x,H);
-
-    }
-
-    for(
-        let y=0;
-        y<=H;
-        y+=small
-    ){
-
-        ctx.moveTo(0,y);
-        ctx.lineTo(W,y);
-
-    }
-
-    ctx.stroke();
-
-    /*
-       Major grid
-    */
-
-    ctx.strokeStyle =
-        "rgba(46,159,181,.09)";
-
-    ctx.beginPath();
-
-    for(
-        let x=0;
-        x<=W;
-        x+=large
-    ){
-
-        ctx.moveTo(x,0);
-        ctx.lineTo(x,H);
-
-    }
-
-    for(
-        let y=0;
-        y<=H;
-        y+=large
-    ){
-
-        ctx.moveTo(0,y);
-        ctx.lineTo(W,y);
-
-    }
-
-    ctx.stroke();
-
-    /*
-       Center glow
-    */
-
-    const glow =
-        ctx.createRadialGradient(
-            cx,
-            cy,
-            0,
-            cx,
-            cy,
-            baseRadius * 1.3
-        );
-
-    glow.addColorStop(
-        0,
-        `rgba(0,175,215,${.10 + smoothAudio*.10})`
-    );
-
-    glow.addColorStop(
-        .45,
-        "rgba(0,100,135,.035)"
-    );
-
-    glow.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle = glow;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        cy,
-        baseRadius*1.3,
-        0,
-        TAU
-    );
-
-    ctx.fill();
-
-}
-
-
-/* ============================================================
-   RING GLOW
-   ============================================================ */
-
-function ringGlow(
-    radius,
-    width,
-    alpha
-){
-
-    ctx.save();
-
-    ctx.shadowBlur =
-        14 + smoothAudio*30;
-
-    ctx.shadowColor =
-        `rgba(31,229,255,${alpha})`;
-
-    ctx.strokeStyle =
-        `rgba(31,229,255,${alpha})`;
-
-    ctx.lineWidth =
-        width;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        cy,
-        radius,
-        0,
-        TAU
-    );
-
-    ctx.stroke();
-
-    ctx.restore();
-
-}
-
-
-/* ============================================================
-   FIXED CONCENTRIC RINGS
-   Four primary rings.
-   They NEVER move away from the centre.
-   Audio changes only their radius.
-   ============================================================ */
-
-const rings = [
-
-    {
-        base:.29,
-        thickness:2.2,
-        phase:0,
-        speed:.09,
-        direction:1,
-        cyan:true
-    },
-
-    {
-        base:.43,
-        thickness:2.0,
-        phase:1.8,
-        speed:.055,
-        direction:-1,
-        cyan:true
-    },
-
-    {
-        base:.58,
-        thickness:2.2,
-        phase:.6,
-        speed:.035,
-        direction:1,
-        cyan:true
-    },
-
-    {
-        base:.73,
-        thickness:2.5,
-        phase:2.4,
-        speed:.022,
-        direction:-1,
-        cyan:true
-    }
-
-];
-
-
-/* ============================================================
-   DRAW PRIMARY RINGS
-   ============================================================ */
-
-function drawPrimaryRings(){
-
-    rings.forEach(
-        (ring,index)=>{
-
-            /*
-               Audio expansion.
-               All four rings expand concentrically.
-            */
-
-            const audioExpansion =
-                smoothAudio *
-                (
-                    9 +
-                    index*7
-                );
-
-            const radius =
-                baseRadius *
-                ring.base +
-                audioExpansion;
-
-            /*
-               Outer holographic halo
-            */
-
-            ctx.save();
-
-            ctx.strokeStyle =
-                `rgba(31,229,255,${
-                    .16 +
-                    smoothAudio*.20
-                })`;
-
-            ctx.lineWidth =
-                ring.thickness + 5;
-
-            ctx.shadowBlur =
-                18 + smoothAudio*28;
-
-            ctx.shadowColor =
-                "rgba(31,229,255,.42)";
-
-            ctx.beginPath();
-
-            ctx.arc(
-                cx,
-                cy,
-                radius,
-                0,
-                TAU
-            );
-
-            ctx.stroke();
-
-            ctx.restore();
-
-            /*
-               Main ring
-            */
-
-            ctx.strokeStyle =
-                `rgba(83,239,255,${
-                    .65 +
-                    smoothAudio*.30
-                })`;
-
-            ctx.lineWidth =
-                ring.thickness;
-
-            ctx.beginPath();
-
-            ctx.arc(
-                cx,
-                cy,
-                radius,
-                0,
-                TAU
-            );
-
-            ctx.stroke();
-
-            /*
-               Inner fine ring
-            */
-
-            ctx.strokeStyle =
-                "rgba(47,170,193,.36)";
-
-            ctx.lineWidth =
-                .7;
-
-            ctx.beginPath();
-
-            ctx.arc(
-                cx,
-                cy,
-                radius-6,
-                0,
-                TAU
-            );
-
-            ctx.stroke();
-
-            /*
-               Outer fine ring
-            */
-
-            ctx.beginPath();
-
-            ctx.arc(
-                cx,
-                cy,
-                radius+7,
-                0,
-                TAU
-            );
-
-            ctx.stroke();
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   TICKS
-   ============================================================ */
-
-function drawTicks(){
-
-    rings.forEach(
-        (ring,index)=>{
-
-            const audioExpansion =
-                smoothAudio *
-                (
-                    9 +
-                    index*7
-                );
-
-            const radius =
-                baseRadius *
-                ring.base +
-                audioExpansion;
-
-            const majorEvery = 12;
-            const total = 120;
-
-            for(
-                let i=0;
-                i<total;
-                i++
-            ){
-
-                const angle =
-                    (
-                        i / total
-                    ) * TAU -
-                    Math.PI/2;
-
-                const major =
-                    i % majorEvery === 0;
-
-                const medium =
-                    i % 6 === 0;
-
-                const inner =
-                    radius -
-                    (
-                        major
-                        ? 11
-                        : medium
-                        ? 7
-                        : 4
-                    );
-
-                const outer =
-                    radius +
-                    (
-                        major
-                        ? 8
-                        : medium
-                        ? 5
-                        : 2
-                    );
-
-                const p1 =
-                    polar(
-                        inner,
-                        angle
-                    );
-
-                const p2 =
-                    polar(
-                        outer,
-                        angle
-                    );
-
-                ctx.strokeStyle =
-                    major
-                    ? "rgba(224,252,255,.86)"
-                    : medium
-                    ? "rgba(105,222,235,.62)"
-                    : "rgba(42,143,159,.45)";
-
-                ctx.lineWidth =
-                    major
-                    ? 1.45
-                    : medium
-                    ? .9
-                    : .55;
-
-                ctx.beginPath();
-
-                ctx.moveTo(
-                    p1.x,
-                    p1.y
-                );
-
-                ctx.lineTo(
-                    p2.x,
-                    p2.y
-                );
-
-                ctx.stroke();
-
-            }
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   NUMBERS
-   ============================================================ */
-
-function drawNumbers(){
-
-    const sets = [
-        [
-            "000","030","060",
-            "090","120","150",
-            "180","210","240",
-            "270","300","330"
-        ],
-
-        [
-            "A17","B04","C82",
-            "D31","E09","F64",
-            "G12","H55","J03",
-            "K71","M20","N88"
-        ],
-
-        [
-            "02","05","08","11",
-            "14","17","20","23"
-        ]
-    ];
-
-    rings.forEach(
-        (ring,index)=>{
-
-            const radius =
-                baseRadius *
-                ring.base +
-                smoothAudio *
-                (9+index*7);
-
-            const set =
-                sets[index % sets.length];
-
-            const count =
-                set.length;
-
-            set.forEach(
-                (label,i)=>{
-
-                    const angle =
-                        (
-                            i/count
-                        )*TAU -
-                        Math.PI/2 +
-                        globalTime *
-                        ring.speed *
-                        ring.direction;
-
-                    const p =
-                        polar(
-                            radius+15+index*2,
-                            angle
-                        );
-
-                    ctx.save();
-
-                    ctx.translate(
-                        p.x,
-                        p.y
-                    );
-
-                    /*
-                       Tangential orientation
-                    */
-
-                    ctx.rotate(
-                        angle +
-                        Math.PI/2
-                    );
-
-                    ctx.fillStyle =
-                        index===1
-                        ? "rgba(91,205,221,.62)"
-                        : "rgba(186,236,241,.72)";
-
-                    ctx.font =
-                        index===0
-                        ? "8px monospace"
-                        : "7px monospace";
-
-                    ctx.textAlign =
-                        "center";
-
-                    ctx.textBaseline =
-                        "middle";
-
-                    ctx.fillText(
-                        label,
-                        0,
-                        0
-                    );
-
-                    ctx.restore();
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   SECONDARY ARCS
-   These rotate opposite to the primary ring system.
-   ============================================================ */
-
-function drawSecondaryArcs(){
-
-    rings.forEach(
-        (ring,index)=>{
-
-            const radius =
-                baseRadius *
-                ring.base +
-                smoothAudio *
-                (9+index*7);
-
-            const arcCount =
-                3 + index;
-
-            for(
-                let j=0;
-                j<arcCount;
-                j++
-            ){
-
-                const offset =
-                    j *
-                    (
-                        TAU/
-                        arcCount
-                    );
-
-                const start =
-                    offset +
-                    globalTime *
-                    (
-                        -.055 -
-                        index*.012
-                    );
-
-                const span =
-                    .32 +
-                    (
-                        .20 *
-                        Math.sin(
-                            globalTime*.7+j
-                        )
-                    );
-
-                ctx.save();
-
-                ctx.strokeStyle =
-                    j%3===0
-                    ? "rgba(221,162,67,.78)"
-                    : j%3===1
-                    ? "rgba(111,89,255,.70)"
-                    : "rgba(37,225,247,.70)";
-
-                ctx.lineWidth =
-                    j%3===0
-                    ? 1.2
-                    : .85;
-
-                ctx.shadowBlur =
-                    smoothAudio*10;
-
-                ctx.shadowColor =
-                    ctx.strokeStyle;
-
-                ctx.beginPath();
-
-                ctx.arc(
-                    cx,
-                    cy,
-                    radius-12,
-                    start,
-                    start+span
-                );
-
-                ctx.stroke();
-
-                ctx.restore();
-
-            }
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   INFORMATION BANDS BETWEEN RINGS
-   ============================================================ */
-
-function drawInformationBands(){
-
-    rings.forEach(
-        (ring,index)=>{
-
-            const r =
-                baseRadius *
-                ring.base +
-                smoothAudio *
-                (9+index*7);
-
-            const inner =
-                r-23;
-
-            const outer =
-                r+23;
-
-            /*
-               dotted information orbit
-            */
-
-            ctx.fillStyle =
-                "rgba(77,193,207,.48)";
-
-            for(
-                let i=0;
-                i<72;
-                i++
-            ){
-
-                const a =
-                    i/72*TAU;
-
-                const p =
-                    polar(
-                        inner,
-                        a
-                    );
-
-                const size =
-                    i%9===0
-                    ? 2.1
-                    : .8;
-
-                ctx.beginPath();
-
-                ctx.arc(
-                    p.x,
-                    p.y,
-                    size,
-                    0,
-                    TAU
-                );
-
-                ctx.fill();
-
-            }
-
-            /*
-               Small geometric artefacts
-            */
-
-            for(
-                let i=0;
-                i<18;
-                i++
-            ){
-
-                const a =
-                    i/18*TAU +
-                    globalTime *
-                    .015 *
-                    (index%2===0?1:-1);
-
-                const radius =
-                    inner +
-                    (
-                        outer-inner
-                    ) *
-                    (
-                        .25 +
-                        (
-                            i%5
-                        )*.12
-                    );
-
-                const p =
-                    polar(
-                        radius,
-                        a
-                    );
-
-                ctx.save();
-
-                ctx.translate(
-                    p.x,
-                    p.y
-                );
-
-                ctx.rotate(a);
-
-                ctx.strokeStyle =
-                    i%4===0
-                    ? "rgba(205,157,68,.65)"
-                    : "rgba(72,201,218,.52)";
-
-                ctx.lineWidth =
-                    .7;
-
-                ctx.strokeRect(
-                    -2,
-                    -2,
-                    4,
-                    4
-                );
-
-                ctx.restore();
-
-            }
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   CENTER CROSS GRID
-   The grid crosses the complete geode.
-   ============================================================ */
-
-function drawCenterGrid(){
-
-    const size =
-        baseRadius *
-        .34;
-
-    ctx.save();
-
-    ctx.strokeStyle =
-        `rgba(52,210,231,${
-            .13 +
-            smoothAudio*.13
-        })`;
-
-    ctx.lineWidth = .55;
-
-    /*
-       radial spokes
-    */
-
-    const spokes = 24;
-
-    for(
-        let i=0;
-        i<spokes;
-        i++
-    ){
-
-        const a =
-            i/spokes*TAU;
-
-        const p =
-            polar(
-                size,
-                a
-            );
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            cx,
-            cy
-        );
-
-        ctx.lineTo(
-            p.x,
-            p.y
-        );
-
-        ctx.stroke();
-
-    }
-
-    /*
-       horizontal / vertical
-    */
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        cx-size,
-        cy
-    );
-
-    ctx.lineTo(
-        cx+size,
-        cy
-    );
-
-    ctx.moveTo(
-        cx,
-        cy-size
-    );
-
-    ctx.lineTo(
-        cx,
-        cy+size
-    );
-
-    ctx.stroke();
-
-    /*
-       latitude-like circles
-    */
-
-    for(
-        let i=1;
-        i<=5;
-        i++
-    ){
-
-        const r =
-            size *
-            (i/5);
-
-        ctx.beginPath();
-
-        ctx.arc(
-            cx,
-            cy,
-            r,
-            0,
-            TAU
-        );
-
-        ctx.stroke();
-
-    }
-
-    ctx.restore();
-
-}
-
-
-/* ============================================================
-   GEODE CORE
-   ============================================================ */
-
-function createGeodeVertices(
-    radius,
-    ringsCount
-){
-
-    const vertices=[];
-
-    for(
-        let layer=0;
-        layer<ringsCount;
-        layer++
-    ){
-
-        const layerRadius =
-            radius *
-            (
-                1 -
-                layer/
-                (ringsCount*1.45)
-            );
-
-        const count =
-            18 +
-            layer*3;
-
-        const layerOffset =
-            layer%2
-            ? Math.PI/count
-            : 0;
-
-        const points=[];
-
-        for(
-            let i=0;
-            i<count;
-            i++
-        ){
-
-            const angle =
-                i/count*TAU +
-                layerOffset;
-
-            const wobble =
-                1 +
-                Math.sin(
-                    i*3.71+
-                    layer*2.14
-                )*.045;
-
-            points.push({
-                x:
-                    cx +
-                    Math.cos(angle)*
-                    layerRadius*
-                    wobble,
-
-                y:
-                    cy +
-                    Math.sin(angle)*
-                    layerRadius*
-                    wobble,
-
-                angle
-            });
-
-        }
-
-        vertices.push(points);
-
-    }
-
-    return vertices;
-
-}
-
-
-/* ============================================================
-   GEODE DRAW
-   ============================================================ */
-
-function drawGeode(){
-
-    const audioPulse =
-        smoothAudio *
-        baseRadius *
-        .075;
-
-    const radius =
-        baseRadius*.155 +
-        audioPulse;
-
-    /*
-       Outer crystalline halo
-    */
-
-    const halo =
-        ctx.createRadialGradient(
-            cx,
-            cy,
-            radius*.2,
-            cx,
-            cy,
-            radius*1.8
-        );
-
-    halo.addColorStop(
-        0,
-        "rgba(92,240,255,.28)"
-    );
-
-    halo.addColorStop(
-        .35,
-        "rgba(0,150,190,.11)"
-    );
-
-    halo.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle =
-        halo;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        cy,
-        radius*1.8,
-        0,
-        TAU
-    );
-
-    ctx.fill();
-
-    /*
-       Geode polygon
-    */
-
-    const sides = 22;
-
-    const points=[];
-
-    for(
-        let i=0;
-        i<sides;
-        i++
-    ){
-
-        const angle =
-            i/sides*TAU -
-            Math.PI/2;
-
-        const irregular =
-            1 +
-            Math.sin(i*4.37)*.075 +
-            Math.sin(i*1.91)*.035;
-
-        const pulse =
-            1 +
-            smoothAudio*
-            .11*
-            Math.sin(i*2.3);
-
-        points.push({
-
-            x:
-                cx+
-                Math.cos(angle)*
-                radius*
-                irregular*
-                pulse,
-
-            y:
-                cy+
-                Math.sin(angle)*
-                radius*
-                irregular*
-                pulse
-
-        });
-
-    }
-
-    /*
-       Dark translucent body
-    */
-
-    const body =
-        ctx.createRadialGradient(
-            cx-radius*.3,
-            cy-radius*.35,
-            radius*.05,
-            cx,
-            cy,
-            radius
-        );
-
-    body.addColorStop(
-        0,
-        "rgba(113,241,255,.38)"
-    );
-
-    body.addColorStop(
-        .25,
-        "rgba(18,102,125,.35)"
-    );
-
-    body.addColorStop(
-        .62,
-        "rgba(3,32,42,.80)"
-    );
-
-    body.addColorStop(
-        1,
-        "rgba(1,11,16,.96)"
-    );
-
-    ctx.fillStyle =
-        body;
-
-    ctx.beginPath();
-
-    points.forEach(
-        (p,i)=>{
-
-            if(i===0){
-                ctx.moveTo(
-                    p.x,
-                    p.y
-                );
-            }else{
-                ctx.lineTo(
-                    p.x,
-                    p.y
-                );
-            }
-
-        }
-    );
-
-    ctx.closePath();
-
-    ctx.fill();
-
-    /*
-       Crystal triangular facets
-    */
-
-    const innerRadius =
-        radius*.80;
-
-    const inner=[];
-
-    for(
-        let i=0;
-        i<sides;
-        i++
-    ){
-
-        const a =
-            i/sides*TAU -
-            Math.PI/2;
-
-        const irregular =
-            1+
-            Math.sin(
-                i*2.73
-            )*.055;
-
-        inner.push({
-
-            x:
-                cx+
-                Math.cos(a)*
-                innerRadius*
-                irregular,
-
-            y:
-                cy+
-                Math.sin(a)*
-                innerRadius*
-                irregular
-
-        });
-
-    }
-
-    for(
-        let i=0;
-        i<sides;
-        i++
-    ){
-
-        const p1 =
-            points[i];
-
-        const p2 =
-            points[(i+1)%sides];
-
-        const p3 =
-            inner[
-                (i+2)%sides
-            ];
-
-        const hue =
-            i%4===0
-            ? "rgba(72,222,245,.18)"
-            : i%4===1
-            ? "rgba(86,119,255,.13)"
-            : i%4===2
-            ? "rgba(31,203,220,.10)"
-            : "rgba(208,164,73,.09)";
-
-        ctx.fillStyle =
-            hue;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            p1.x,
-            p1.y
-        );
-
-        ctx.lineTo(
-            p2.x,
-            p2.y
-        );
-
-        ctx.lineTo(
-            p3.x,
-            p3.y
-        );
-
-        ctx.closePath();
-
-        ctx.fill();
-
-        ctx.strokeStyle =
-            "rgba(83,230,247,.26)";
-
-        ctx.lineWidth =
-            .55;
-
-        ctx.stroke();
-
-    }
-
-    /*
-       Inner crystalline network
-    */
-
-    ctx.save();
-
-    ctx.strokeStyle =
-        `rgba(104,239,255,${
-            .34+
-            smoothAudio*.25
-        })`;
-
-    ctx.lineWidth=.65;
-
-    for(
-        let i=0;
-        i<sides;
-        i++
-    ){
-
-        const p =
-            inner[i];
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            cx,
-            cy
-        );
-
-        ctx.lineTo(
-            p.x,
-            p.y
-        );
-
-        ctx.stroke();
-
-    }
-
-    /*
-       central crystal facets
-    */
-
-    const coreR =
-        radius*.34;
-
-    for(
-        let i=0;
-        i<12;
-        i++
-    ){
-
-        const a =
-            i/12*TAU +
-            globalTime*.035;
-
-        const r1 =
-            coreR*.25;
-
-        const r2 =
-            coreR*
-            (
-                .75+
-                .15*Math.sin(i*2)
-            );
-
-        const p1 =
-            polar(r1,a);
-
-        const p2 =
-            polar(
-                r2,
-                a+
-                .16
-            );
-
-        const p3 =
-            polar(
-                r2,
-                a-
-                .16
-            );
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            p1.x,
-            p1.y
-        );
-
-        ctx.lineTo(
-            p2.x,
-            p2.y
-        );
-
-        ctx.lineTo(
-            p3.x,
-            p3.y
-        );
-
-        ctx.closePath();
-
-        ctx.stroke();
-
-    }
-
-    ctx.restore();
-
-    /*
-       Crystal vertices
-    */
-
-    inner.forEach(
-        (p,i)=>{
-
-            if(
-                i%2===0
-            ){
-
-                ctx.fillStyle =
-                    "rgba(163,248,255,.82)";
-
-                ctx.shadowBlur =
-                    7;
-
-                ctx.shadowColor =
-                    "#25e5ff";
-
-                ctx.beginPath();
-
-                ctx.arc(
-                    p.x,
-                    p.y,
-                    1.7+
-                    smoothAudio*2,
-                    0,
-                    TAU
-                );
-
-                ctx.fill();
-
-            }
-
-        }
-    );
-
-    /*
-       Outer edge
-    */
-
-    ctx.save();
-
-    ctx.strokeStyle =
-        "rgba(143,248,255,.80)";
-
-    ctx.lineWidth =
-        1.5;
-
-    ctx.shadowBlur =
-        14;
-
-    ctx.shadowColor =
-        "rgba(31,229,255,.60)";
-
-    ctx.beginPath();
-
-    points.forEach(
-        (p,i)=>{
-
-            if(i===0){
-                ctx.moveTo(
-                    p.x,
-                    p.y
-                );
-            }else{
-                ctx.lineTo(
-                    p.x,
-                    p.y
-                );
-            }
-
-        }
-    );
-
-    ctx.closePath();
-
-    ctx.stroke();
-
-    ctx.restore();
-
-    /*
-       Core label
-    */
-
-    ctx.fillStyle =
-        "#d9fbff";
-
-    ctx.font =
-        "11px monospace";
-
-    ctx.textAlign =
-        "center";
-
-    ctx.textBaseline =
-        "middle";
-
-    ctx.letterSpacing =
-        "5px";
-
-    ctx.fillText(
-        "C O R E",
-        cx,
-        cy-3
-    );
-
-    ctx.fillStyle =
-        "rgba(118,204,216,.65)";
-
-    ctx.font =
-        "7px monospace";
-
-    ctx.fillText(
-        listening
-        ? "LISTENING"
-        : "READY",
-        cx,
-        cy+13
-    );
-
-}
-
-
-/* ============================================================
-   CORE PARTICLES
-   ============================================================ */
-
-function drawCoreParticles(){
-
-    const radius =
-        baseRadius*.23;
-
-    const count =
-        65;
-
-    for(
-        let i=0;
-        i<count;
-        i++
-    ){
-
-        const seed =
-            i*17.731;
-
-        const angle =
-            seed+
-            globalTime*
-            (
-                .03+
-                (i%3)*.01
-            );
-
-        const distance =
-            radius*
-            (
-                .15+
-                (
-                    (i*37)%100
-                )/100*.85
-            );
-
-        const p =
-            polar(
-                distance,
-                angle
-            );
-
-        const s =
-            .5+
-            (
-                (i%5)/5
-            )*
-            1.3;
-
-        ctx.fillStyle =
-            i%9===0
-            ? "rgba(211,247,255,.9)"
-            : "rgba(57,191,213,.46)";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            p.x,
-            p.y,
-            s+
-            smoothAudio*1.4,
-            0,
-            TAU
-        );
-
-        ctx.fill();
-
-    }
-
-}
-
-
-/* ============================================================
-   AUDIO WAVEFORM
-   ============================================================ */
-
-function drawWaveform(){
-
-    const y =
-        H-250;
-
-    const width =
-        Math.min(
-            W*.60,
-            310
-        );
-
-    const bars =
-        42;
-
-    ctx.save();
-
-    ctx.translate(
-        cx-width/2,
-        y
-    );
-
-    for(
-        let i=0;
-        i<bars;
-        i++
-    ){
-
-        let amp;
-
-        if(
-            audioData
-        ){
-
-            const index =
-                Math.floor(
-                    i/
-                    bars*
-                    audioData.length
-                );
-
-            amp =
-                audioData[index]/255;
-
-        }else{
-
-            amp =
-                .08+
-                Math.sin(
-                    i*.65+
-                    globalTime*2
-                )*.04;
-
-        }
-
-        amp =
-            .08+
-            amp*
-            (
-                .35+
-                smoothAudio*.8
-            );
-
-        const height =
-            4+
-            amp*30;
-
-        ctx.fillStyle =
-            listening
-            ? "rgba(54,239,255,.85)"
-            : "rgba(54,160,177,.45)";
-
-        ctx.fillRect(
-            i*(width/bars),
-            -height/2,
-            2,
-            height
-        );
-
-    }
-
-    ctx.restore();
-
-}
-
-
-/* ============================================================
+/* =========================================================
    AUDIO
-   ============================================================ */
+   ========================================================= */
 
-async function startAudio(){
+let audioContext = null;
+let analyser = null;
+let microphone = null;
 
-    try{
+let audioData = null;
+
+let audioLevel = 0;
+let smoothAudio = 0;
+
+let listening = false;
+
+async function startAudio() {
+
+    if (audioContext) {
+        return;
+    }
+
+    try {
 
         const stream =
-            await navigator.mediaDevices
-                .getUserMedia({
-                    audio:true
-                });
+            await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true
+                }
+            });
 
         audioContext =
             new (
@@ -2255,11 +875,10 @@ async function startAudio(){
         analyser =
             audioContext.createAnalyser();
 
-        analyser.fftSize =
-            256;
+        analyser.fftSize = 1024;
 
         analyser.smoothingTimeConstant =
-            .78;
+            0.72;
 
         microphone =
             audioContext.createMediaStreamSource(
@@ -2272,528 +891,2184 @@ async function startAudio(){
 
         audioData =
             new Uint8Array(
-                analyser.frequencyBinCount
+                analyser.fftSize
             );
 
-        listening = true;
+    } catch (error) {
 
-        micButton.classList.add(
-            "active"
+        console.warn(
+            "Microphone unavailable:",
+            error
         );
-
-        voiceText.textContent =
-            "VOICE CHANNEL · LISTENING";
-
-        voiceText.classList.add(
-            "active"
-        );
-
-        startSpeechRecognition();
-
-    }catch(error){
-
-        voiceText.textContent =
-            "MICROPHONE · PERMISSION REQUIRED";
-
-        console.error(error);
-
     }
-
 }
 
+function readAudio() {
 
-/* ============================================================
-   AUDIO ANALYSIS
-   ============================================================ */
+    if (!analyser) {
 
-function updateAudio(){
-
-    let target=0;
-
-    if(
-        analyser &&
-        audioData
-    ){
-
-        analyser.getByteFrequencyData(
-            audioData
-        );
-
-        let sum=0;
-
-        for(
-            let i=0;
-            i<audioData.length;
-            i++
-        ){
-
-            sum +=
-                audioData[i];
-
-        }
-
-        target =
-            sum/
-            audioData.length/
-            255;
-
-    }
-
-    /*
-       Idle breathing when microphone inactive.
-       Actual microphone signal dominates when active.
-    */
-
-    if(
-        !analyser
-    ){
-
-        target =
-            .035+
-            Math.sin(
-                globalTime*1.7
-            )*.012;
-
-    }
-
-    /*
-       Smooth attack / release.
-    */
-
-    const attack =
-        target >
-        smoothAudio
-        ? .24
-        : .075;
-
-    smoothAudio =
-        lerp(
-            smoothAudio,
-            target,
-            attack
-        );
-
-    peakAudio =
-        Math.max(
-            peakAudio*.94,
-            smoothAudio
-        );
-
-}
-
-
-/* ============================================================
-   SPEECH RECOGNITION
-   ============================================================ */
-
-function startSpeechRecognition(){
-
-    const Recognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
-
-    if(
-        !Recognition
-    ){
-
-        transcript.textContent =
-            "TRANSCRIPTION NON DISPONIBLE SUR CE NAVIGATEUR";
+        smoothAudio *= .94;
 
         return;
-
     }
 
-    speechRecognition =
-        new Recognition();
+    analyser.getByteTimeDomainData(
+        audioData
+    );
 
-    speechRecognition.lang =
+    let sum = 0;
+
+    for (
+        let i = 0;
+        i < audioData.length;
+        i++
+    ) {
+
+        const value =
+            (audioData[i] - 128) / 128;
+
+        sum += value * value;
+    }
+
+    const rms =
+        Math.sqrt(
+            sum / audioData.length
+        );
+
+    audioLevel =
+        Math.min(
+            1,
+            rms * 5.5
+        );
+
+    smoothAudio +=
+        (
+            audioLevel -
+            smoothAudio
+        ) * .22;
+}
+
+/* =========================================================
+   VOICE RECOGNITION
+   ========================================================= */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+let recognition = null;
+
+if (SpeechRecognition) {
+
+    recognition =
+        new SpeechRecognition();
+
+    recognition.lang =
         "fr-FR";
 
-    speechRecognition.continuous =
+    recognition.continuous =
         true;
 
-    speechRecognition.interimResults =
+    recognition.interimResults =
         true;
 
-    speechRecognition.onresult =
-        function(event){
+    recognition.onstart =
+        () => {
 
-            let finalText="";
-            let interimText="";
+            listening = true;
 
-            for(
-                let i=event.resultIndex;
-                i<event.results.length;
-                i++
-            ){
+            microButton.classList.add(
+                "active"
+            );
 
-                const text =
-                    event.results[i][0]
-                        .transcript;
-
-                if(
-                    event.results[i].isFinal
-                ){
-
-                    finalText +=
-                        text;
-
-                }else{
-
-                    interimText +=
-                        text;
-
-                }
-
-            }
-
-            const output =
-                (
-                    finalText+
-                    interimText
-                ).trim();
-
-            if(output){
-
-                transcript.textContent =
-                    output;
-
-                voiceText.textContent =
-                    "VOICE INPUT · " +
-                    output.toUpperCase();
-
-            }
-
+            coreState.textContent =
+                "LISTENING";
         };
 
-    speechRecognition.onerror =
-        function(event){
+    recognition.onend =
+        () => {
 
-            console.log(
+            listening = false;
+
+            microButton.classList.remove(
+                "active"
+            );
+
+            coreState.textContent =
+                "READY";
+        };
+
+    recognition.onerror =
+        event => {
+
+            console.warn(
                 "Speech recognition:",
                 event.error
             );
 
+            listening = false;
+
+            microButton.classList.remove(
+                "active"
+            );
+
+            coreState.textContent =
+                "READY";
         };
 
-    speechRecognition.onend =
-        function(){
+    recognition.onresult =
+        event => {
 
-            if(
-                listening
-            ){
+            let transcript = "";
 
-                try{
+            for (
+                let i =
+                    event.resultIndex;
+                i < event.results.length;
+                i++
+            ) {
 
-                    speechRecognition.start();
-
-                }catch(e){}
-
+                transcript +=
+                    event.results[i][0].transcript;
             }
 
+            transcript =
+                transcript.trim();
+
+            if (transcript) {
+
+                voiceText.textContent =
+                    transcript;
+
+                lastTranscript =
+                    transcript;
+            }
         };
-
-    try{
-
-        speechRecognition.start();
-
-    }catch(e){}
-
 }
 
+/* =========================================================
+   SYNTHESIS
+   ========================================================= */
 
-/* ============================================================
-   STOP AUDIO
-   ============================================================ */
+function speakJarvis(
+    text = "Oui, monsieur."
+) {
 
-function stopAudio(){
-
-    listening=false;
-
-    if(
-        speechRecognition
-    ){
-
-        try{
-
-            speechRecognition.stop();
-
-        }catch(e){}
-
+    if (!("speechSynthesis" in window)) {
+        return;
     }
 
-    if(
-        microphone
-    ){
+    window.speechSynthesis.cancel();
 
-        microphone.mediaStream
-            ?.getTracks()
-            .forEach(
-                track=>track.stop()
-            );
+    const utterance =
+        new SpeechSynthesisUtterance(
+            text
+        );
 
-    }
+    utterance.lang =
+        "fr-FR";
 
-    if(
-        audioContext
-    ){
+    utterance.rate =
+        0.92;
 
-        try{
-            audioContext.close();
-        }catch(e){}
+    utterance.pitch =
+        0.82;
 
-    }
+    utterance.volume =
+        1;
 
-    audioContext=null;
-    analyser=null;
-    microphone=null;
-    audioData=null;
-
-    micButton.classList.remove(
-        "active"
+    window.speechSynthesis.speak(
+        utterance
     );
-
-    voiceText.textContent =
-        "SYSTEM READY · TAP MICRO TO LISTEN";
-
-    voiceText.classList.remove(
-        "active"
-    );
-
 }
 
+/* =========================================================
+   UI
+   ========================================================= */
 
-/* ============================================================
-   MICROPHONE BUTTON
-   ============================================================ */
+const microButton =
+    document.getElementById(
+        "microButton"
+    );
 
-micButton.addEventListener(
-    "click",
-    async ()=>{
+const shortcutButton =
+    document.getElementById(
+        "shortcutButton"
+    );
 
-        if(
-            listening
-        ){
+const speakButton =
+    document.getElementById(
+        "speakButton"
+    );
 
-            stopAudio();
+const voiceText =
+    document.getElementById(
+        "voiceText"
+    );
 
-        }else{
+const coreState =
+    document.getElementById(
+        "coreState"
+    );
 
-            await startAudio();
+const voiceWave =
+    document.getElementById(
+        "voiceWave"
+    );
 
-        }
+let lastTranscript = "";
 
-    }
-);
+for (
+    let i = 0;
+    i < 31;
+    i++
+) {
 
-
-/* ============================================================
-   SYNTHETIC VOICE
-   ============================================================ */
-
-voiceButton.addEventListener(
-    "click",
-    ()=>{
-
-        const text =
-            transcript.textContent.trim();
-
-        const message =
-            text &&
-            !text.includes(
-                "TRANSCRIPTION"
-            )
-            ? "Commande reçue : "+text
-            : "Je suis prêt à vous écouter.";
-
-        if(
-            "speechSynthesis"
-            in window
-        ){
-
-            window.speechSynthesis.cancel();
-
-            const utterance =
-                new SpeechSynthesisUtterance(
-                    message
-                );
-
-            utterance.lang =
-                "fr-FR";
-
-            utterance.rate =
-                .92;
-
-            utterance.pitch =
-                .82;
-
-            utterance.volume =
-                1;
-
-            window.speechSynthesis.speak(
-                utterance
-            );
-
-        }
-
-        voiceText.textContent =
-            "JARVIS · VOICE OUTPUT";
-
-        voiceText.classList.add(
-            "active"
+    const bar =
+        document.createElement(
+            "span"
         );
 
-        setTimeout(
-            ()=>{
-                if(!listening){
-                    voiceText.textContent =
-                        "SYSTEM READY · TAP MICRO TO LISTEN";
-                    voiceText.classList.remove(
-                        "active"
-                    );
-                }
-            },
-            3000
-        );
+    bar.className =
+        "wave-bar";
 
+    voiceWave.appendChild(
+        bar
+    );
+}
+
+const waveBars =
+    [...document.querySelectorAll(
+        ".wave-bar"
+    )];
+
+microButton.addEventListener(
+    "click",
+    async () => {
+
+        await startAudio();
+
+        if (!recognition) {
+
+            coreState.textContent =
+                "VOICE API N/A";
+
+            voiceText.textContent =
+                "RECONNAISSANCE VOCALE NON DISPONIBLE";
+
+            return;
+        }
+
+        if (listening) {
+
+            recognition.stop();
+
+        } else {
+
+            try {
+
+                recognition.start();
+
+            } catch (error) {
+
+                console.warn(error);
+            }
+        }
     }
 );
-
-
-/* ============================================================
-   SHORTCUT BUTTON
-   ============================================================ */
 
 shortcutButton.addEventListener(
     "click",
-    async ()=>{
+    () => {
 
-        const text =
-            transcript.textContent.trim();
-
-        if(
-            !text
-        ){
+        if (!lastTranscript) {
 
             voiceText.textContent =
-                "NO COMMAND · MICRO INPUT REQUIRED";
+                "AUCUNE COMMANDE";
 
             return;
-
         }
 
         /*
-           The browser cannot directly execute
-           an arbitrary Apple Shortcut.
-           We therefore copy the command so it can
-           be received by the chosen workflow.
-        */
+         * POINT D'INTÉGRATION
+         *
+         * Ici tu pourras plus tard connecter
+         * l'interface à un raccourci iOS,
+         * une URL, une API ou ton backend.
+         */
 
-        try{
+        const payload = {
+            command:
+                lastTranscript,
+            timestamp:
+                Date.now()
+        };
 
-            await navigator.clipboard.writeText(
-                text
-            );
+        console.log(
+            "JARVIS → Raccourcis:",
+            payload
+        );
 
-            voiceText.textContent =
-                "COMMAND COPIED · READY FOR RACCOURCIS";
-
-        }catch(error){
-
-            voiceText.textContent =
-                "COMMAND · " +
-                text.toUpperCase();
-
-        }
-
+        voiceText.textContent =
+            "COMMANDE PRÊTE · " +
+            lastTranscript;
     }
 );
 
+speakButton.addEventListener(
+    "click",
+    () => {
 
-/* ============================================================
-   MAIN RENDER LOOP
-   ============================================================ */
+        if (lastTranscript) {
 
-function render(now){
+            speakJarvis(
+                lastTranscript
+            );
 
-    const dt =
-        Math.min(
-            (now-lastTime)/1000,
-            .05
+        } else {
+
+            speakJarvis(
+                "Oui, monsieur."
+            );
+        }
+
+        coreState.textContent =
+            "SPEAKING";
+
+        setTimeout(
+            () => {
+
+                coreState.textContent =
+                    listening
+                    ? "LISTENING"
+                    : "READY";
+
+            },
+            1800
+        );
+    }
+);
+
+/* =========================================================
+   RANDOM DATA
+   ========================================================= */
+
+const symbols = [
+    "◈",
+    "◇",
+    "△",
+    "▽",
+    "□",
+    "○",
+    "×",
+    "·",
+    "⌁",
+    "⌖",
+    "⌬",
+    "∴",
+    "∵",
+    "⊙",
+    "⊕",
+    "⊗",
+    "∆",
+    "Σ",
+    "λ",
+    "Ω"
+];
+
+const digits = [
+    "000",
+    "015",
+    "030",
+    "045",
+    "060",
+    "075",
+    "090",
+    "105",
+    "120",
+    "135",
+    "150",
+    "165",
+    "180",
+    "195",
+    "210",
+    "225",
+    "240",
+    "255",
+    "270",
+    "285",
+    "300",
+    "315",
+    "330",
+    "345"
+];
+
+function seededValue(
+    index,
+    salt = 0
+) {
+
+    const x =
+        Math.sin(
+            index * 91.731 +
+            salt * 17.193
+        ) * 43758.5453;
+
+    return (
+        x -
+        Math.floor(x)
+    );
+}
+
+/* =========================================================
+   GEOMETRY HELPERS
+   ========================================================= */
+
+function polar(
+    radius,
+    angle
+) {
+
+    return {
+        x:
+            CX +
+            Math.cos(angle) *
+            radius,
+
+        y:
+            CY +
+            Math.sin(angle) *
+            radius
+    };
+}
+
+function ringPath(
+    radius,
+    start,
+    end
+) {
+
+    ctx.beginPath();
+
+    ctx.arc(
+        CX,
+        CY,
+        radius,
+        start,
+        end
+    );
+}
+
+/* =========================================================
+   GLOW CIRCLE
+   ========================================================= */
+
+function glowCircle(
+    x,
+    y,
+    radius,
+    color,
+    intensity
+) {
+
+    const gradient =
+        ctx.createRadialGradient(
+            x,
+            y,
+            0,
+            x,
+            y,
+            radius
         );
 
-    lastTime =
-        now;
+    gradient.addColorStop(
+        0,
+        color
+    );
 
-    globalTime +=
-        dt;
+    gradient.addColorStop(
+        .22,
+        color.replace(
+            ")",
+            ", .55)"
+        )
+    );
 
-    updateAudio();
+    gradient.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
 
-    drawBackground();
+    ctx.globalAlpha =
+        intensity;
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.globalAlpha =
+        1;
+}
+
+/* =========================================================
+   MAIN VISUAL STATE
+   ========================================================= */
+
+let time = 0;
+
+const ringBases = [
+    .22,
+    .34,
+    .46,
+    .58
+];
+
+const ringThickness = [
+    2.0,
+    2.2,
+    2.5,
+    2.8
+];
+
+const ringColors = [
+    "#62efff",
+    "#2bd9f3",
+    "#38c9ff",
+    "#75e9f7"
+];
+
+const ringRotations = [
+    .00019,
+    -.00013,
+    .000085,
+    -.000052
+];
+
+/* =========================================================
+   DRAW BACK HALO
+   ========================================================= */
+
+function drawHalo() {
+
+    const maxR =
+        Math.min(W, H) * .62;
+
+    const gradient =
+        ctx.createRadialGradient(
+            CX,
+            CY,
+            0,
+            CX,
+            CY,
+            maxR
+        );
+
+    gradient.addColorStop(
+        0,
+        `rgba(
+            21,
+            218,
+            246,
+            ${.12 + smoothAudio * .20}
+        )`
+    );
+
+    gradient.addColorStop(
+        .35,
+        "rgba(0,100,140,.07)"
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        CX,
+        CY,
+        maxR,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+}
+
+/* =========================================================
+   OUTER STRUCTURE
+   ========================================================= */
+
+function drawOuterArchitecture() {
+
+    const maxR =
+        Math.min(W, H) * .59;
+
+    ctx.save();
+
+    ctx.strokeStyle =
+        "rgba(45,215,240,.24)";
+
+    ctx.lineWidth =
+        .7;
+
+    for (
+        let i = 0;
+        i < 3;
+        i++
+    ) {
+
+        const r =
+            maxR -
+            i * 10;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            CX,
+            CY,
+            r,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.stroke();
+    }
 
     /*
-       The order matters:
-       background
-       information
-       rings
-       arcs
-       grid
-       core
-       waveform
-    */
+     * Very fine orbital fragments.
+     */
 
-    drawInformationBands();
+    for (
+        let i = 0;
+        i < 80;
+        i++
+    ) {
 
-    drawPrimaryRings();
+        const angle =
+            seededValue(i, 10) *
+            Math.PI *
+            2;
 
-    drawTicks();
+        const r =
+            maxR -
+            4 +
+            seededValue(i, 11) *
+            9;
 
-    drawNumbers();
+        const length =
+            3 +
+            seededValue(i, 12) *
+            9;
 
-    drawSecondaryArcs();
+        const p1 =
+            polar(r, angle);
 
-    drawCenterGrid();
+        const p2 =
+            polar(
+                r + length,
+                angle
+            );
 
-    drawCoreParticles();
+        ctx.strokeStyle =
+            i % 7 === 0
+            ? "rgba(226,250,255,.68)"
+            : "rgba(50,201,225,.40)";
 
-    drawGeode();
+        ctx.beginPath();
 
-    drawWaveform();
+        ctx.moveTo(
+            p1.x,
+            p1.y
+        );
+
+        ctx.lineTo(
+            p2.x,
+            p2.y
+        );
+
+        ctx.stroke();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   ONE RING
+   ========================================================= */
+
+function drawRing(
+    index,
+    baseRadius,
+    audio
+) {
+
+    const minSide =
+        Math.min(W, H);
+
+    /*
+     * The ring expands around the SAME CENTER.
+     * No lateral translation.
+     */
+
+    const idleRadius =
+        minSide * baseRadius;
+
+    const expansion =
+        idleRadius *
+        audio *
+        .085;
+
+    const radius =
+        idleRadius +
+        expansion;
+
+    const rotation =
+        time *
+        ringRotations[index];
+
+    ctx.save();
+
+    /*
+     * Outer holographic body
+     */
+
+    ctx.shadowBlur =
+        18 +
+        audio * 28;
+
+    ctx.shadowColor =
+        ringColors[index];
+
+    ctx.strokeStyle =
+        ringColors[index];
+
+    ctx.globalAlpha =
+        .76 +
+        audio * .22;
+
+    ctx.lineWidth =
+        ringThickness[index];
+
+    ctx.beginPath();
+
+    ctx.arc(
+        CX,
+        CY,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+    /*
+     * Parallel secondary arcs
+     */
+
+    for (
+        let layer = 1;
+        layer <= 3;
+        layer++
+    ) {
+
+        const rr =
+            radius -
+            layer * (
+                6 +
+                index * 2
+            );
+
+        ctx.strokeStyle =
+            `rgba(
+                54,
+                208,
+                232,
+                ${.22 - layer * .035}
+            )`;
+
+        ctx.lineWidth =
+            layer === 1
+            ? .9
+            : .55;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            CX,
+            CY,
+            rr,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.stroke();
+    }
+
+    /*
+     * Dashed information orbit
+     */
+
+    ctx.setLineDash([
+        2 + index,
+        7 + index * 2
+    ]);
+
+    ctx.lineWidth =
+        .8;
+
+    ctx.strokeStyle =
+        "rgba(102,231,247,.58)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        CX,
+        CY,
+        radius + 4,
+        rotation,
+        rotation +
+        Math.PI * 2
+    );
+
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    /*
+     * Gold information arc
+     */
+
+    const goldStart =
+        rotation +
+        Math.PI *
+        (
+            .18 +
+            index * .11
+        );
+
+    const goldLength =
+        Math.PI *
+        (
+            .24 +
+            audio * .12
+        );
+
+    ctx.strokeStyle =
+        "rgba(205,169,79,.82)";
+
+    ctx.lineWidth =
+        1.2 +
+        audio * 1.4;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        CX,
+        CY,
+        radius - 3,
+        goldStart,
+        goldStart +
+        goldLength
+    );
+
+    ctx.stroke();
+
+    /*
+     * Violet secondary arc
+     */
+
+    const violetStart =
+        rotation -
+        Math.PI *
+        (
+            .65 +
+            index * .15
+        );
+
+    ctx.strokeStyle =
+        "rgba(133,111,255,.72)";
+
+    ctx.lineWidth =
+        .9;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        CX,
+        CY,
+        radius - 8,
+        violetStart,
+        violetStart +
+        Math.PI * .19
+    );
+
+    ctx.stroke();
+
+    /*
+     * Major graduation marks
+     */
+
+    const majorCount =
+        24;
+
+    for (
+        let i = 0;
+        i < majorCount;
+        i++
+    ) {
+
+        const angle =
+            rotation +
+            (
+                i /
+                majorCount
+            ) *
+            Math.PI *
+            2;
+
+        const outer =
+            radius +
+            1;
+
+        const inner =
+            radius -
+            (
+                i % 6 === 0
+                ? 14
+                : 8
+            );
+
+        const p1 =
+            polar(
+                inner,
+                angle
+            );
+
+        const p2 =
+            polar(
+                outer,
+                angle
+            );
+
+        ctx.strokeStyle =
+            i % 6 === 0
+            ? "rgba(232,250,255,.88)"
+            : "rgba(101,224,239,.55)";
+
+        ctx.lineWidth =
+            i % 6 === 0
+            ? 1.35
+            : .7;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            p1.x,
+            p1.y
+        );
+
+        ctx.lineTo(
+            p2.x,
+            p2.y
+        );
+
+        ctx.stroke();
+    }
+
+    /*
+     * Saturated micro graduations
+     */
+
+    const microCount =
+        144;
+
+    for (
+        let i = 0;
+        i < microCount;
+        i++
+    ) {
+
+        const angle =
+            rotation +
+            (
+                i /
+                microCount
+            ) *
+            Math.PI *
+            2;
+
+        const length =
+            i % 12 === 0
+            ? 8
+            : i % 4 === 0
+            ? 5
+            : 2.5;
+
+        const r1 =
+            radius -
+            2;
+
+        const r2 =
+            r1 -
+            length;
+
+        const p1 =
+            polar(
+                r1,
+                angle
+            );
+
+        const p2 =
+            polar(
+                r2,
+                angle
+            );
+
+        ctx.strokeStyle =
+            i % 19 === 0
+            ? "rgba(221,245,249,.78)"
+            : i % 7 === 0
+            ? "rgba(62,221,241,.72)"
+            : "rgba(61,181,202,.40)";
+
+        ctx.lineWidth =
+            i % 12 === 0
+            ? 1
+            : .45;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            p1.x,
+            p1.y
+        );
+
+        ctx.lineTo(
+            p2.x,
+            p2.y
+        );
+
+        ctx.stroke();
+    }
+
+    /*
+     * Data numbers
+     */
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+    for (
+        let i = 0;
+        i < 24;
+        i++
+    ) {
+
+        const angle =
+            rotation +
+            (
+                i /
+                24
+            ) *
+            Math.PI *
+            2;
+
+        const textRadius =
+            radius -
+            22;
+
+        const p =
+            polar(
+                textRadius,
+                angle
+            );
+
+        ctx.save();
+
+        ctx.translate(
+            p.x,
+            p.y
+        );
+
+        /*
+         * Tangential orientation.
+         */
+
+        ctx.rotate(
+            angle +
+            Math.PI / 2
+        );
+
+        ctx.font =
+            index === 3
+            ? "8px monospace"
+            : "7px monospace";
+
+        ctx.fillStyle =
+            i % 5 === 0
+            ? "rgba(221,248,252,.78)"
+            : "rgba(83,198,218,.55)";
+
+        ctx.fillText(
+            digits[i],
+            0,
+            0
+        );
+
+        ctx.restore();
+    }
+
+    /*
+     * Technical symbols between graduations
+     */
+
+    for (
+        let i = 0;
+        i < 32;
+        i++
+    ) {
+
+        const angle =
+            rotation +
+            seededValue(
+                i,
+                index + 40
+            ) *
+            Math.PI *
+            2;
+
+        const r =
+            radius -
+            31 -
+            seededValue(
+                i,
+                index + 50
+            ) *
+            11;
+
+        const p =
+            polar(
+                r,
+                angle
+            );
+
+        ctx.font =
+            "8px monospace";
+
+        ctx.fillStyle =
+            i % 4 === 0
+            ? "rgba(207,178,88,.72)"
+            : "rgba(89,215,235,.48)";
+
+        ctx.textAlign =
+            "center";
+
+        ctx.textBaseline =
+            "middle";
+
+        ctx.fillText(
+            symbols[
+                i %
+                symbols.length
+            ],
+            p.x,
+            p.y
+        );
+    }
+
+    /*
+     * Moving information nodes
+     */
+
+    const nodeCount =
+        5 + index;
+
+    for (
+        let i = 0;
+        i < nodeCount;
+        i++
+    ) {
+
+        const angle =
+            rotation * (
+                1 +
+                index * .25
+            ) +
+            seededValue(
+                i,
+                index + 90
+            ) *
+            Math.PI *
+            2;
+
+        const p =
+            polar(
+                radius,
+                angle
+            );
+
+        const nodeR =
+            i % 3 === 0
+            ? 2.2
+            : 1.2;
+
+        glowCircle(
+            p.x,
+            p.y,
+            12 +
+            audio * 18,
+            "rgba(45,228,255,.30)",
+            .35
+        );
+
+        ctx.fillStyle =
+            i % 4 === 0
+            ? "#d9faff"
+            : "#39dff7";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            nodeR +
+            audio * 1.5,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   BETWEEN-RING INFORMATION
+   ========================================================= */
+
+function drawInterRingInformation(
+    audio
+) {
+
+    const minSide =
+        Math.min(W, H);
+
+    ctx.save();
+
+    /*
+     * These elements deliberately occupy
+     * the EMPTY spaces between rings.
+     */
+
+    for (
+        let layer = 0;
+        layer < 3;
+        layer++
+    ) {
+
+        const radius =
+            minSide *
+            (
+                .285 +
+                layer * .105
+            );
+
+        const rotation =
+            -time *
+            (
+                .00011 +
+                layer * .000045
+            );
+
+        const count =
+            42 +
+            layer * 16;
+
+        for (
+            let i = 0;
+            i < count;
+            i++
+        ) {
+
+            const angle =
+                rotation +
+                (
+                    i /
+                    count
+                ) *
+                Math.PI *
+                2;
+
+            const p =
+                polar(
+                    radius,
+                    angle
+                );
+
+            const size =
+                i % 9 === 0
+                ? 3
+                : i % 3 === 0
+                ? 1.8
+                : 1;
+
+            ctx.fillStyle =
+                i % 13 === 0
+                ? "rgba(202,168,77,.74)"
+                : "rgba(70,207,226,.48)";
+
+            ctx.fillRect(
+                p.x - size / 2,
+                p.y - size / 2,
+                size,
+                size
+            );
+        }
+    }
+
+    /*
+     * Opposing arc system.
+     */
+
+    const arcs = [
+        {
+            r: .275,
+            start: .25,
+            len: .33,
+            color: "rgba(74,225,242,.72)"
+        },
+        {
+            r: .39,
+            start: 2.4,
+            len: .21,
+            color: "rgba(190,158,67,.72)"
+        },
+        {
+            r: .50,
+            start: 4.0,
+            len: .28,
+            color: "rgba(122,103,255,.72)"
+        },
+        {
+            r: .56,
+            start: 5.1,
+            len: .18,
+            color: "rgba(76,226,243,.74)"
+        }
+    ];
+
+    arcs.forEach(
+        (arc, index) => {
+
+            const r =
+                minSide *
+                arc.r;
+
+            const direction =
+                index % 2 === 0
+                ? 1
+                : -1;
+
+            const rotation =
+                time *
+                .00013 *
+                direction;
+
+            ctx.strokeStyle =
+                arc.color;
+
+            ctx.lineWidth =
+                1.3 +
+                audio * 1.7;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                CX,
+                CY,
+                r,
+                arc.start +
+                rotation,
+                arc.start +
+                rotation +
+                Math.PI *
+                arc.len
+            );
+
+            ctx.stroke();
+        }
+    );
+
+    ctx.restore();
+}
+
+/* =========================================================
+   GEODE
+   ========================================================= */
+
+function drawGeode(
+    audio
+) {
+
+    const minSide =
+        Math.min(W, H);
+
+    /*
+     * Deliberately smaller than the orbital system.
+     */
+
+    const base =
+        minSide *
+        .105;
+
+    const pulse =
+        1 +
+        audio *
+        .12;
+
+    const radius =
+        base *
+        pulse;
+
+    /*
+     * Halo.
+     */
+
+    glowCircle(
+        CX,
+        CY,
+        radius * 3.8,
+        "rgba(28,211,243,.12)",
+        .8
+    );
+
+    glowCircle(
+        CX -
+        radius * .28,
+        CY -
+        radius * .22,
+        radius * 1.35,
+        "rgba(96,238,255,.16)",
+        .7
+    );
+
+    /*
+     * Dark crystalline body.
+     */
+
+    const points = 18;
+
+    const vertices = [];
+
+    for (
+        let i = 0;
+        i < points;
+        i++
+    ) {
+
+        const angle =
+            (
+                i /
+                points
+            ) *
+            Math.PI *
+            2 -
+            Math.PI / 2;
+
+        const irregular =
+            .82 +
+            seededValue(
+                i,
+                500
+            ) *
+            .24;
+
+        const localRadius =
+            radius *
+            irregular;
+
+        vertices.push({
+            x:
+                CX +
+                Math.cos(angle) *
+                localRadius,
+
+            y:
+                CY +
+                Math.sin(angle) *
+                localRadius
+        });
+    }
+
+    /*
+     * Outer crystalline silhouette.
+     */
+
+    ctx.save();
+
+    ctx.beginPath();
+
+    vertices.forEach(
+        (p, i) => {
+
+            if (i === 0) {
+                ctx.moveTo(
+                    p.x,
+                    p.y
+                );
+            } else {
+                ctx.lineTo(
+                    p.x,
+                    p.y
+                );
+            }
+        }
+    );
+
+    ctx.closePath();
+
+    const bodyGradient =
+        ctx.createRadialGradient(
+            CX - radius * .3,
+            CY - radius * .35,
+            radius * .08,
+            CX,
+            CY,
+            radius * 1.25
+        );
+
+    bodyGradient.addColorStop(
+        0,
+        "rgba(130,244,255,.42)"
+    );
+
+    bodyGradient.addColorStop(
+        .32,
+        "rgba(10,81,103,.70)"
+    );
+
+    bodyGradient.addColorStop(
+        .72,
+        "rgba(3,25,35,.92)"
+    );
+
+    bodyGradient.addColorStop(
+        1,
+        "rgba(1,8,13,.98)"
+    );
+
+    ctx.fillStyle =
+        bodyGradient;
+
+    ctx.fill();
+
+    ctx.strokeStyle =
+        "rgba(98,238,255,.88)";
+
+    ctx.lineWidth =
+        1.5 +
+        audio * 2;
+
+    ctx.shadowBlur =
+        16 +
+        audio * 25;
+
+    ctx.shadowColor =
+        "rgba(35,229,255,.65)";
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+    /*
+     * Faceted internal geometry.
+     */
+
+    for (
+        let i = 0;
+        i < points;
+        i++
+    ) {
+
+        const a =
+            vertices[i];
+
+        const b =
+            vertices[
+                (i + 1) %
+                points
+            ];
+
+        const centerOffset =
+            audio *
+            (
+                5 +
+                seededValue(
+                    i,
+                    600
+                ) * 8
+            );
+
+        const angle =
+            Math.atan2(
+                a.y - CY,
+                a.x - CX
+            );
+
+        const innerX =
+            CX +
+            Math.cos(angle) *
+            (
+                radius *
+                .15 +
+                centerOffset
+            );
+
+        const innerY =
+            CY +
+            Math.sin(angle) *
+            (
+                radius *
+                .15 +
+                centerOffset
+            );
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            a.x,
+            a.y
+        );
+
+        ctx.lineTo(
+            innerX,
+            innerY
+        );
+
+        ctx.lineTo(
+            b.x,
+            b.y
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            i % 4 === 0
+            ? "rgba(43,207,232,.13)"
+            : i % 3 === 0
+            ? "rgba(122,99,245,.10)"
+            : "rgba(7,53,69,.20)";
+
+        ctx.fill();
+
+        ctx.strokeStyle =
+            "rgba(78,209,229,.27)";
+
+        ctx.lineWidth =
+            .55;
+
+        ctx.stroke();
+    }
+
+    /*
+     * Crystalline internal network.
+     */
+
+    for (
+        let i = 0;
+        i < 13;
+        i++
+    ) {
+
+        const angle =
+            seededValue(
+                i,
+                700
+            ) *
+            Math.PI *
+            2;
+
+        const r1 =
+            radius *
+            (
+                .12 +
+                seededValue(
+                    i,
+                    701
+                ) *
+                .28
+            );
+
+        const r2 =
+            radius *
+            (
+                .72 +
+                seededValue(
+                    i,
+                    702
+                ) *
+                .25
+            );
+
+        const p1 =
+            polar(
+                r1,
+                angle
+            );
+
+        const p2 =
+            polar(
+                r2,
+                angle +
+                (
+                    seededValue(
+                        i,
+                        703
+                    ) -
+                    .5
+                ) *
+                .7
+            );
+
+        ctx.strokeStyle =
+            "rgba(130,235,247,.34)";
+
+        ctx.lineWidth =
+            .55;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            p1.x,
+            p1.y
+        );
+
+        ctx.lineTo(
+            p2.x,
+            p2.y
+        );
+
+        ctx.stroke();
+    }
+
+    /*
+     * Inner crystal facets.
+     */
+
+    for (
+        let i = 0;
+        i < 8;
+        i++
+    ) {
+
+        const angle =
+            (
+                i /
+                8
+            ) *
+            Math.PI *
+            2 +
+            time *
+            .0002;
+
+        const r =
+            radius *
+            (
+                .28 +
+                audio * .05
+            );
+
+        const p =
+            polar(
+                r,
+                angle
+            );
+
+        ctx.fillStyle =
+            i % 2 === 0
+            ? "rgba(70,225,247,.22)"
+            : "rgba(136,104,255,.18)";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            CX,
+            CY
+        );
+
+        ctx.lineTo(
+            p.x,
+            p.y
+        );
+
+        ctx.lineTo(
+            CX +
+            Math.cos(
+                angle + .38
+            ) *
+            r,
+
+            CY +
+            Math.sin(
+                angle + .38
+            ) *
+            r
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+    }
+
+    /*
+     * Core light.
+     */
+
+    const coreRadius =
+        radius *
+        (
+            .18 +
+            audio * .06
+        );
+
+    const coreGradient =
+        ctx.createRadialGradient(
+            CX,
+            CY,
+            0,
+            CX,
+            CY,
+            coreRadius
+        );
+
+    coreGradient.addColorStop(
+        0,
+        "rgba(235,255,255,.95)"
+    );
+
+    coreGradient.addColorStop(
+        .12,
+        "rgba(117,242,255,.75)"
+    );
+
+    coreGradient.addColorStop(
+        .48,
+        "rgba(17,180,220,.30)"
+    );
+
+    coreGradient.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle =
+        coreGradient;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        CX,
+        CY,
+        coreRadius * 2.8,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    /*
+     * Tiny crystalline particles.
+     */
+
+    for (
+        let i = 0;
+        i < 30;
+        i++
+    ) {
+
+        const angle =
+            seededValue(
+                i,
+                800
+            ) *
+            Math.PI *
+            2;
+
+        const r =
+            radius *
+            (
+                .25 +
+                seededValue(
+                    i,
+                    801
+                ) *
+                .70
+            );
+
+        const p =
+            polar(
+                r,
+                angle
+            );
+
+        const s =
+            .7 +
+            seededValue(
+                i,
+                802
+            ) *
+            1.8 +
+            audio * 1.4;
+
+        ctx.fillStyle =
+            i % 6 === 0
+            ? "rgba(222,249,255,.9)"
+            : "rgba(66,214,238,.55)";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            s,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   VOICE WAVEFORM
+   ========================================================= */
+
+function updateWaveform(
+    audio
+) {
+
+    waveBars.forEach(
+        (bar, index) => {
+
+            const center =
+                waveBars.length / 2;
+
+            const distance =
+                Math.abs(
+                    index -
+                    center
+                ) /
+                center;
+
+            const shape =
+                1 -
+                distance;
+
+            const noise =
+                seededValue(
+                    index,
+                    Math.floor(
+                        time / 90
+                    )
+                );
+
+            const height =
+                5 +
+                shape *
+                (
+                    audio *
+                    22
+                ) +
+                noise *
+                audio *
+                8;
+
+            bar.style.height =
+                height + "px";
+        }
+    );
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function render() {
+
+    readAudio();
+
+    time++;
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    /*
+     * Very subtle global breathing.
+     */
+
+    const idleBreath =
+        (
+            Math.sin(
+                time * .018
+            ) +
+            1
+        ) *
+        .5;
+
+    const effectiveAudio =
+        Math.max(
+            smoothAudio,
+            idleBreath *
+            .018
+        );
+
+    drawHalo();
+
+    /*
+     * Large peripheral architecture.
+     */
+
+    drawOuterArchitecture();
+
+    /*
+     * Information occupying spaces
+     * between the four main rings.
+     */
+
+    drawInterRingInformation(
+        effectiveAudio
+    );
+
+    /*
+     * Four fixed concentric systems.
+     */
+
+    for (
+        let i = 0;
+        i < ringBases.length;
+        i++
+    ) {
+
+        drawRing(
+            i,
+            ringBases[i],
+            effectiveAudio
+        );
+    }
+
+    /*
+     * Geode LAST so that it sits
+     * visually in front of the rings.
+     */
+
+    drawGeode(
+        effectiveAudio
+    );
+
+    updateWaveform(
+        effectiveAudio
+    );
 
     requestAnimationFrame(
         render
     );
-
 }
 
-requestAnimationFrame(
-    render
-);
+render();
 
-
-/* ============================================================
-   PREVENT MOBILE BROWSER GESTURES
-   ============================================================ */
+/* =========================================================
+   INITIAL MICROPHONE PREPARATION
+   ========================================================= */
 
 document.addEventListener(
-    "gesturestart",
-    e=>e.preventDefault(),
-    {passive:false}
+    "visibilitychange",
+    () => {
+
+        if (
+            document.hidden &&
+            audioContext
+        ) {
+
+            audioContext.suspend();
+
+        } else if (
+            !document.hidden &&
+            audioContext
+        ) {
+
+            audioContext.resume();
+        }
+    }
 );
 
-document.addEventListener(
-    "gesturechange",
-    e=>e.preventDefault(),
-    {passive:false}
+/* =========================================================
+   KEYBOARD SUPPORT
+   ========================================================= */
+
+window.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.code ===
+            "Space"
+        ) {
+
+            event.preventDefault();
+
+            microButton.click();
+        }
+    }
 );
 
-document.addEventListener(
-    "gestureend",
-    e=>e.preventDefault(),
-    {passive:false}
-);
+/* =========================================================
+   RESIZE OBSERVER
+   ========================================================= */
 
+if (
+    "ResizeObserver"
+    in window
+) {
+
+    const observer =
+        new ResizeObserver(
+            resizeCanvas
+        );
+
+    observer.observe(
+        coreArea
+    );
+}
+
+})();
 </script>
 
 </body>
